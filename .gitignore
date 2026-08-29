@@ -1,0 +1,6 @@
+# Ten reponzytorium ma wysylac na GitHub TYLKO pliki lezace bezposrednio
+# w glownym folderze NeuroHeart. Zawartosc wszystkich podfolderow
+# (Karty/, NeuroHeart_v2/, old/, Zasady_Daggerheart/, Zasady_Neuroshima/ itd.)
+# jest celowo ignorowana - m.in. dlatego, ze sa tam bardzo duze PDF-y z
+# gotowymi systemami (Daggerheart, Neuroshima), ktorych GitHub by nie przyjal.
+/*/
