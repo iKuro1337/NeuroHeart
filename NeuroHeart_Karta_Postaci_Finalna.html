@@ -1044,10 +1044,11 @@ function collectMods(){
        into ONE row, so the origin/profession Trait bonus is visible — and correctly summed — in the
        "Modyfikatory" audit table on the back of the card, not just silently applied to the trait total. */
     const mods = Object.assign({}, entry.cecha.mods||{});
-    if(!entry.cecha.unlock){
-      const t = traitBonusOf(entry);
-      if(t) mods[t] = (mods[t]||0) + 1;
-    }
+    /* a Cecha that unlocks borrowing another Cechę (c.unlock) can ALSO carry its own "+1 do dowolnego
+       Traita" bonus at the same time (e.g. Pochodzenie "Człowiek z... (nie twój zasrany interes)" →
+       Cecha "Wszechstronność do kwadratu") — the two are independent, so unlock must NOT suppress this. */
+    const t = traitBonusOf(entry);
+    if(t) mods[t] = (mods[t]||0) + 1;
     push(entry.src, entry.cecha.name, mods);
   });
   (char.tricks||[]).forEach(t=> push("Sztuczka", t.name, t.mods));
@@ -1666,7 +1667,9 @@ function renderCechaBody(which, cechy, selectedIdx){
   let out = '<div class="trickItem">'+
     '<div class="th"><span>'+tip(c.fluff, esc(c.name))+'</span>'+costBadge(c.cost)+'</div>'+
     '<div class="te">'+kw(c.effect)+'</div></div>';
-  if(!c.unlock && isFreeTraitChoice(c)) out += traitPickBlock(which, c);
+  /* unlock (borrow a Cechę from elsewhere) and a free "+1 do dowolnego Traita" bonus are independent —
+     a Cecha can grant both at once, so unlock must NOT hide this picker (see collectMods() note above). */
+  if(isFreeTraitChoice(c)) out += traitPickBlock(which, c);
   if(c.expCount>0) out += expPickBlock(which, c.name, c.expBonus||1, c.expCount);
   if(c.unlock) out += borrowBlock(which, c.unlock);
   return out;
