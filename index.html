@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="pl"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NeuroHeart — Karta Postaci</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<style>
+:root{
+  --paper:#EFE8D9; --paper-dark:#E3DAC5; --ink:#1B1713; --ink-soft:#3D3630;
+  --rust:#A8431D; --rust-dark:#7E3113; --teal:#17454F; --teal-dark:#0F2E36;
+  --maroon:#7A1F1F; --olive:#4F5216; --line:#B7A98C; --danger:#8C2F2F; --ok:#2E4A34;
+  --paper-hi:#FBF7EE; --shadow:0 6px 18px rgba(20,16,12,.28); --radius:8px; --page-w:210mm;
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:radial-gradient(ellipse at top,#3a332c 0%,#17130f 65%);
+  color:var(--ink); font-family:"Segoe UI","Helvetica Neue",Arial,sans-serif;
+  min-height:100vh; padding:16px 10px 60px;
+}
+.display{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.04em;text-transform:uppercase;}
+.mono{font-family:"Consolas","SFMono-Regular","Courier New",monospace;}
+b, strong{font-weight:800;color:var(--teal-dark);}
+
+/* ---------- page-level brand strip (outside the paper card) ---------- */
+#pageTitle{max-width:var(--page-w);margin:0 auto 10px;text-align:center;color:#cbbfa8;letter-spacing:.22em;font-size:11px;
+  text-transform:uppercase;font-weight:700;opacity:.75;}
+#pageTitle b{color:#E08A5E;}
+
+/* ---------- UNIFIED FORM CONTROLS: identical look everywhere ---------- */
+select, input[type=text], input[type=number], textarea{
+  background:#FFFFFF; color:var(--ink); border:1.5px solid #8D7F63; border-radius:6px;
+  padding:5px 7px; font-size:12px; font-family:inherit; line-height:1.25; min-height:28px;
+}
+select{ appearance:none; -webkit-appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,var(--teal) 50%),linear-gradient(135deg,var(--teal) 50%,transparent 50%);
+  background-position:calc(100% - 13px) calc(50% + 1px),calc(100% - 8px) calc(50% + 1px);
+  background-size:5px 5px,5px 5px; background-repeat:no-repeat; padding-right:24px; cursor:pointer;}
+select option{background:#FFFFFF;color:var(--ink);padding:4px;}
+select optgroup{background:#EDE4D0;color:var(--teal-dark);font-weight:800;font-style:normal;}
+select:focus,input:focus,textarea:focus{outline:2px solid var(--rust);outline-offset:1px;}
+select:disabled{background:#EFEAE0;color:#6b6357;}
+select.headSel{padding:5px 24px 5px 7px;font-size:12px;min-width:0;}
+select.wide,input.wide{width:100%;}
+::placeholder{color:#8b8171;}
+label{color:var(--ink-soft);}
+
+/* ---------- fluff tooltips ---------- */
+.hasTip{cursor:help;border-bottom:1px dotted var(--rust);}
+.hasTip.block{border-bottom:none;}
+select.hasTip{border-bottom:1.5px solid #8D7F63;}
+.fluffName{font-weight:800;color:var(--maroon);font-style:italic;}
+.fluffTip{position:fixed;z-index:2000;max-width:320px;background:#1B1713;color:#F2E9D6;border:1px solid var(--rust);
+  border-radius:8px;padding:9px 11px;font-size:12.5px;line-height:1.45;font-style:italic;box-shadow:0 8px 22px rgba(0,0,0,.45);pointer-events:none;}
+
+/* ---------- toolbar ---------- */
+#toolbar{max-width:var(--page-w);margin:0 auto 12px;display:flex;flex-wrap:wrap;gap:7px;align-items:center;
+  background:#171310;border:1px solid #4a4239;border-radius:10px;padding:9px 12px;}
+#toolbar .stamp{color:#e6dcc7;font-size:11px;margin-right:auto;opacity:.85;}
+button.btn{font:inherit;font-size:12px;font-weight:700;letter-spacing:.02em;color:#FFF8EA;background:var(--teal);
+  border:1px solid #0B242B;padding:8px 12px;border-radius:7px;cursor:pointer;transition:transform .08s ease,filter .12s ease;
+  display:inline-flex;align-items:center;justify-content:center;text-align:center;gap:5px;}
+button.btn:hover{filter:brightness(1.18);}
+button.btn:active{transform:translateY(1px);}
+button.btn.rust{background:var(--rust);border-color:#5F240D;}
+button.btn.ghost{background:#F3EADA;border:1px solid #6E634E;color:#241E17;}
+button.btn.danger{background:var(--danger);border-color:#5e1f1f;color:#FFF3F3;}
+button.btn:disabled{opacity:.45;cursor:not-allowed;}
+#fileStatus{font-size:11.5px;color:#d7ecd8;background:#20301f;padding:5px 9px;border-radius:6px;border:1px solid #3c5a3c;}
+#fileStatus.bad{color:#ffdede;background:#3a1f1f;border-color:#6b3232;}
+
+/* ---------- import overlay ---------- */
+#importOverlay{position:fixed;inset:0;background:rgba(10,8,6,.9);display:flex;align-items:center;justify-content:center;z-index:999;padding:20px;overflow:auto;}
+#importOverlay.hidden{display:none;}
+.importBox{background:var(--paper-hi);border-radius:14px;max-width:640px;width:100%;padding:26px 28px;box-shadow:var(--shadow);border:2px solid var(--ink);}
+.importBox h2{margin:0 0 6px;font-size:22px;}
+.importBox p{font-size:14px;line-height:1.5;color:var(--ink-soft);}
+.importBox .dropRow{margin:12px 0;padding:12px;border:2px dashed var(--rust);border-radius:8px;background:#FFFAF0;}
+.importBox .dropRow b{display:block;margin-bottom:6px;color:var(--rust-dark);}
+.importBox input[type=file]{width:100%;background:#fff;}
+.importBox .hint{font-size:12px;color:#6b6152;}
+
+/* ---------- card flip (A4-width paper) ---------- */
+#stage{max-width:var(--page-w);margin:0 auto;perspective:2400px;}
+.flipper{position:relative;width:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1);}
+.flipper.flipped{transform:rotateY(180deg);}
+.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:0 0 14px;
+  width:var(--page-w);}
+.face.back{position:absolute;top:0;left:0;width:100%;transform:rotateY(180deg);}
+
+/* header strip */
+.sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;}
+.hdrRow1{display:flex;align-items:stretch;flex-wrap:nowrap;}
+.brand{background:linear-gradient(135deg,#2a2420,#181310);padding:8px 12px;flex:1.5;min-width:0;
+  display:flex;flex-direction:column;justify-content:center;gap:2px;border-right:2px solid var(--rust);}
+.brand .nameRow{display:flex;align-items:baseline;gap:8px;}
+.brand input.nameInput{background:transparent;border:none;border-bottom:1.5px solid #6a5f52;color:#F6EFDE;
+  font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.02em;text-transform:uppercase;
+  font-size:20px;padding:2px 0;font-family:inherit;border-radius:0;min-height:0;flex:1;min-width:0;}
+.brand input.nameInput:focus{outline:none;border-bottom-color:var(--rust);}
+.brand input.pronounsInput{background:transparent;border:none;border-bottom:1px solid #6a5f52;color:#D3BE95;
+  font-size:11px;padding:2px 0;font-family:inherit;border-radius:0;min-height:0;width:64px;flex:0 0 auto;text-align:right;}
+.brand input.pronounsInput:focus{outline:none;border-bottom-color:var(--rust);}
+.brand .subline{font-size:8.5px;color:#8f8577;letter-spacing:.12em;text-transform:uppercase;margin-top:1px;}
+.statGroup{display:flex;}
+.statCell{min-width:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1c1712;
+  gap:1px;border-left:1px solid #3a332c;padding:6px 8px;}
+.statCell .lv{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;text-align:center;}
+.statCell .num{font-size:19px;color:#F0A177;font-weight:800;line-height:1.1;}
+.statCell select.mono{width:44px;text-align:center;background:#241d18;color:#F0A177;border:1px solid #4a4239;font-size:12px;
+  border-radius:4px;min-height:22px;padding:1px 14px 1px 4px;background-position:calc(100% - 8px) calc(50% + 1px),calc(100% - 5px) calc(50% + 1px);}
+.statCell.gambleCell{min-width:64px;}
+.statCell.gambleCell input.mono{width:52px;text-align:center;background:#241d18;color:#F0A177;border:1px solid #4a4239;
+  font-size:15px;font-weight:800;border-radius:4px;min-height:22px;padding:2px 4px;}
+.tierHint{display:none;}
+.hdrRow2{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#3a332c;}
+.hdrRow2 .cell{background:#1c1712;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;}
+.hdrRow2 label{font-size:8.5px;letter-spacing:.09em;color:#D3BE95;text-transform:uppercase;margin-bottom:3px;}
+select.headSel{background-color:transparent;background-image:linear-gradient(45deg,transparent 50%,#E08A5E 50%),linear-gradient(135deg,#E08A5E 50%,transparent 50%);
+  border:none;border-bottom:1px solid #6a5f52;border-radius:0;color:#F6EFDE;padding:2px 20px 3px 0;min-height:22px;}
+select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
+select.headSel option{color:#111;}
+
+/* body grid */
+.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:12px;padding:12px 14px 0;}
+.body2col > div{min-width:0;}
+@media screen and (max-width:980px){.body2col{grid-template-columns:1fr;}}
+
+/* Grid/flex items default to min-width:auto, which sizes to their content's
+   min-content width — a wide <select>'s longest <option> or a plain <input>'s
+   default intrinsic width can silently force the whole column (and the card)
+   wider than the page. Forcing min-width:0 everywhere content can be long
+   lets width:100%/flex:1 children actually shrink to fit, so nothing can
+   push past the card's outline. */
+.panel, .pb, .fieldGrid2, .fieldGrid3, .fieldGrid4, .pickRow, .pickRow2,
+.expRow, .invRow, .woundRow, .statRow, .thrBox, .diseaseSection, .weaponCard,
+.trickItem, .tierBlock, .advRow, .achieveBox{min-width:0;}
+select, input, textarea{min-width:0;box-sizing:border-box;}
+.face{overflow-x:hidden;}
+
+.panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:visible;
+  break-inside:avoid;page-break-inside:avoid;}
+.panel > .ph{position:relative;background:var(--ink);color:#F6EFDE;font-size:11.5px;font-weight:800;letter-spacing:.05em;
+  padding:6px 14px 6px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
+  clip-path:polygon(0 0,100% 0,calc(100% - 9px) 100%,0 100%);
+  font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;text-transform:uppercase;}
+.panel > .ph > span:first-child{font-size:inherit;font-family:inherit;text-transform:inherit;letter-spacing:inherit;font-weight:inherit;}
+.panel > .ph.rust{background:linear-gradient(90deg,var(--rust-dark),var(--rust));}
+.panel > .ph.maroon{background:linear-gradient(90deg,#4a1414,var(--maroon));}
+.panel > .ph .sub{font-weight:400;text-transform:none;letter-spacing:0;font-size:10px;color:#D9C49B;}
+/* ---------- header-integrated action controls (buttons/pickers that "add" something,
+   moved off the panel body and into the header strip itself, right-aligned) ---------- */
+.panel > .ph .phActions{display:flex;gap:6px;align-items:center;flex-wrap:wrap;flex:0 1 auto;}
+.panel > .ph button.phBtn{font-size:10.5px;font-weight:700;letter-spacing:0;text-transform:none;
+  font-family:"Segoe UI",Arial,sans-serif;color:#F6EFDE;background:rgba(255,255,255,.15);
+  border:1px solid rgba(255,255,255,.4);padding:4px 9px;border-radius:6px;cursor:pointer;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:4px;transition:filter .12s ease,transform .08s ease;}
+.panel > .ph button.phBtn:hover{background:rgba(255,255,255,.27);}
+.panel > .ph button.phBtn:active{transform:translateY(1px);}
+.panel > .ph select.phSelect{font-size:10.5px;font-weight:600;letter-spacing:0;text-transform:none;
+  font-family:"Segoe UI",Arial,sans-serif;padding:3px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.4);
+  background:#FBF6EA;color:#241E17;max-width:150px;min-width:60px;}
+.panel > .ph.phStack{flex-direction:column;align-items:stretch;gap:5px;}
+.panel > .ph.phStack .phTop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.panel > .ph.phStack .phActions.phRow2{width:100%;justify-content:flex-end;}
+.panel > .ph .phSub{display:flex;gap:6px;flex-wrap:wrap;}
+.panel > .ph .phSub span{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.32);border-radius:20px;
+  padding:1px 8px;font-size:9px;font-weight:700;letter-spacing:0;text-transform:none;color:#F6EFDE;cursor:help;}
+.panel > .ph .phSub span b{color:#FFD9A0;}
+.panel > .ph .phSub span.full{background:#F6D2D2;border-color:#C88686;color:#6E1D1D;}
+.panel > .ph .phSub span.full b{color:#6E1D1D;}
+.panel .pb{padding:10px;}
+.caption{font-size:11px;color:#5C5346;line-height:1.45;}
+.badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.03em;border:1px solid transparent;}
+.badge.free{background:#D7E9D5;color:#1F3A25;border-color:#8FB490;}
+.badge.hope{background:#FBE2BF;color:#6E4408;border-color:#D4A159;}
+.badge.stress{background:#F6D2D2;color:#6E1D1D;border-color:#C88686;}
+.badge.mixed{background:#E2DCF3;color:#3A2C68;border-color:#9E92C9;}
+.badge.tier{background:#DDE7EC;color:#123640;border-color:#9BB7C1;}
+.costLine{background:#FFF;border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:6px;padding:5px 8px;margin:4px 0;font-size:10.5px;}
+.costLine .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#6E634E;display:block;margin-bottom:2px;}
+
+/* stat circles */
+.statRow{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
+.circleStat{display:flex;flex-direction:column;align-items:center;gap:3px;}
+.circleStat .circ{width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;flex:0 0 auto;}
+.circleStat .circ .big{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
+.circleStat .circ .brk{font-size:8px;color:#6E634E;}
+.circleStat label{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);text-align:center;}
+.thrBox{display:flex;gap:8px;flex-wrap:wrap;}
+.thrCard{border:2px solid var(--teal);border-radius:7px;background:#fff;padding:5px 9px;min-width:78px;}
+.thrCard .t{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-dark);font-weight:800;}
+.thrCard .v{font-size:17px;font-weight:800;color:var(--ink);}
+.thrCard .s{font-size:9px;color:#6E634E;}
+
+.pipRow{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px;}
+.pip{width:15px;height:15px;border:2px solid var(--ink);cursor:pointer;background:#fff;flex:0 0 auto;}
+.pip.round{border-radius:50%;}
+.pip.diamond{transform:rotate(45deg);border-radius:2px;}
+.pip.checked{background:var(--rust);border-color:var(--rust-dark);}
+.pip.diamond.checked{background:var(--ok);border-color:#16281B;}
+.pipLine{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+.pipLine .pipRow{margin-top:0;flex:0 1 auto;}
+.pipBtn{width:24px;height:24px;border-radius:6px;border:1.5px solid #6E634E;background:#fff;cursor:pointer;font-weight:800;font-size:14px;
+  line-height:1;color:var(--ink);flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+.pipBtn:hover{background:#F1E8D4;}
+
+/* traits / umiejętności */
+.traitsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+@media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,1fr);}}
+.traitCard{border:1px solid var(--line);border-radius:7px;padding:7px;background:#fff;}
+.traitCard .tname{font-size:11.5px;font-weight:800;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center;}
+.traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
+.traitCard .tvals{display:flex;align-items:center;gap:5px;font-size:10.5px;}
+.traitCard select{font-size:11px;padding:2px 18px 2px 4px;min-height:24px;}
+.traitCard .ttotal{margin-left:auto;font-size:18px;font-weight:800;color:var(--rust-dark);}
+.markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;border-radius:3px;flex:0 0 auto;}
+.markbox.checked{background:var(--teal);border-color:var(--teal-dark);}
+.tbreak{font-size:8px;color:#6E634E;}
+
+/* modifier panel */
+.modTable{width:100%;border-collapse:collapse;font-size:9.5px;background:#fff;table-layout:fixed;}
+.modTable th,.modTable td{border:1px solid var(--line);padding:3px 4px;text-align:left;overflow-wrap:break-word;}
+.modTable th{background:#E9E2CE;font-size:8.5px;text-transform:uppercase;letter-spacing:.03em;color:#3D3630;}
+.modTable td.num{text-align:center;font-family:"Consolas",monospace;font-weight:700;}
+.modTable td.pos{color:#1F5B2C;} .modTable td.neg{color:#8C2F2F;}
+.modTable tr.totalRow td{background:#F1ECDD;font-weight:800;}
+.modTableWrap{width:100%;overflow-x:auto;}
+
+/* lists */
+.expRow{display:flex;gap:5px;align-items:center;margin-bottom:5px;}
+.expRow input[type=text]{flex:1;background:transparent;border:none;border-bottom:1px dotted var(--line);border-radius:0;padding:3px 2px;}
+.expRow input[type=text]:focus{background:#fffdf6;border-bottom-color:var(--rust);}
+.expRow input[type=number]{width:44px;text-align:center;background:transparent;border:none;border-bottom:1px dotted var(--line);border-radius:0;}
+.expRow input[type=number]:focus{background:#fffdf6;border-bottom-color:var(--rust);}
+.expRow.granted{background:#F2F6EF;border:1px solid #A9BCA4;border-radius:6px;padding:4px 6px;}
+.grantedName{flex:1;font-size:12px;font-weight:700;color:#26402A;}
+.grantedTag{font-size:8.5px;font-weight:800;background:#DCE9D6;border:1px solid #8FB490;color:#1F3A25;border-radius:20px;padding:1px 6px;vertical-align:middle;}
+.grantedBase{width:60px;text-align:center;font-size:12px;color:#5C5346;}
+.expTotal{min-width:30px;text-align:center;font-weight:800;font-size:13px;color:#5C5346;flex:0 0 auto;}
+.expTotal.boosted{color:var(--rust-dark);background:#FBE0D0;border:1px solid #D89C79;border-radius:5px;padding:2px 4px;}
+.expPickBox{background:#F4F7F3;border:1px solid #9DB39B;border-radius:7px;padding:6px 7px;margin-top:5px;}
+.expPickHead{font-size:9.5px;font-weight:800;color:#2A4A2E;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.expPickBox select{margin-bottom:4px;}
+.borrowBox{background:#F7F3FB;border:1px solid #A79BC4;border-radius:7px;padding:6px 7px;margin-top:5px;}
+.borrowHead{font-size:9.5px;font-weight:800;color:#3A2C68;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
+.borrowBox select{margin-bottom:4px;}
+.expRow button, .invRow button{border:1px solid #A2937A;background:#EFE5D0;color:#4A3F2C;border-radius:5px;width:24px;height:24px;
+  cursor:pointer;font-weight:800;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
+.trickItem{border:1px solid var(--line);border-radius:7px;padding:7px 9px;margin-bottom:5px;background:#fff;}
+.trickItem .th{display:flex;justify-content:space-between;gap:6px;font-size:11.5px;font-weight:800;align-items:flex-start;}
+.trickItem .te{font-size:10.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+.trickItem .meta{font-size:9px;color:#6E634E;margin-top:2px;}
+.trickItem button.rm{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;}
+
+.weaponCard{border:1px solid var(--line);border-radius:7px;padding:8px;margin-bottom:8px;background:#fff;}
+.weaponCard .wtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px;flex-wrap:wrap;}
+.weaponCard .wtitle{font-size:11px;font-weight:800;color:var(--ink-soft);}
+.weaponCard .wtopRight{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.weaponCard button.rm{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;}
+/* value fields (Trait, Zasięg, tryby ognia, magazynek...) read like the Feature description below them,
+   not like a bolder/bigger callout — same size and weight as .featBox. */
+.weaponCard .readout{font-size:10.5px;font-weight:400;}
+.fieldGrid2{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px;}
+.fieldGrid3{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:5px;margin-bottom:5px;}
+.fieldGrid4{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:5px;}
+@media (min-width:640px){.fieldGrid4{grid-template-columns:repeat(4,1fr);}}
+label.fl{font-size:8.5px;color:#5C5346;letter-spacing:.05em;text-transform:uppercase;display:block;margin-bottom:2px;font-weight:700;}
+.readout{background:#F4EFE2;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-size:11.5px;min-height:28px;
+  display:flex;align-items:center;font-weight:700;color:var(--ink);overflow-wrap:anywhere;}
+.handednessRow{display:flex;gap:10px;align-items:center;font-size:10.5px;margin-top:3px;flex-wrap:wrap;}
+.handednessRow label{display:flex;align-items:center;gap:4px;cursor:pointer;color:var(--ink);}
+.twoHandedTag{font-size:9.5px;font-weight:800;color:var(--rust-dark);background:#FBE0D0;padding:2px 8px;border-radius:20px;border:1px solid #D89C79;}
+.featBox{font-size:10.5px;color:var(--ink-soft);background:#F7F2E6;border:1px solid var(--line);border-radius:6px;padding:5px 7px;line-height:1.4;margin-bottom:5px;}
+.invRow{display:grid;grid-template-columns:1.6fr .5fr .55fr auto auto;gap:5px;align-items:center;margin-bottom:4px;}
+.invNote{font-size:10px;color:#5C5346;margin:0 0 8px 2px;line-height:1.4;}
+.pickRow{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:7px;}
+.carryToggle{display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
+.carryToggle input{cursor:pointer;}
+
+/* vitals: HP / Stress / Hope combined panel */
+.vitalsPanel .fl{font-size:12px;letter-spacing:.03em;}
+.vitalsPanel .baseTag{font-size:10px;font-weight:700;color:#6E634E;text-transform:none;letter-spacing:0;margin-left:5px;}
+.vitalsBlock{margin-bottom:11px;}
+.vitalsBlock:last-child{margin-bottom:0;}
+
+/* silnik specjalizacji */
+.engineBox{background:linear-gradient(180deg,#FFF8EC,#F4EFE2);border:1.5px solid var(--rust);border-radius:8px;padding:8px 10px;}
+.engineName{font-size:12px;font-weight:800;color:var(--rust-dark);letter-spacing:.01em;}
+.engineSub{font-size:9.5px;color:#8a5a3f;margin-bottom:6px;}
+.engineTrackRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:6px 0;}
+.engineDesc{font-size:10.5px;color:var(--ink-soft);line-height:1.4;margin-top:5px;}
+.engineDesc b{color:var(--maroon);}
+.engineDesc.sig{margin-top:4px;padding-top:4px;border-top:1px dashed #D4A159;}
+
+/* disease + wound: shared vertical checkbox-per-stage/level list, fill-from-the-top like the
+   HP/Stress/Hope pips — every stage's name + effect is always visible, on its own line, nothing to
+   click through. */
+.diseaseStageList{display:flex;flex-direction:column;gap:2px;margin-top:2px;}
+.stageRow{display:flex;align-items:flex-start;gap:6px;font-size:9.5px;line-height:1.35;color:#5C5346;cursor:pointer;padding:2px 4px;border-radius:4px;}
+.stageRow:hover{background:#F4EFE2;}
+.stageRow .pip{width:12px;height:12px;margin-top:1px;}
+.stageRow span{flex:1 1 auto;min-width:0;}
+.stageRow b{color:var(--rust-dark);font-size:9.5px;}
+.stageRow.cur{background:#FBE9D2;}
+.stageRow.cur b{color:#6E4408;}
+.dsHead{font-size:10px;font-weight:800;color:var(--danger);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
+.diseaseItem{border:1px solid var(--line);border-radius:8px;padding:7px 8px;margin-bottom:7px;background:#FBF7EE;}
+.diseaseItemHead{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;}
+.diseaseItemHead > *:first-child{flex:1 1 90px;min-width:0;}
+.diseaseItemHead .lekInfo{font-size:9.5px;color:#6E634E;font-weight:700;text-align:right;white-space:normal;flex:0 1 auto;min-width:0;}
+.diseaseItemHead button.rm{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;flex:0 0 auto;}
+textarea.note{width:100%;resize:vertical;min-height:50px;}
+
+/* wounds — one flat list; each row is a card matching the disease-entry look, with its own vertical
+   3-level checkbox list (fill-from-the-top, same mechanic and same visual language as the diseases). */
+.woundItem{border:1px solid var(--line);border-radius:8px;padding:7px 8px;margin-bottom:7px;background:#FBF7EE;}
+.woundItemHead{display:flex;gap:6px;align-items:center;margin-bottom:4px;flex-wrap:wrap;}
+.woundItemHead input[type=text]{flex:1 1 100px;min-width:0;}
+.woundItemHead select{width:100px;flex:0 0 auto;}
+.woundItemHead .rm{border:none;background:none;color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;flex:0 0 auto;
+  opacity:0;transition:opacity .15s;}
+.woundItem:hover .rm, .woundItem .rm:focus{opacity:1;}
+
+/* back side */
+.tierBlock{border:1px solid var(--line);border-radius:9px;margin:10px 14px;background:var(--paper-hi);overflow:hidden;
+  break-inside:avoid;page-break-inside:avoid;}
+.tierBlock .tbh{background:linear-gradient(90deg,var(--teal-dark),var(--teal));color:#fff;padding:7px 12px;}
+.tierBlock .tbh .ttitle{font-size:12.5px;}
+.tierBlock .tbh .tsub{font-size:10px;color:#D6EAF0;margin-top:2px;}
+.tierBlock .tbb{padding:9px 11px;}
+.advRow{border-top:1px dashed var(--line);padding:7px 0;}
+.advRow:first-child{border-top:none;}
+.advHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.advHead .label{font-size:11.5px;font-weight:800;}
+.advDesc{font-size:10px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
+.slotBoxes{display:flex;gap:5px;}
+.slotBoxes .sb{width:19px;height:19px;border:2px solid var(--ink);border-radius:4px;cursor:pointer;display:flex;align-items:center;
+  justify-content:center;text-align:center;font-size:11px;color:transparent;background:#fff;}
+.slotBoxes .sb.checked{background:var(--rust);border-color:var(--rust-dark);color:#fff;}
+.inlinePick{margin-top:7px;background:#fff;border:1px solid var(--line);border-radius:7px;padding:7px;display:none;}
+.inlinePick.show{display:block;}
+.inlinePick select{margin-right:5px;margin-bottom:5px;}
+.pickedEcho{font-size:10px;color:var(--teal-dark);margin-top:4px;}
+.freeGrant{background:#E6F1E4;border:1px solid #8FB490;border-radius:8px;padding:8px 10px;margin-bottom:9px;}
+.freeGrant .fh{font-size:11px;font-weight:800;color:#1F3A25;margin-bottom:5px;}
+.achieveBox{margin:10px 14px 0;background:#241E19;color:#F3EBD8;border-radius:9px;padding:9px 13px;font-size:11px;line-height:1.5;}
+.achieveBox b{color:#F2B98F;}
+.footerTotals{display:flex;gap:13px;flex-wrap:wrap;margin:10px 14px 0;font-size:10.5px;color:var(--ink-soft);}
+.footerTotals b{color:var(--ink);}
+.flipBtnWrap{display:flex;justify-content:center;padding:14px;}
+.progLabel{font-size:11px;color:#5C5346;text-align:center;margin-top:2px;}
+
+@media print{
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
+  body{background:#fff;padding:0;}
+  #toolbar,#pageTitle{display:none !important;}
+  #stage{max-width:none;}
+  .flipper{transform:none !important;}
+  .face{box-shadow:none;position:static !important;transform:none !important;page-break-after:always;width:100%;}
+  .face.back{page-break-after:auto;}
+  @page{size:A4;margin:8mm;}
+}
+</style>
+</head>
+<body>
+
+<div id="pageTitle">NeuroHeart <b>·</b> Karta Postaci <b>·</b> Neuroshima × Daggerheart</div>
+<div id="toolbar">
+  <button class="btn" id="btnFile">📄 Wgraj / zmień bazę zasad (.xlsx)</button>
+  <button class="btn ghost" id="btnFlip">🔄 Druga strona (Levelowanie)</button>
+  <button class="btn ghost" id="btnExport">⬇️ Zapisz kartę (.json)</button>
+  <button class="btn ghost" id="btnImportChar">⬆️ Wczytaj kartę (.json)</button>
+  <button class="btn danger" id="btnReset">🗑️ Wyczyść kartę</button>
+  <span id="fileStatus">Brak danych — wgraj plik NeuroHeart_Baza_Zasad_v2.xlsx.</span>
+  <span class="stamp">Neuroshima × Daggerheart</span>
+</div>
+
+<div id="importOverlay" class="hidden">
+  <div class="importBox">
+    <h2 class="display" style="font-size:20px;">Wgraj bazę zasad</h2>
+    <p>Karta czyta jeden ujednolicony skoroszyt <b>NeuroHeart_Baza_Zasad_v2.xlsx</b> lokalnie w przeglądarce i zapamiętuje go — zasady (Pochodzenia, Profesje, Sztuczki, Choroby, Silniki Specjalizacji...) i ekwipunek (broń, pancerz, przedmioty) siedzą razem w tym jednym pliku, na osobnych arkuszach. Kolumny rozpoznawane są <b>po nazwach nagłówków</b>, więc możesz je swobodnie przestawiać w Excelu.</p>
+    <div class="dropRow">
+      <b>Baza zasad — NeuroHeart_Baza_Zasad_v2.xlsx</b>
+      <input type="file" id="fileInputBaza" accept=".xlsx,.xls">
+    </div>
+    <div style="margin-top:14px;text-align:right;">
+      <button class="btn ghost" id="skipImport">Zamknij</button>
+    </div>
+  </div>
+</div>
+
+<div id="stage">
+  <div class="flipper" id="flipper">
+
+    <!-- ============ FRONT ============ -->
+    <div class="face front">
+      <div class="sheetHeader">
+        <div class="hdrRow1">
+          <div class="brand">
+            <div class="nameRow">
+              <input class="nameInput" id="f_name" type="text" placeholder="IMIĘ POSTACI">
+              <input class="pronounsInput" id="f_pronouns" type="text" placeholder="zaimki">
+            </div>
+            <div class="subline">NeuroHeart · Neuroshima × Daggerheart</div>
+          </div>
+          <div class="statGroup">
+            <div class="statCell">
+              <div class="lv">Poziom</div>
+              <select id="f_level" class="mono">
+                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+              </select>
+              <div class="tierHint" id="tierNum">T1</div>
+            </div>
+            <div class="statCell">
+              <div class="lv">Proficiency</div>
+              <div class="num" id="profStamp">1</div>
+            </div>
+            <div class="statCell">
+              <div class="lv">Udźwig kg</div>
+              <div class="num mono" id="carryCur" style="font-size:15px;">0</div>
+              <div class="lv" id="carryMaxLine" style="font-size:7px;">max 15</div>
+            </div>
+            <div class="statCell gambleCell">
+              <div class="lv">Gamble</div>
+              <input class="mono" id="f_gamble" type="number" min="0" value="0">
+            </div>
+          </div>
+        </div>
+        <div class="hdrRow2">
+          <div class="cell"><label>Pochodzenie</label><select id="f_origin" class="wide headSel"></select></div>
+          <div class="cell"><label>Profesja</label><select id="f_profession" class="wide headSel"></select></div>
+          <div class="cell"><label>Specjalizacja</label><select id="f_spec" class="wide headSel"></select></div>
+        </div>
+      </div>
+
+      <div class="body2col">
+        <!-- LEFT -->
+        <div>
+          <div class="panel">
+            <div class="ph"><span style="font-size:11.5px;">Obrona i progi obrażeń</span></div>
+            <div class="pb">
+              <div class="statRow" style="margin-bottom:10px;">
+                <div class="circleStat">
+                  <div class="circ"><div class="big" id="evTotal">10</div></div>
+                  <label>Evasion</label>
+                </div>
+                <div class="circleStat">
+                  <div class="circ"><div class="big" id="asTotal">0</div></div>
+                  <label>Armor Score</label>
+                </div>
+                <div class="thrBox">
+                  <div class="thrCard"><div class="t">Próg Major</div><div class="v" id="thrMajorV">1</div></div>
+                  <div class="thrCard"><div class="t">Próg Severe</div><div class="v" id="thrSevereV">2</div></div>
+                </div>
+              </div>
+              <label class="fl">Sloty Pancerza</label>
+              <div class="pipRow" id="armorPips"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
+            <div class="pb">
+              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
+              <label class="carryToggle" style="margin-bottom:8px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony (liczy się do udźwigu)</label>
+              <div class="fieldGrid4">
+                <div><label class="fl">Próg Major</label><div class="readout" id="a_thrMajor">—</div></div>
+                <div><label class="fl">Próg Severe</label><div class="readout" id="a_thrSevere">—</div></div>
+                <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
+                <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+              </div>
+              <div class="featBox" id="a_feature">—</div>
+              <label class="fl">Dodatek (hełm)</label>
+              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
+              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony (liczy się do udźwigu)</label>
+              <div class="featBox" id="h_feature" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span style="font-size:11.5px;">Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
+            <div class="pb"><div class="traitsGrid" id="traitsGrid"></div></div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">HP, Stres i Hope</span></div>
+            <div class="pb vitalsPanel">
+              <div class="vitalsBlock">
+                <label class="fl">HP <span class="baseTag" id="hpBaseTag"></span></label>
+                <div class="pipLine"><button class="pipBtn" data-hpstep="-1">−</button><div class="pipRow" id="hpPips"></div><button class="pipBtn" data-hpstep="1">+</button></div>
+              </div>
+              <div class="vitalsBlock">
+                <label class="fl">Stress <span class="baseTag" id="stressBaseTag"></span></label>
+                <div class="pipLine"><button class="pipBtn" data-stressstep="-1">−</button><div class="pipRow" id="stressPips"></div><button class="pipBtn" data-stressstep="1">+</button></div>
+              </div>
+              <div class="vitalsBlock">
+                <label class="fl">Hope</label>
+                <div class="pipRow" id="hopePips"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph rust"><span style="font-size:11.5px;">Silnik Specjalizacji</span></div>
+            <div class="pb" id="engineHost"></div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Cechy</span>
+              <div class="phActions">
+                <select class="phSelect" id="cechaOriginPick" style="display:none;"></select>
+                <select class="phSelect" id="cechaProfessionPick" style="display:none;"></select>
+              </div>
+            </div>
+            <div class="pb"><div id="cechyPanel"></div></div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div>
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
+              <div class="phActions"><button class="phBtn" id="addExp">+ Dodaj</button></div>
+            </div>
+            <div class="pb">
+              <div id="expList"></div>
+              <datalist id="expSuggestions"></datalist>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph phStack">
+              <div class="phTop"><span class="display" style="font-size:12px;">Sztuczki</span>
+                <div class="phActions"><select id="trickPicker" class="phSelect"></select><button class="phBtn" id="addTrick">+ Dodaj</button></div>
+              </div>
+              <div class="phActions phRow2">
+                <select id="trickSpecFilter" class="phSelect"></select>
+                <select id="trickTierFilter" class="phSelect"></select>
+              </div>
+            </div>
+            <div class="pb">
+              <div id="trickList"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Broń</span>
+              <div class="phActions"><button class="phBtn" id="addWeapon">+ Dodaj</button></div>
+            </div>
+            <div class="pb">
+              <div class="fieldGrid2" style="margin-bottom:8px;">
+                <select id="weaponCatPicker" class="wide"></select>
+                <select id="weaponPicker" class="wide"></select>
+              </div>
+              <div id="weaponsList"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
+              <div class="phActions"><button class="phBtn" id="addInv">+ Dodaj</button><button class="phBtn" id="addInvBlank">+ Własna</button></div>
+            </div>
+            <div class="pb">
+              <div class="fieldGrid2" style="margin-bottom:8px;">
+                <select id="invCatPicker" class="wide"></select>
+                <select id="invPicker" class="wide"></select>
+              </div>
+              <div id="invList"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Choroby</span>
+              <div class="phActions"><button class="phBtn" id="btnRollDisease">🎲 Wylosuj (k20)</button></div>
+            </div>
+            <div class="pb">
+              <div class="diseaseSection">
+                <div class="dsHead">Choroba wrodzona</div>
+                <div id="diseaseStartList"></div>
+              </div>
+
+              <div class="diseaseSection" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">
+                <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
+                <div id="diseaseAcqList"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph phStack" style="background:var(--maroon);">
+              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
+              <div class="phSub" id="woundCountsHeader"></div>
+            </div>
+            <div class="pb">
+              <div id="woundRows"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
+            <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flipBtnWrap">
+        <button class="btn rust" id="btnFlip2">🔄 Levelowanie i modyfikatory</button>
+      </div>
+    </div>
+
+    <!-- ============ BACK ============ -->
+    <div class="face back">
+      <div class="sheetHeader">
+        <div class="hdrRow1">
+          <div class="brand">
+            <div class="nameRow"><span class="nameInput" id="backName" style="border:none;display:inline-block;">—</span></div>
+            <div class="subline">Levelowanie · Tiery, Advancementy, Modyfikatory</div>
+          </div>
+          <div class="statGroup">
+            <div class="statCell"><div class="lv">Poziom</div><div class="num" id="backLevel">1</div></div>
+            <div class="statCell"><div class="lv">Proficiency</div><div class="num" id="backProf">1</div></div>
+            <div class="statCell" style="min-width:80px;"><div class="lv">Specjalizacja</div><div class="num" id="backSpec" style="font-size:12px;">—</div></div>
+          </div>
+        </div>
+        <span id="tierNum2" style="display:none;"></span>
+      </div>
+
+      <div class="panel" style="margin:14px 18px;">
+        <div class="ph"><span class="display" style="font-size:12px;">Modyfikatory — skąd się biorą</span></div>
+        <div class="pb"><div id="modPanel"></div></div>
+      </div>
+
+      <div class="panel" style="margin:14px 18px;">
+        <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Dodaj chorobę nabytą</span>
+          <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+ Dodaj</button></div>
+        </div>
+        <div class="pb">
+          <div class="caption">Dodana choroba pojawi się na przodzie karty, w panelu Choroby → Choroby nabyte.</div>
+        </div>
+      </div>
+
+      <div class="achieveBox">
+        <b>Automatyczne przy zmianie Tieru (karta liczy to sama):</b>
+        Poziom 2, 5 i 8 → <b>+1 Proficiency</b> (Tier 1 = 1, Tier 2 = 2, Tier 3 = 3, Tier 4 = 4) oraz dodatkowe Doświadczenie (+2).
+        Poziom 5 i 8 → <b>wyczyść oznaczenia Traitów</b>. Przy każdym levelu progi obrażeń rosną o +1.
+      </div>
+
+      <div id="tierBlocksHost"></div>
+      <div class="footerTotals" id="footerTotals"></div>
+
+      <div class="flipBtnWrap">
+        <button class="btn ghost" id="btnFlip3">🔄 Wróć do karty postaci</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<input type="file" id="charFileInput" accept=".json" style="display:none;">
+<script>
+/* =========================================================================
+   STORAGE
+   ========================================================================= */
+const Store = {
+  async get(key){
+    try{ if(window.storage && window.storage.get){ const r = await window.storage.get(key,false); return r ? JSON.parse(r.value) : null; } }catch(e){}
+    try{ const v = localStorage.getItem('nsdh:'+key); return v ? JSON.parse(v) : null; }catch(e){ return null; }
+  },
+  async set(key,value){
+    const json = JSON.stringify(value);
+    try{ if(window.storage && window.storage.set){ await window.storage.set(key,json,false); return true; } }catch(e){}
+    try{ localStorage.setItem('nsdh:'+key,json); return true; }catch(e){ return false; }
+  }
+};
+
+/* =========================================================================
+   KEYWORD BOLDING — the same mechanical words that are bold in the xlsx
+   ========================================================================= */
+const KW_STEMS = ["Hope Feature","Hope Die","Fear Die","Hope","Fear","Stress","Stres","Advantage","Disadvantage",
+  "Proficiency","Evasion","Armor Score","Armor Slot","Hit Point","HP","Agility Roll","Strength Roll","Finesse Roll",
+  "Instinct Roll","Presence Roll","Knowledge Roll","Attack Roll","Reaction Roll","Spellcast Roll",
+  "Agility","Strength","Finesse","Instinct","Presence","Knowledge","Spotlight","Vulnerable","Restrained",
+  "Major","Severe","Minor","Tier","Melee","Very Close","Very Far","Close","Far","Duality","Death Move","Advancement",
+  "Doświadczeni","Doświadczeń","Trait","Sztuczk","Cech","Experience","Level","Poziom"]
+  .sort((a,b)=>b.length-a.length);
+const KW_RE = new RegExp("\\b("+KW_STEMS.map(s=>s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+"[\\wąćęłńóśźżĄĆĘŁŃÓŚŹŻ]*").join("|")+")\\b","g");
+function esc(s){ return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
+function kw(s){ return esc(s).replace(KW_RE, m=>"<b>"+m+"</b>"); }
+
+const TRAIT_LIST = ["Agility","Strength","Finesse","Instinct","Presence","Knowledge"];
+const TRAIT_VERBS = {Agility:"Sprint, Skok, Manewr",Strength:"Podnieś, Rozwal, Chwyć",Finesse:"Kontrola, Ukrycie, Majsterkowanie",
+  Instinct:"Percepcja, Wyczucie, Orientacja",Presence:"Urok, Występ, Oszustwo",Knowledge:"Przypomnij, Analizuj, Zrozum"};
+const BASE_ARRAY = [2,1,1,0,0,-1];
+const SPEC_CATEGORIES = ["Uniwersalna","Ranger","Technik","Wojownik","Cwaniak"];
+
+/* =========================================================================
+   RANY — 3-poziomowy system trwałych obrażeń (inspirowany Blades in the Dark /
+   Scum and Villainy), niezależny od paska HP. MG przyznaje Ranę za poważne,
+   fabularnie istotne konsekwencje — nie za każde trafienie.
+   ========================================================================= */
+const WOUND_TIERS = [
+  {key:'t1', max:3, label:'Poziom 1 — Draśnięcia i siniaki',
+   desc:'Najmniej przeszkadzające. Boli, wygląda paskudnie, ale nie ogranicza Cię na co dzień — chyba że akurat dotyczy tego, co właśnie robisz.',
+   effect:'−1 do wskazanego Traita (tego, którego dotyczy rana).',
+   heal:'Leczenie: Krótki odpoczynek (Short Rest) usuwa jedną Ranę tego Poziomu.'},
+  {key:'t2', max:2, label:'Poziom 2 — Poważne obrażenia',
+   desc:'Wprowadza stałe utrudnienie do gry — nie da się tego zignorować.',
+   effect:'Disadvantage do testów wskazanego Traita, dopóki się nie zagoi.',
+   heal:'Leczenie: udany test Knowledge (opatrzenie/leczenie) + Długi odpoczynek (Long Rest); bez opatrzenia goi się samo, ale znacznie dłużej (czas ustala MG).'},
+  {key:'t3', max:1, label:'Poziom 3 — Rany paraliżujące',
+   desc:'Niemal całkowicie wyłącza Cię z akcji.',
+   effect:'Disadvantage do WSZYSTKICH testów; każda akcja wymagająca ruchu lub wysiłku każe dodatkowo oznaczyć 1 Stres. MG może uznać część akcji za chwilowo niemożliwe.',
+   heal:'Leczenie: dłuższa rekonwalescencja w bezpiecznym miejscu (klinika, kryjówka) — czas i warunki ustala MG; to nie znika po jednym odpoczynku.'},
+];
+function woundTierIdx(key){ return WOUND_TIERS.findIndex(t=>t.key===key); }
+
+/* =========================================================================
+   SILNIKI SPECJALIZACJI — nowa dźwignia mechaniczna (spoza arkuszy .xlsx),
+   po jednej na każdą z 4 Specjalizacji. Rośnie/odnawia się przez grę.
+   ========================================================================= */
+/* the SPREADSHEET (sheet "8. Silniki Specjalizacji") supplies every piece of engine TEXT — name, how it
+   grows, what it's spent on, reset condition, signature move. The only thing that stays coded here is the
+   TRACK SHAPE (die / token-pips / dice-pool) and its numeric cap formula, because those are UI mechanics
+   with no single-cell spreadsheet equivalent, not narrative content. */
+const ENGINE_TYPE = {"Wojownik":"die", "Ranger":"tokens", "Technik":"tokens", "Cwaniak":"pool"};
+function renderEngine(){
+  const host = el('engineHost');
+  const type = ENGINE_TYPE[char.spec];
+  const eng = wb.engines && wb.engines[char.spec];
+  if(!type){ host.innerHTML = '<div class="caption">Wybierz Specjalizację w nagłówku karty, by odblokować jej silnik mechaniczny.</div>'; return; }
+  if(!eng){ host.innerHTML = '<div class="caption">Wgraj bazę zasad (.xlsx) — arkusz "8. Silniki Specjalizacji" — by zobaczyć silnik tej Specjalizacji.</div>'; return; }
+  const d = derived();
+  char._engine = char._engine || {value:0, tokens:0, fartUsed:0};
+  let track = '';
+  if(type==='die'){
+    /* Żelazny Trep (arkusz "8. Silniki Specjalizacji"): k4>k6>k8>k10, jeden stopień kości na Tier
+       postaci (nie na Proficiency) — Tier 1→k4, Tier 2→k6, Tier 3→k8, Tier 4→k10. */
+    const tier = tierForLevel(char.level);
+    const max = tier>=4?10:tier>=3?8:tier>=2?6:4;
+    if(char._engine.value>max) char._engine.value=max;
+    for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=char._engine.value?'checked':'')+'" data-engval="'+i+'"></div>';
+    track += '<button class="pipBtn" data-engreset="1" title="Reset (długi odpoczynek)">↺</button>';
+  } else if(type==='tokens'){
+    /* Szperacz (Ranger) / Macher (Technik): "Ilość Tokenów równa Twojemu największemu współczynnikowi"
+       (arkusz "8. Silniki Specjalizacji") — max = najwyższa wartość spośród 6 Traitów, dla obu Specjalizacji. */
+    const max = Math.max(1, ...TRAIT_LIST.map(t=>d.traits[t].total));
+    if(char._engine.tokens>max) char._engine.tokens=max;
+    for(let i=1;i<=max;i++) track += '<div class="pip '+(i<=char._engine.tokens?'checked':'')+'" data-engtok="'+i+'"></div>';
+  } else if(type==='pool'){
+    const max = d.proficiency;
+    if(char._engine.fartUsed>max) char._engine.fartUsed=max;
+    for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=(max-char._engine.fartUsed)?'checked':'')+'" data-engfart="'+i+'"></div>';
+    track += '<button class="pipBtn" data-engreset="1" title="Nowa sesja">↺</button>';
+  }
+  host.innerHTML = '<div class="engineBox"><div class="engineName">'+esc(eng.nazwa)+'</div>'+
+    '<div class="engineTrackRow">'+track+'</div>'+
+    (eng.naco?'<div class="engineDesc"><b>Na co:</b> '+esc(eng.naco)+'</div>':'')+
+    ((eng.rosnie||eng.reset)?'<div class="engineDesc"><b>Rośnie:</b> '+esc(eng.rosnie)+' <b>Reset:</b> '+esc(eng.reset)+'</div>':'')+
+    (eng.sygnaturowy?'<div class="engineDesc sig"><b>Sygnaturowy ruch:</b> '+esc(eng.sygnaturowy)+'</div>':'')+
+    '</div>';
+  host.querySelectorAll('[data-engval]').forEach(p=>p.addEventListener('click', e=>{
+    const i=parseInt(e.target.getAttribute('data-engval')); char._engine.value=(i===char._engine.value)?i-1:i; save(); renderEngine();
+  }));
+  host.querySelectorAll('[data-engtok]').forEach(p=>p.addEventListener('click', e=>{
+    const i=parseInt(e.target.getAttribute('data-engtok')); char._engine.tokens=(i===char._engine.tokens)?i-1:i; save(); renderEngine();
+  }));
+  host.querySelectorAll('[data-engfart]').forEach(p=>p.addEventListener('click', e=>{
+    const i=parseInt(e.target.getAttribute('data-engfart')); const max=derived().proficiency; const usedIfClicked = max-i+1;
+    char._engine.fartUsed = (char._engine.fartUsed===usedIfClicked)? usedIfClicked-1 : usedIfClicked; save(); renderEngine();
+  }));
+  host.querySelectorAll('[data-engreset]').forEach(b=>b.addEventListener('click', ()=>{
+    char._engine.value=0; char._engine.fartUsed=0; save(); renderEngine();
+  }));
+}
+
+/* Choroby: "wrodzona" = losowana/wybierana raz przy tworzeniu postaci (ma Nr k20 w arkuszu),
+   "nabyta" = złapana w trakcie gry (brak Nr k20) — może być ich kilka naraz. Obie listy używają
+   tego samego 5-stopniowego schematu (Zdrowy / Pierwsze symptomy / Stan ostry / Stan krytyczny / Stan terminalny). */
+const DISEASE_STAGES = ["Zdrowy","Pierwsze symptomy","Stan ostry","Stan krytyczny","Stan terminalny"];
+function isBackgroundDisease(d){ return !!(d && d.nr); }
+
+/* modifier keys — must match the "Mod: …" headers in both workbooks */
+const MOD_KEYS = ["Evasion","ArmorScore","ThrMajor","ThrSevere","Agility","Strength","Finesse","Instinct","Presence","Knowledge","HP","Stress","Hope","Proficiency","Carry"];
+const MOD_HEADER = {"Mod: Evasion":"Evasion","Mod: Armor Score":"ArmorScore","Mod: Próg Major":"ThrMajor","Mod: Próg Severe":"ThrSevere",
+  "Mod: Agility":"Agility","Mod: Strength":"Strength","Mod: Finesse":"Finesse","Mod: Instinct":"Instinct","Mod: Presence":"Presence","Mod: Knowledge":"Knowledge",
+  "Mod: HP (max)":"HP","Mod: Stress (max)":"Stress","Mod: Hope (max)":"Hope","Mod: Proficiency":"Proficiency","Mod: Udźwig (×)":"Carry"};
+const MOD_LABEL = {Evasion:"Evasion",ArmorScore:"Armor Score",ThrMajor:"Próg Major",ThrSevere:"Próg Severe",
+  Agility:"Agility",Strength:"Strength",Finesse:"Finesse",Instinct:"Instinct",Presence:"Presence",Knowledge:"Knowledge",
+  HP:"HP",Stress:"Stress",Hope:"Hope",Proficiency:"Proficiency",Carry:"Udźwig ×",Exp:"Doświadczenie"};
+const MOD_PANEL_KEYS = MOD_KEYS.concat(["Exp"]);
+
+/* =========================================================================
+   XLSX PARSING — by header NAME, never by column position
+   ========================================================================= */
+function findSheet(workbook, frag){ return workbook.SheetNames.find(n=>n.toLowerCase().includes(frag.toLowerCase())); }
+
+function readSheet(workbook, frag){
+  const name = findSheet(workbook, frag);
+  if(!name) return [];
+  const rows = XLSX.utils.sheet_to_json(workbook.Sheets[name], {header:1, defval:""});
+  let hi = -1, best = 0;
+  for(let i=0;i<Math.min(rows.length,10);i++){
+    const cnt = (rows[i]||[]).filter(v=>String(v).trim()!=="").length;
+    if(cnt >= 3 && cnt > best){ best = cnt; hi = i; }
+  }
+  if(hi < 0) return [];
+  const headers = (rows[hi]||[]).map(h=>String(h).trim());
+  const out = [];
+  for(let i=hi+1;i<rows.length;i++){
+    const r = rows[i]; if(!r) continue;
+    if(!String(r[0]||"").trim() && !String(r[1]||"").trim()) continue;
+    const o = {};
+    headers.forEach((h,j)=>{ if(h) o[h] = r[j]!==undefined ? r[j] : ""; });
+    out.push(o);
+  }
+  return out;
+}
+function col(o, ...names){ for(const n of names){ if(o[n]!==undefined && o[n]!=="") return o[n]; } return ""; }
+function num(v, dflt){ const n = parseFloat(String(v).replace(",",".")); return isNaN(n) ? (dflt===undefined?0:dflt) : n; }
+/* Gamble (currency) bookkeeping: delta>0 = refund/income, delta<0 = expense. Rounded to avoid float drift. */
+function adjGamble(delta){ char.gamble = Math.round(((char.gamble||0) + delta)*100)/100; }
+/* "d10+4" -> "D10+4", "2d12+6" -> "2D12+6" — matches the capitalised die notation used on the card */
+function formatDie(v){ return String(v==null?"":v).trim().replace(/(\d*)d(\d+)/gi,(m,p1,p2)=>(p1||"")+"D"+p2); }
+/* "1 / 3 / 6" -> [1,3,6]; "1 / — / —" -> [1,"",""] */
+function parseAmmoCounts(note){
+  return String(note||"").split("/").map(s=>{ const n = parseInt(String(s).trim(),10); return isNaN(n) ? "" : n; });
+}
+/* Broń palna v3 (arkusz "E2. Broń palna"): 3 tryby ataku, JEDNA kość+bonus obrażeń wspólna dla całej broni
+   (kolumna "DH: Obrażenia") — tryb nie zmienia, co się rzuca, tylko ile amunicji znika (Naboje) i ile
+   dodatkowego HP dostaje cel ponad wynik z jego Progów (Threshold): Seryjny +1 HP, Ciągły +2 HP. */
+const FIREMODE_ORDER = ["Pojedynczy","Seryjny","Ciągły"];
+const FIREMODE_HP_BONUS = {"Pojedynczy":0, "Seryjny":1, "Ciągły":2};
+/* rebuild the 3-slot compact fire-mode row from a weapon's own dmg/ammoNote/modes — used as a fallback for
+   characters saved before this field existed (migrateCharSchema) and defensively at render time. */
+function buildModesCompact(w){
+  const counts = parseAmmoCounts(w.ammoNote);
+  const dieTxt = formatDie(w.dmg && w.dmg[0] ? w.dmg[0].v : "");
+  return FIREMODE_ORDER.map((m,idx)=>{
+    if(!(w.modes||[]).includes(m)) return "–";
+    const ammo = counts[idx]!==undefined && counts[idx]!==""?counts[idx]:"?";
+    const hp = FIREMODE_HP_BONUS[m];
+    return dieTxt+" ("+ammo+" nab."+(hp?", +"+hp+" HP":"")+")";
+  });
+}
+
+function readMods(o){
+  const m = {};
+  Object.keys(MOD_HEADER).forEach(h=>{
+    if(o[h]!==undefined && String(o[h]).trim()!==""){
+      const v = num(o[h], 0);
+      if(v) m[MOD_HEADER[h]] = v;
+    }
+  });
+  return m;
+}
+/* "Strength -1; Agility -2" -> {Strength:-1, Agility:-2} (disease stage modifiers) */
+function parseModString(s){
+  const m = {};
+  String(s||"").split(/[;,]/).forEach(part=>{
+    const mm = part.trim().match(/^([A-Za-zżźćńółęąśŻŹĆĄŚĘŁÓŃ ]+?)\s*([+-]\s*\d+)$/);
+    if(mm){
+      const key = MOD_KEYS.find(k=>k.toLowerCase()===mm[1].trim().toLowerCase());
+      if(key) m[key] = (m[key]||0) + parseInt(mm[2].replace(/\s/g,""));
+    }
+  });
+  return m;
+}
+function normalizeSpecList(raw){
+  if(!raw) return ["Uniwersalna"];
+  const tokens = String(raw).split(/\s+(?:lub|oraz|i)\s+/i).map(s=>s.trim()).filter(Boolean);
+  const result = [];
+  (tokens.length?tokens:[String(raw)]).forEach(tok=>{
+    let matched = null;
+    for(const cat of SPEC_CATEGORIES){ if(tok.includes(cat)){ matched = cat; break; } }
+    result.push(matched || "Uniwersalna");
+  });
+  return [...new Set(result)];
+}
+
+/* =========================================================================
+   DATA MODEL
+   ========================================================================= */
+let wb = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, loaded:false};
+let eq = {armors:[], helmets:[], weapons:[], items:[], loaded:false};
+
+function parseRules(workbook){
+  const out = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, loaded:true};
+  readSheet(workbook,"Pochodzenie").forEach(o=>{
+    const key = col(o,"Pochodzenie"); if(!key) return;
+    if(!out.origins[key]) out.origins[key] = {fluff:col(o,"Fluff: Opis (chmurka na karcie)"), cechy:[]};
+    out.origins[key].cechy.push({name:col(o,"DH: Cecha","Cecha"), cost:col(o,"DH: Koszt użycia Cechy")||"Free (pasywne)",
+      effect:col(o,"DH: Efekt Cechy po konwersji"), effectOld:col(o,"NS: Efekt (oryginał)","Efekt (opis mechaniki)"),
+      mods:readMods(o), expBonus:num(col(o,"DH: Bonus do Doświadczenia (+X)"),0), expCount:num(col(o,"DH: Ile Doświadczeń wybierasz"),0),
+      unlock:col(o,"DH: Odblokowuje wybór Cechy"), grant:col(o,"DH: Nadane Doświadczenie (nazwa +X)"),
+      grantTrick:col(o,"DH: Nadana Sztuczka (nazwa)"), fluff:col(o,"Fluff: Opis (chmurka na karcie)"),
+      /* the +1 Trait bonus at creation belongs to the specific Cecha you pick from this Origin (each Cecha
+         of the same Origin can name a different Trait) — NOT to the Origin as a whole. */
+      trait: col(o,"DH: Trait (bonus +1 przy tworzeniu)","DH: Trait (bonus startowy)")});
+  });
+  readSheet(workbook,"Profesja").forEach(o=>{
+    const key = col(o,"Profesja"); if(!key) return;
+    if(!out.professions[key]) out.professions[key] = {fluff:col(o,"Fluff: Opis (chmurka na karcie)"), evasion:num(col(o,"DH: Evasion startowe"),10), hp:num(col(o,"DH: HP startowe"),6), role:col(o,"DH: Rola/archetyp"), cechy:[]};
+    out.professions[key].cechy.push({name:col(o,"DH: Cecha","Cecha"), cost:col(o,"DH: Koszt użycia Cechy")||"Free (pasywne)",
+      effect:col(o,"DH: Efekt Cechy po konwersji"), effectOld:col(o,"NS: Efekt (oryginał)","Efekt (opis mechaniki)"),
+      mods:readMods(o), expBonus:num(col(o,"DH: Bonus do Doświadczenia (+X)"),0), expCount:num(col(o,"DH: Ile Doświadczeń wybierasz"),0),
+      unlock:col(o,"DH: Odblokowuje wybór Cechy"), grant:col(o,"DH: Nadane Doświadczenie (nazwa +X)"),
+      grantTrick:col(o,"DH: Nadana Sztuczka (nazwa)"), fluff:col(o,"Fluff: Opis (chmurka na karcie)")});
+  });
+  readSheet(workbook,"Współczynniki").forEach(o=>{
+    const t = col(o,"Trait (DH)"); if(!t) return;
+    out.traitsRef[t] = {verbs:col(o,"Czasowniki przykładowe"), desc:col(o,"Opis")};
+  });
+  readSheet(workbook,"Specjalizacje").forEach(o=>{
+    const s = col(o,"Specjalizacja"); if(!s) return;
+    out.specs[s] = {fluff:col(o,"Fluff: Opis (chmurka na karcie)"), role:col(o,"DH: Rola (odpowiednik Domeny)"), free:col(o,"DH: Darmowa Sztuczka co poziom"), desc:col(o,"Charakterystyka")};
+  });
+  readSheet(workbook,"Umiejętności").forEach(o=>{
+    const n = col(o,"DH: Doświadczenie (nazwa)","Umiejętność"); if(!n) return;
+    out.skills.push({name:n, trait:col(o,"DH: Trait"), fluff:col(o,"Fluff: Opis (chmurka na karcie)"), mods:readMods(o)});
+  });
+  readSheet(workbook,"Sztuczki").forEach(o=>{
+    const n = col(o,"Sztuczka"); if(!n) return;
+    const rawSpec = col(o,"DH: Specjalizacja") || "Uniwersalna";
+    out.tricks.push({name:n, spec:rawSpec, specList:normalizeSpecList(rawSpec), fluff:col(o,"Fluff: Opis (chmurka na karcie)"),
+      tier: parseInt(String(col(o,"DH: Tier dostępności")||"Tier 1").replace(/\D/g,""))||1,
+      cost: col(o,"DH: Koszt użycia")||"Free (pasywne)",
+      effect: col(o,"DH: Efekt po konwersji","NS: Działanie (oryginał)"),
+      mods: readMods(o),
+      expBonus: num(col(o,"DH: Bonus do Doświadczenia (+X)"),0), expCount: num(col(o,"DH: Ile Doświadczeń wybierasz"),0),
+      grant: col(o,"DH: Nadane Doświadczenie (nazwa +X)"), grantTrick: col(o,"DH: Nadana Sztuczka (nazwa)")});
+  });
+  readSheet(workbook,"Choroby").forEach(o=>{
+    const n = col(o,"Choroba"); if(!n) return;
+    out.diseases.push({nr:num(col(o,"Nr (k20)"),0), name:n, fluff:col(o,"Fluff: Opis (chmurka na karcie)"), lek:col(o,"Lekarstwo (nazwa, dostępność, opakowanie)"), lekName:col(o,"Lekarstwo: nazwa (do karty)"),
+      st:[ "", col(o,"DH: Pierwsze symptomy"), col(o,"DH: Stan ostry"), col(o,"DH: Stan krytyczny"), col(o,"DH: Stan terminalny")],
+      dis:[ "", col(o,"DH: Advantage/Disadvantage (Pierwsze symptomy)"), col(o,"DH: Advantage/Disadvantage (Stan ostry)"), col(o,"DH: Advantage/Disadvantage (Stan krytyczny)"), ""],
+      mods:[ {}, parseModString(col(o,"DH: Mod (Pierwsze symptomy)")), parseModString(col(o,"DH: Mod (Stan ostry)")), parseModString(col(o,"DH: Mod (Stan krytyczny)")), {} ]});
+  });
+  readSheet(workbook,"Silniki Specjalizacji").forEach(o=>{
+    const s = col(o,"Specjalizacja"); if(!s) return;
+    out.engines[s] = {nazwa:col(o,"Nazwa silnika"), rosnie:col(o,"Jak rośnie / jak się zdobywa"),
+      naco:col(o,"Na co się wydaje"), reset:col(o,"Reset / odnowienie"),
+      sygnaturowy:col(o,"Sygnaturowy ruch (3 Hope)"), uwagi:col(o,"Uwagi projektowe")};
+  });
+  return out;
+}
+
+function parseEquip(workbook){
+  const out = {armors:[], helmets:[], weapons:[], items:[], loaded:true};
+  readSheet(workbook,"Pancerz").forEach(o=>{
+    const n = col(o,"Nazwa"); if(!n) return;
+    const kat = col(o,"Kategoria") || "Pancerz";
+    const rec = {name:n, kat:kat, fluff:col(o,"Fluff: Opis (chmurka na karcie)"),
+      major: o["DH: Próg Major (bazowy)"]!=="" ? num(o["DH: Próg Major (bazowy)"], null) : null,
+      severe: o["DH: Próg Severe (bazowy)"]!=="" ? num(o["DH: Próg Severe (bazowy)"], null) : null,
+      score: o["DH: Armor Score (bazowy)"]!=="" ? num(o["DH: Armor Score (bazowy)"], null) : null,
+      feature: col(o,"DH: Cecha pancerza (feature)"), tier:col(o,"DH: Tier"),
+      weight: num(col(o,"Waga (kg)"),0), price:num(col(o,"Cena"),0), mods:readMods(o)};
+    if(/dodatek|hełm/i.test(kat)) out.helmets.push(rec); else out.armors.push(rec);
+  });
+  readSheet(workbook,"Broń biała").forEach(o=>{
+    const n = col(o,"Nazwa"); if(!n) return;
+    out.weapons.push({kind:"melee", name:n, kat:col(o,"Kategoria")||"Broń biała", fluff:col(o,"Fluff: Opis (chmurka na karcie)"), ammo:col(o,"DH: Amunicja (typ pocisku)"), trait:col(o,"DH: Trait (rzut na trafienie)"),
+      range:col(o,"DH: Zasięg"), dmg:[{mode:"Atak", v:col(o,"DH: Obrażenia")}], bonus:col(o,"DH: Bonus do trafienia (jeśli Cecha główna)"),
+      burden:col(o,"DH: Burden (ręce)"), feature:col(o,"DH: Cecha broni (feature)"), weight:num(col(o,"Waga (kg)"),0),
+      price:num(col(o,"Cena (dobra jakość)","Cena (samoróbka)"),0),
+      magCap:"", ammoNote:"", modesCompact:null, mods:readMods(o)});
+  });
+  readSheet(workbook,"Broń palna").forEach(o=>{
+    const n = col(o,"Nazwa"); if(!n) return;
+    /* v3: jedna uniwersalna kość+bonus (kolumna "DH: Obrażenia") niezależna od trybu; dostępne tryby
+       wymienione w "DH: Tryby ataku" (np. "Pojedynczy, Seryjny, Ciągły" albo tylko "Ciągły"). */
+    const dmgVal = col(o,"DH: Obrażenia","DH: Obrażenia - Pojedynczy");
+    const modeNames = String(col(o,"DH: Tryby ataku")||"Pojedynczy").split(",").map(s=>s.trim()).filter(Boolean);
+    const ammoNote = col(o,"Naboje: Pojedynczy/Seryjny/Ciągły","Naboje: Pojedynczy/Krótka/Długa/Ciągły");
+    const dmg = [{mode:"Pojedynczy", v:dmgVal}];
+    const compact = buildModesCompact({dmg, modes:modeNames, ammoNote});
+    out.weapons.push({kind:"gun", name:n, kat:col(o,"Kategoria")||"Broń palna", fluff:col(o,"Fluff: Opis (chmurka na karcie)"), ammo:col(o,"DH: Amunicja (typ pocisku)"), trait:col(o,"DH: Trait (rzut na trafienie)"),
+      range:col(o,"DH: Zasięg"), dmg:dmg, modes:modeNames,
+      bonus:col(o,"DH: Bonus do trafienia (jeśli Cecha główna)"), burden:col(o,"DH: Burden (ręce)"),
+      feature:col(o,"DH: Cecha broni (feature)"), weight:num(col(o,"Waga (kg)"),0), price:num(col(o,"Cena"),0),
+      magCap:col(o,"Poj. magazynka/bębenka"), ammoNote:ammoNote, modesCompact:compact, mods:readMods(o)});
+  });
+  [["Amunicja","Amunicja"],["Używki","Używki"],["Lekarstwa","Lekarstwa"],["Chemia","Chemia i prochy"],
+   ["Paliwo","Paliwo"],["Akcesoria","Akcesoria i sprzęt"],["Żywność","Żywność i zwierzęta"],["Pojazdy","Pojazdy"]].forEach(([frag,label])=>{
+    readSheet(workbook,frag).forEach(o=>{
+      const n = col(o,"Nazwa"); if(!n) return;
+      out.items.push({name:n, group:label, kat:col(o,"Kategoria")||label, effect:col(o,"DH: Efekt"), fluff:col(o,"Fluff: Opis (chmurka na karcie)"),
+        weight:num(col(o,"Waga (kg)","Waga (kg na litr)"),0), tier:col(o,"DH: Tier"),
+        price:num(col(o,"Cena (za szt.)","Cena","Cena (za dawkę)","Cena (za porcję)","Cena (za 1 litr)","Cena bazowa"),0),
+        durable: /^tak/i.test(String(col(o,"DH: Trwały? (karta liczy modyfikatory)")||"")), mods:readMods(o)});
+    });
+  });
+  readSheet(workbook,"Usługi").forEach(o=>{
+    const n = col(o,"Usługa"); if(!n) return;
+    out.items.push({name:n, group:"Usługi", kat:"Usługi", effect:col(o,"Uwagi"), fluff:"",
+      weight:0, tier:"", price:num(col(o,"Koszt"),0), durable:false, mods:{}});
+  });
+  return out;
+}
+
+/* =========================================================================
+   CHARACTER STATE
+   ========================================================================= */
+function freshChar(){
+  return {
+    name:"", pronouns:"", origin:"", profession:"", spec:"", level:1,
+    evasionBase:10, evasionAdv:0, armorMarked:0,
+    traitsBase:{Agility:null,Strength:null,Finesse:null,Instinct:null,Presence:null,Knowledge:null},
+    traitsMarked:{Agility:false,Strength:false,Finesse:false,Instinct:false,Presence:false,Knowledge:false},
+    traitsAdvBonus:{Agility:0,Strength:0,Finesse:0,Instinct:0,Presence:0,Knowledge:0},
+    hpBase:6, hpMarked:0, stressBase:6, stressMarked:0, hopeMarked:0,
+    gamble:150, experiences:[{name:"",level:2},{name:"",level:2}], tricks:[], weapons:[], inventory:[],
+    armorName:"", helmetName:"", armorUnitPrice:0, helmetUnitPrice:0, armorStashed:false, helmetStashed:false, proficiencyAdv:0,
+    diseasesStart:[], diseasesAcquired:[], notes:"", adv:{}, expPicks:{}, borrowed:{}, traitPicks:{},
+    wounds:[],
+    _originCechaIdx:"", _professionCechaIdx:"", _materializedGrants:{},
+    _engine:{value:0, tokens:0, fartUsed:0}
+  };
+}
+let char = freshChar();
+
+/* =========================================================================
+   MODIFIER AGGREGATION — every permanent source in one place
+   ========================================================================= */
+function addMods(target, mods){
+  Object.keys(mods||{}).forEach(k=>{
+    if(k==="Carry") target.Carry = (target.Carry||1) * mods[k];
+    else target[k] = (target[k]||0) + mods[k];
+  });
+}
+function collectMods(){
+  const rows = [], total = {};
+  function push(src, label, mods){
+    if(!mods || Object.keys(mods).length===0) return;
+    rows.push({src, label, mods}); addMods(total, mods);
+  }
+  activeCechy().forEach(entry=>{
+    /* fold the Cecha's own numeric mods together with its "+1 do Traita przy tworzeniu" bonus (if any)
+       into ONE row, so the origin/profession Trait bonus is visible — and correctly summed — in the
+       "Modyfikatory" audit table on the back of the card, not just silently applied to the trait total. */
+    const mods = Object.assign({}, entry.cecha.mods||{});
+    if(!entry.cecha.unlock){
+      const t = traitBonusOf(entry);
+      if(t) mods[t] = (mods[t]||0) + 1;
+    }
+    push(entry.src, entry.cecha.name, mods);
+  });
+  (char.tricks||[]).forEach(t=> push("Sztuczka", t.name, t.mods));
+  const arm = currentArmor();
+  if(arm) push("Pancerz", arm.name, arm.mods);
+  const helm = currentHelmet();
+  if(helm) push("Dodatek", helm.name, helm.mods);
+  (char.weapons||[]).forEach(w=>{ if(isTwoHanded(w) ? !w.stashed : (w.primary || w.offhand)) push("Broń", w.name, w.mods); });
+  (char.inventory||[]).forEach(it=>{ if(it.durable) push("Ekwipunek", it.name, it.mods); });
+  function pushDiseaseList(list, srcLabel){
+    (list||[]).forEach(entry=>{
+      const d = wb.diseases.find(x=>x.name===entry.name);
+      if(!d || !entry.stage) return;
+      const stageName = DISEASE_STAGES[entry.stage];
+      const m = d.mods[entry.stage] || {};
+      const note = (d.dis && d.dis[entry.stage]) ? d.dis[entry.stage] : "";
+      if(Object.keys(m).length || note){
+        rows.push({src:srcLabel, label:d.name+" ("+stageName+")", mods:m, note:note});
+        addMods(total, m);
+      }
+    });
+  }
+  pushDiseaseList(char.diseasesStart, "Choroba (wrodzona)");
+  pushDiseaseList(char.diseasesAcquired, "Choroba (nabyta)");
+  grantedExperiences().forEach(g=>{
+    rows.push({src:"Doświadczenie (nadane)", label:g.name+" — z: "+g.src, mods:{Exp:g.level}});
+  });
+  expSources().forEach(srcDef=>{
+    const picks = expPicksFor(srcDef.key);
+    for(let i=0;i<srcDef.count;i++){
+      if(picks[i]) rows.push({src:"Doświadczenie (bonus)", label:picks[i]+" — z: "+srcDef.label, mods:{Exp:srcDef.bonus}});
+    }
+  });
+  /* Rany: Poziom 1 daje realny (numeryczny) -1 do wskazanego Traita; Poziomy 2-3 to Disadvantage
+     (informacyjna notatka na karcie — Daggerheart nie liczy Advantage/Disadvantage jako liczbę). Każda
+     rana jest teraz jedną pozycją z polem "level" (1-3) zamiast trzech osobnych koszyków. */
+  (char.wounds||[]).forEach(w=>{
+    const lvl = w.level||1, wt = WOUND_TIERS[lvl-1];
+    if(lvl===1){ if(w.trait) push(wt.label, w.text||"(bez opisu)", {[w.trait]:-1}); }
+    else if(lvl===2){ rows.push({src:wt.label, label:w.text||"(bez opisu)", mods:{}, note:"Disadvantage do testów"+(w.trait?(": "+w.trait):" powiązanych z tą raną")}); }
+    else { rows.push({src:wt.label, label:w.text||"(bez opisu)", mods:{}, note:wt.effect}); }
+  });
+  return {rows, total};
+}
+function currentArmor(){ return eq.armors.find(a=>a.name===char.armorName) || null; }
+function currentHelmet(){ return eq.helmets.find(a=>a.name===char.helmetName) || null; }
+function isTwoHanded(w){ return (w.burden||"").toLowerCase().indexOf("dwu")>-1; }
+
+/* ---------- Trait bonus (+1 at creation), sourced from whichever Cecha grants it ---------- */
+function traitBonusText(cecha){ return String((cecha && cecha.trait) || ""); }
+/* a Cecha's trait text either names one specific Trait ("+1 do Strength") or leaves it up to the
+   player ("+1 do dowolnego Traita (wybierz przy tworzeniu)") — the latter needs a picker. */
+function isFreeTraitChoice(cecha){
+  const txt = traitBonusText(cecha);
+  return !!txt && !TRAIT_LIST.some(t=>txt.includes(t));
+}
+function traitBonusOf(entry){
+  const txt = traitBonusText(entry.cecha);
+  if(!txt) return "";
+  const found = TRAIT_LIST.find(t=>txt.includes(t));
+  if(found) return found;
+  return (char.traitPicks && char.traitPicks[entry.key]) || "";
+}
+function traitPickBlock(key, cecha){
+  const cur = (char.traitPicks && char.traitPicks[key]) || "";
+  return '<div class="borrowBox" style="margin-top:6px;"><div class="borrowHead">Wybierz Trait do bonusu ('+esc(traitBonusText(cecha))+')</div>'+
+    '<select class="wide traitPick" data-traitpickkey="'+esc(key)+'"><option value="">— wybierz Trait —</option>'+
+    TRAIT_LIST.map(t=>'<option value="'+t+'" '+(cur===t?'selected':'')+'>'+t+'</option>').join('')+'</select></div>';
+}
+function bindTraitPicks(host){
+  host.querySelectorAll('select.traitPick').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      char.traitPicks = char.traitPicks || {};
+      char.traitPicks[e.target.getAttribute('data-traitpickkey')] = e.target.value;
+      save(); renderAll();
+    });
+  });
+}
+
+function derived(){
+  const {rows, total} = collectMods();
+  const lvl = parseInt(char.level)||1;
+  const arm = currentArmor();
+  const traits = {};
+  TRAIT_LIST.forEach(t=>{
+    const base = (char.traitsBase[t]===null||char.traitsBase[t]===undefined) ? 0 : char.traitsBase[t];
+    /* the Trait bonus a Cecha grants at creation is folded into total[] by collectMods() now (see
+       there) — it shows up in the "Modyfikatory" audit table AND counts here, from the same number. */
+    traits[t] = {base, adv:char.traitsAdvBonus[t]||0, mod:total[t]||0,
+                 total: base + (char.traitsAdvBonus[t]||0) + (total[t]||0)};
+  });
+  const armorScoreBase = arm && arm.score!==null ? arm.score : 0;
+  const thrMajorBase = arm && arm.major!==null ? arm.major : 0;
+  const thrSevereBase = arm && arm.severe!==null ? arm.severe : 0;
+  const out = {
+    rows, total, lvl,
+    evasion: (parseInt(char.evasionBase)||10) + (char.evasionAdv||0) + (total.Evasion||0),
+    armorScore: Math.max(0, Math.min(12, armorScoreBase + (total.ArmorScore||0))),
+    armorScoreBase,
+    thrMajor: (arm ? thrMajorBase + lvl : lvl) + (total.ThrMajor||0),
+    thrSevere: (arm ? thrSevereBase + lvl : 2*lvl) + (total.ThrSevere||0),
+    traits,
+    hpMax: Math.max(1, (parseInt(char.hpBase)||6) + (total.HP||0)),
+    stressMax: Math.max(1, (parseInt(char.stressBase)||6) + (total.Stress||0)),
+    hopeMax: Math.max(1, 6 + (total.Hope||0)),
+    proficiency: Math.max(1, tierForLevel(char.level) + (char.proficiencyAdv||0) + (total.Proficiency||0)),
+    carryMult: total.Carry || 1
+  };
+  /* Udźwig: 15 kg bazowo przy Sile 0, ±5 kg za każdy punkt Siły */
+  out.carryMax = Math.max(0, Math.round((15 + out.traits.Strength.total * 5) * out.carryMult));
+  out.weight = currentWeight();
+  const over = out.weight - out.carryMax;
+  out.overPenalty = over > 0.0001 ? Math.ceil(over/10) : 0;
+  out.evasion -= out.overPenalty;
+  return out;
+}
+/* ---------- Cechy borrowed from other Origins / extra Cechy taken while leveling ---------- */
+function allOriginCechy(excludeOrigin){
+  const out = [];
+  Object.keys(wb.origins).sort().forEach(org=>{
+    if(org===excludeOrigin) return;
+    wb.origins[org].cechy.forEach((c,i)=> out.push({group:org, idx:i, cecha:c, value:org+"::"+i}));
+  });
+  return out;
+}
+/* Cechy available to take as an "extra Cecha" advancement pick: any Cecha of ANY Origin or ANY
+   Profession, minus whichever ones are already excluded (already active on the character, or already
+   claimed by a different extra-Cecha slot). Value format is "origin::<Pochodzenie>::idx" or
+   "profession::<Profesja>::idx" so borrowedCecha() knows which table to resolve it against. */
+function allExtraCechaOptions(excludeNames){
+  const out = [];
+  Object.keys(wb.origins).sort().forEach(org=>{
+    wb.origins[org].cechy.forEach((c,i)=>{ if(!excludeNames.has(c.name)) out.push({group:"Pochodzenie: "+org, idx:i, cecha:c, value:"origin::"+org+"::"+i}); });
+  });
+  Object.keys(wb.professions).sort().forEach(prof=>{
+    wb.professions[prof].cechy.forEach((c,i)=>{ if(!excludeNames.has(c.name)) out.push({group:"Profesja: "+prof, idx:i, cecha:c, value:"profession::"+prof+"::"+i}); });
+  });
+  return out;
+}
+function borrowedCecha(key){
+  const v = char.borrowed && char.borrowed[key];
+  if(!v) return null;
+  const parts = String(v).split("::");
+  if(parts.length>=3){
+    /* new-style value: "origin::<name>::idx" or "profession::<name>::idx" (used by extra-Cecha slots) */
+    const [source, org, idx] = parts;
+    const table = source==="profession" ? wb.professions : wb.origins;
+    const o = table[org];
+    return o && o.cechy[idx] ? {owner:org, source, cecha:o.cechy[idx], value:v} : null;
+  }
+  /* legacy value: "<Pochodzenie>::idx" (used by the "unlock" borrow-from-another-Origin mechanic) */
+  const [org, idx] = parts;
+  const o = wb.origins[org];
+  return o && o.cechy[idx] ? {owner:org, source:"origin", cecha:o.cechy[idx], value:v} : null;
+}
+/* names of every Cecha the character already actively has, other than the one slot being edited —
+   used so the same Cecha can't be picked twice (e.g. once at creation, once again as an extra pick) */
+function excludedCechaNames(exceptKey){
+  const names = new Set();
+  activeCechy().forEach(entry=>{ if(entry.key!==exceptKey) names.add(entry.cecha.name); });
+  return names;
+}
+/* the (up to) two extra Cechy a character can pick up while leveling, across all three Tier blocks */
+function extraCechaSlotKeys(){
+  const out = [];
+  [2,3,4].forEach(tier=>{
+    const st = char.adv && char.adv[tier] && char.adv[tier].extraCecha;
+    const count = st ? (st.count||0) : 0;
+    for(let i=0;i<count;i++) out.push({tier, i, key:"extraCecha::"+tier+"::"+i});
+  });
+  return out;
+}
+/* every active cecha the character actually has, with the key used for expPicks */
+function activeCechy(){
+  const out = [];
+  const o = wb.origins[char.origin];
+  if(o && char._originCechaIdx!=="" && o.cechy[char._originCechaIdx])
+    out.push({key:"origin", src:"Pochodzenie", cecha:o.cechy[char._originCechaIdx]});
+  const p = wb.professions[char.profession];
+  if(p && char._professionCechaIdx!=="" && p.cechy[char._professionCechaIdx])
+    out.push({key:"profession", src:"Profesja", cecha:p.cechy[char._professionCechaIdx]});
+  out.slice().forEach(entry=>{
+    if(entry.cecha.unlock){
+      const b = borrowedCecha(entry.key);
+      if(b) out.push({key:entry.key+"::borrowed", src:entry.src+" (pożyczona z: "+b.owner+")", cecha:b.cecha});
+    }
+  });
+  extraCechaSlotKeys().forEach(slot=>{
+    const b = borrowedCecha(slot.key);
+    if(b) out.push({key:slot.key, src:"Dodatkowa Cecha (Tier "+slot.tier+", "+(b.source==="profession"?"Profesja":"Pochodzenie")+": "+b.owner+")", cecha:b.cecha});
+  });
+  return out;
+}
+
+/* ---------- Experience bonuses: features that raise an Experience's modifier ---------- */
+function expSources(){
+  const out = [];
+  activeCechy().forEach(entry=>{
+    if(entry.cecha.expCount>0)
+      out.push({key:entry.key, label:entry.src+": "+entry.cecha.name, bonus:entry.cecha.expBonus||1, count:entry.cecha.expCount});
+  });
+  (char.tricks||[]).forEach(t=>{
+    if(t.expCount>0) out.push({key:"trick::"+t.name, label:"Sztuczka: "+t.name, bonus:t.expBonus||1, count:t.expCount});
+  });
+  Object.keys(char.adv||{}).forEach(tier=>{
+    const st = char.adv[tier] && char.adv[tier].exp2;
+    if(st && st.count>0){
+      for(let i=0;i<st.count;i++)
+        out.push({key:"adv::"+tier+"::exp2::"+i, label:"Advancement (Tier "+tier+")", bonus:1, count:2});
+    }
+  });
+  return out;
+}
+/* "Nazwa +2; Inna +3" -> [{name:"Nazwa", level:2}, ...] */
+function parseGrant(str){
+  const out = [];
+  String(str||"").split(";").forEach(part=>{
+    const m = part.trim().match(/^(.+?)\s*([+-]?\d+)$/);
+    if(m) out.push({name:m[1].trim(), level:parseInt(m[2])});
+    else if(part.trim()) out.push({name:part.trim(), level:2});
+  });
+  return out;
+}
+/* a grant whose name is literally "???" means "player names a brand-new Experience themselves" —
+   those are NOT shown as fixed granted rows; they get materialized once into char.experiences
+   (editable, like any hand-written Experience) by syncFreeExpGrants(). */
+function grantedExperiences(){
+  const out = [];
+  activeCechy().forEach(entry=>{
+    parseGrant(entry.cecha.grant).filter(g=>g.name!=="???").forEach(g=> out.push({name:g.name, level:g.level, src:entry.src+": "+entry.cecha.name}));
+  });
+  (char.tricks||[]).forEach(t=>{
+    parseGrant(t.grant).filter(g=>g.name!=="???").forEach(g=> out.push({name:g.name, level:g.level, src:"Sztuczka: "+t.name}));
+  });
+  return out;
+}
+function freeExpGrantSources(){
+  const out = [];
+  activeCechy().forEach(entry=>{
+    parseGrant(entry.cecha.grant).filter(g=>g.name==="???").forEach((g,gi)=>
+      out.push({key:entry.key+"::freeExp::"+gi, level:g.level, src:entry.src+": "+entry.cecha.name}));
+  });
+  (char.tricks||[]).forEach(t=>{
+    parseGrant(t.grant).filter(g=>g.name==="???").forEach((g,gi)=>
+      out.push({key:"trick::"+t.name+"::freeExp::"+gi, level:g.level, src:"Sztuczka: "+t.name}));
+  });
+  return out;
+}
+/* whenever a Cecha/Sztuczka granting a freely-named Experience becomes active, drop a blank,
+   editable Experience row into the list right away (once per grant — the player can then rename it,
+   change its level, or delete it like any other Experience). */
+function syncFreeExpGrants(){
+  char._materializedGrants = char._materializedGrants || {};
+  let changed = false;
+  freeExpGrantSources().forEach(src=>{
+    if(!char._materializedGrants[src.key]){
+      char.experiences.push({name:"Wszystkiego po trochu!", level:src.level});
+      char._materializedGrants[src.key] = true;
+      changed = true;
+    }
+  });
+  if(changed) save();
+}
+/* whenever an active Cecha, or a Sztuczka the character already has, names another Sztuczka in its
+   "grantTrick" field (e.g. Walkabout -> "Dom na plecach"), that Sztuczka is added to the character
+   right away — no extra click needed. addTrickToChar() already dedupes by name, so this is safe to
+   re-run every render; the while-loop lets a short grant chain (A grants B, B grants C) resolve in
+   one pass instead of needing several renders to settle. */
+function syncGrantedTricks(){
+  let changedAny = false, progressed = true, guard = 0;
+  while(progressed && guard < 10){
+    progressed = false; guard++;
+    activeCechy().forEach(entry=>{
+      const wanted = (entry.cecha.grantTrick||"").trim();
+      if(!wanted) return;
+      const t = wb.tricks.find(x=>x.name===wanted);
+      if(t && !char.tricks.find(x=>x.name===t.name)){
+        addTrickToChar(t, entry.src+": "+entry.cecha.name+" (nadana)");
+        progressed = true; changedAny = true;
+      }
+    });
+    char.tricks.forEach(trickChar=>{
+      const def = wb.tricks.find(x=>x.name===trickChar.name);
+      const wanted = def && (def.grantTrick||"").trim();
+      if(!wanted) return;
+      const t2 = wb.tricks.find(x=>x.name===wanted);
+      if(t2 && !char.tricks.find(x=>x.name===t2.name)){
+        addTrickToChar(t2, "Sztuczka: "+def.name+" (nadana)");
+        progressed = true; changedAny = true;
+      }
+    });
+  }
+  if(changedAny) save();
+}
+function allExperienceNames(){
+  const names = grantedExperiences().map(g=>g.name)
+    .concat((char.experiences||[]).map(e=>e.name));
+  return [...new Set(names.filter(n=>n && n.trim()))];
+}
+function expPicksFor(key){ return (char.expPicks && char.expPicks[key]) || []; }
+function setExpPick(key, idx, value){
+  char.expPicks = char.expPicks || {};
+  char.expPicks[key] = char.expPicks[key] || [];
+  char.expPicks[key][idx] = value;
+}
+function expBonusFor(name){
+  if(!name) return 0;
+  let total = 0;
+  expSources().forEach(src=>{
+    const picks = expPicksFor(src.key);
+    for(let i=0;i<src.count;i++) if(picks[i]===name) total += src.bonus;
+  });
+  return total;
+}
+function expTotal(exp){ return (exp.level!==undefined?exp.level:2) + expBonusFor(exp.name); }
+/* every Experience the character has: granted first, then hand-written */
+function allExperiences(){
+  const out = grantedExperiences().map(g=>({name:g.name, level:g.level, granted:true, src:g.src}));
+  (char.experiences||[]).forEach((e,i)=> out.push({name:e.name, level:(e.level!==undefined?e.level:2), granted:false, idx:i}));
+  return out;
+}
+
+function currentWeight(){
+  let cur = 0;
+  (char.weapons||[]).forEach(w=> { if(!w.stashed) cur += (parseFloat(w.weight)||0); });
+  (char.inventory||[]).forEach(it=> { if(!it.stashed) cur += (parseFloat(it.weight)||0)*(parseFloat(it.qty)||1); });
+  const a = currentArmor(), h = currentHelmet();
+  if(a && !char.armorStashed) cur += a.weight||0;
+  if(h && !char.helmetStashed) cur += h.weight||0;
+  return Math.round(cur*10)/10;
+}
+/* =========================================================================
+   RENDER HELPERS
+   ========================================================================= */
+function el(id){ return document.getElementById(id); }
+function sgn(n){ return (n>0?"+":"")+n; }
+function costClass(cost){
+  const c = String(cost||"");
+  const hasH = /hope/i.test(c), hasS = /stres/i.test(c);
+  if(hasH && hasS) return "mixed";
+  if(hasH) return "hope";
+  if(hasS) return "stress";
+  return "free";
+}
+function costBadge(cost){ return '<span class="badge '+costClass(cost)+'">'+esc(cost||"Free (pasywne)")+'</span>'; }
+function costBlock(cost){ return '<div class="costLine"><span class="lbl">Koszt użycia</span>'+costBadge(cost)+'</div>'; }
+function makePipRow(container, count, checkedArr, shape, onToggle){
+  container.innerHTML = "";
+  for(let i=0;i<count;i++){
+    const p = document.createElement('div');
+    p.className = 'pip '+shape+(checkedArr.includes(i)?' checked':'');
+    p.addEventListener('click', ()=>{
+      const idx = checkedArr.indexOf(i);
+      if(idx>-1) checkedArr.splice(idx,1); else checkedArr.push(i);
+      p.classList.toggle('checked'); onToggle();
+    });
+    container.appendChild(p);
+  }
+}
+/* "fill from the left" pip row: clicking pip N marks 1..N; clicking the currently-topmost marked pip
+   again unmarks just that one. This is the standard Daggerheart HP/Stress/Hope marking gesture (and
+   matches the tick behaviour ported from the example card) — a single count replaces the old array of
+   independently-toggled pip indices. */
+function makeFillPipRow(container, count, current, shape, onChange){
+  container.innerHTML = "";
+  for(let i=1;i<=count;i++){
+    const p = document.createElement('div');
+    p.className = 'pip '+shape+(i<=current?' checked':'');
+    p.addEventListener('click', ()=> onChange(i===current ? i-1 : i));
+    container.appendChild(p);
+  }
+}
+function tierForLevel(lv){ lv = parseInt(lv); if(lv<=1) return 1; if(lv<=4) return 2; if(lv<=7) return 3; return 4; }
+function flatOptions(list, labelFn, valueFn, selected){
+  return list.map(x=>{ const v = valueFn(x);
+    return '<option value="'+esc(v)+'"'+(v===selected?' selected':'')+'>'+esc(labelFn(x))+'</option>'; }).join('');
+}
+function groupedOptions(list, groupFn, labelFn, valueFn, selected){
+  const groups = {};
+  list.forEach(x=>{ const g = groupFn(x)||"Inne"; (groups[g] = groups[g]||[]).push(x); });
+  return Object.keys(groups).sort().map(g=>
+    '<optgroup label="'+esc(g)+'">'+flatOptions(groups[g], labelFn, valueFn, selected)+'</optgroup>').join('');
+}
+function expPickBlock(key, label, bonus, count){
+  const names = allExperienceNames();
+  const picks = expPicksFor(key);
+  let html = '<div class="expPickBox"><div class="expPickHead">'+esc(label)+' — wskaż '+count+' '+
+    (count===1?'Doświadczenie':'Doświadczenia')+' (każde dostaje '+sgn(bonus)+')</div>';
+  if(names.length===0){
+    html += '<div class="caption">Najpierw dopisz Doświadczenia na liście obok.</div></div>';
+    return html;
+  }
+  for(let i=0;i<count;i++){
+    html += '<select class="wide expPick" data-expkey="'+esc(key)+'" data-expidx="'+i+'"><option value="">— wybierz Doświadczenie —</option>'+
+      names.map(n=>'<option value="'+esc(n)+'"'+(picks[i]===n?' selected':'')+'>'+esc(n)+'</option>').join('')+'</select>';
+  }
+  return html+'</div>';
+}
+function bindExpPicks(host){
+  host.querySelectorAll('select.expPick').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      setExpPick(e.target.getAttribute('data-expkey'), parseInt(e.target.getAttribute('data-expidx')), e.target.value);
+      save(); renderExpList(); renderCechyPanel(); renderTrickList(); renderBack();
+    });
+  });
+}
+/* ---------- fluff tooltips ---------- */
+function tip(text, inner, cls){
+  if(!text) return inner;
+  return '<span class="hasTip'+(cls?' '+cls:'')+'" data-tip="'+esc(text)+'">'+inner+'</span>';
+}
+let tipEl = null;
+function initTooltips(){
+  if(tipEl) return;
+  tipEl = document.createElement('div');
+  tipEl.className = 'fluffTip'; tipEl.style.display = 'none';
+  document.body.appendChild(tipEl);
+  const show = (target, x, y)=>{
+    tipEl.textContent = target.getAttribute('data-tip');
+    tipEl.style.display = 'block';
+    const w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+    let left = x + 14, top = y + 18;
+    if(left + w > window.innerWidth - 10) left = Math.max(10, window.innerWidth - w - 10);
+    if(top + h > window.innerHeight - 10) top = y - h - 12;
+    tipEl.style.left = left+'px'; tipEl.style.top = top+'px';
+  };
+  document.addEventListener('mouseover', e=>{
+    const t = e.target.closest('.hasTip');
+    if(t) show(t, e.clientX, e.clientY);
+  });
+  document.addEventListener('mousemove', e=>{
+    const t = e.target.closest('.hasTip');
+    if(t && tipEl.style.display==='block') show(t, e.clientX, e.clientY);
+    else if(!t) tipEl.style.display = 'none';
+  });
+  document.addEventListener('mouseout', e=>{ if(!e.relatedTarget || !e.relatedTarget.closest || !e.relatedTarget.closest('.hasTip')) tipEl.style.display='none'; });
+  document.addEventListener('click', e=>{
+    const t = e.target.closest('.hasTip');
+    if(t) show(t, e.clientX, e.clientY); else tipEl.style.display='none';
+  });
+}
+function modsText(mods){
+  return Object.keys(mods).map(k=> k==="Carry" ? ("Udźwig ×"+mods[k]) : (MOD_LABEL[k]+" "+sgn(mods[k]))).join(", ");
+}
+
+/* =========================================================================
+   DROPDOWNS
+   ========================================================================= */
+function rebuildAllDropdowns(){
+  el('f_origin').innerHTML = '<option value="">— wybierz —</option>'+Object.keys(wb.origins).sort().map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('');
+  el('f_origin').value = char.origin;
+  el('f_profession').innerHTML = '<option value="">— wybierz —</option>'+Object.keys(wb.professions).sort().map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('');
+  el('f_profession').value = char.profession;
+  el('f_spec').innerHTML = '<option value="">— wybierz —</option>'+Object.keys(wb.specs).map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('');
+  el('f_spec').value = char.spec;
+
+  el('trickSpecFilter').innerHTML = '<option value="">Specjalizacja: wszystkie</option>'+SPEC_CATEGORIES.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+  const maxTier = tierForLevel(char.level);
+  el('trickTierFilter').innerHTML = '<option value="">Tier ≤ '+maxTier+' (Twój)</option>'+[1,2,3,4].map(n=>'<option value="'+n+'">Tylko Tier '+n+'</option>').join('');
+
+  el('expSuggestions').innerHTML = [...new Set(wb.skills.map(s=>s.name))].map(n=>'<option value="'+esc(n)+'">').join('');
+
+  /* diseases with Nr (k20) are the random background-illness table, drawn only via the k20 roll button;
+     diseases without it (Nr 0 / blank) are picked up during play (infections, radiation, ...) and chosen
+     manually here, on the back of the card. */
+  el('diseaseAcqPicker').innerHTML = '<option value="">— wybierz chorobę nabytą —</option>'+
+    wb.diseases.filter(d=>!isBackgroundDisease(d)).map(d=>'<option value="'+esc(d.name)+'">'+esc(d.name)+'</option>').join('');
+
+  el('armorPick').innerHTML = '<option value="">— bez pancerza —</option>'+
+    groupedOptions(eq.armors, a=>a.kat, a=>a.name+"  ["+a.major+"/"+a.severe+", AS "+a.score+", "+a.weight+" kg, "+a.price+" G]", a=>a.name, char.armorName);
+  el('armorPick').value = char.armorName;
+  el('helmetPick').innerHTML = '<option value="">— brak dodatku —</option>'+
+    flatOptions(eq.helmets, a=>a.name+"  ["+a.weight+" kg, "+a.price+" G]", a=>a.name, char.helmetName);
+  el('helmetPick').value = char.helmetName;
+
+  // weapons: category -> items
+  const wcats = [...new Set(eq.weapons.map(w=>(w.kind==="melee"?"Broń biała i miotana — ":"Broń palna — ")+w.kat))].sort();
+  el('weaponCatPicker').innerHTML = '<option value="">— kategoria broni —</option>'+wcats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  refreshWeaponPicker();
+
+  // inventory: category -> items
+  const icats = [...new Set(eq.items.map(i=>i.group+" — "+i.kat))].sort();
+  el('invCatPicker').innerHTML = '<option value="">— kategoria ekwipunku —</option>'+icats.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  refreshInvPicker();
+
+  refreshTrickPicker();
+}
+function weaponCatOf(w){ return (w.kind==="melee"?"Broń biała i miotana — ":"Broń palna — ")+w.kat; }
+function refreshWeaponPicker(){
+  const cat = el('weaponCatPicker').value;
+  const list = cat ? eq.weapons.filter(w=>weaponCatOf(w)===cat) : [];
+  el('weaponPicker').innerHTML = cat
+    ? '<option value="">— wybierz broń —</option>'+flatOptions(list, w=>w.name+"  ("+w.trait+", "+w.range+", "+(w.dmg[0]?w.dmg[0].v:"")+", "+w.price+" G)", w=>w.kind+"::"+w.name, "")
+    : '<option value="">— najpierw wybierz kategorię —</option>';
+}
+function refreshInvPicker(){
+  const cat = el('invCatPicker').value;
+  const list = cat ? eq.items.filter(i=>(i.group+" — "+i.kat)===cat) : [];
+  el('invPicker').innerHTML = cat
+    ? '<option value="">— wybierz przedmiot —</option>'+flatOptions(list, i=>i.name+(i.weight?"  ("+i.weight+" kg)":"")+"  ["+i.price+" G]", i=>i.name, "")
+    : '<option value="">— najpierw wybierz kategorię —</option>';
+}
+function refreshTrickPicker(){
+  const specFilter = el('trickSpecFilter').value;
+  const tierFilterVal = el('trickTierFilter').value;
+  const maxTier = tierForLevel(char.level);
+  let list = wb.tricks;
+  if(tierFilterVal) list = list.filter(t=>t.tier===parseInt(tierFilterVal));
+  else list = list.filter(t=>t.tier<=maxTier);
+  if(specFilter) list = list.filter(t=>t.specList.includes(specFilter));
+  el('trickPicker').innerHTML = '<option value="">— wybierz Sztuczkę —</option>'+
+    flatOptions(list, t=>"[T"+t.tier+"] "+t.name+" — "+t.cost, t=>t.name, "");
+}
+
+/* =========================================================================
+   FRONT PANELS
+   ========================================================================= */
+function renderDefense(){
+  const d = derived();
+  el('evTotal').textContent = d.evasion;
+  el('asTotal').textContent = d.armorScore;
+  el('thrMajorV').textContent = d.thrMajor;
+  el('thrSevereV').textContent = d.thrSevere;
+  if(char.armorMarked>d.armorScore) char.armorMarked = d.armorScore;
+  makeFillPipRow(el('armorPips'), d.armorScore, char.armorMarked, 'round', v=>{ char.armorMarked=v; save(); renderDefense(); });
+  el('profStamp').textContent = d.proficiency;
+}
+function renderArmorPanel(){
+  const a = currentArmor(), h = currentHelmet();
+  el('armorCarried').checked = !char.armorStashed;
+  el('helmetCarried').checked = !char.helmetStashed;
+  el('a_thrMajor').textContent = a ? a.major : "—";
+  el('a_thrSevere').textContent = a ? a.severe : "—";
+  el('a_score').textContent = a ? a.score : "0";
+  el('a_weight').textContent = a ? a.weight : "0";
+  el('a_feature').innerHTML = (a ? tip(a.fluff, '<span class="fluffName">'+esc(a.name)+'</span>', 'block')+' ' : '')+(a ? kw(a.feature||"—") : "—");
+  if(h){ el('h_feature').style.display='block';
+    el('h_feature').innerHTML = tip(h.fluff, '<span class="fluffName">'+esc(h.name)+'</span>', 'block')+' '+kw(h.feature||"—"); }
+  else el('h_feature').style.display='none';
+}
+function renderTraits(){
+  const grid = el('traitsGrid'); grid.innerHTML = "";
+  const d = derived();
+  const uniqueValues = [...new Set(BASE_ARRAY)];
+  const usage = {}; uniqueValues.forEach(v=>usage[v]=0);
+  TRAIT_LIST.forEach(t=>{ if(char.traitsBase[t]!==null && char.traitsBase[t]!==undefined) usage[char.traitsBase[t]] = (usage[char.traitsBase[t]]||0)+1; });
+  TRAIT_LIST.forEach(t=>{
+    const info = d.traits[t], cur = char.traitsBase[t];
+    let options = '<option value=""'+((cur===null||cur===undefined)?' selected':'')+'>---</option>';
+    /* every slot in BASE_ARRAY is listed as its own separate option (so a value used twice, like +1,
+       shows as two rows); a row is greyed out once another Trait has already claimed that many copies
+       of the value, but the copy(ies) belonging to THIS trait stay selectable/selected. */
+    const emitted = {};
+    BASE_ARRAY.forEach(v=>{
+      emitted[v] = emitted[v]||0;
+      const usedByOther = usage[v] - (cur===v?1:0);
+      const occurrenceIdx = emitted[v]; emitted[v]++;
+      const disabled = occurrenceIdx < usedByOther;
+      const selected = cur===v && occurrenceIdx===usedByOther;
+      options += '<option value="'+v+'" '+(selected?'selected':'')+' '+(disabled?'disabled':'')+'>'+(v>0?'+'+v:v)+'</option>';
+    });
+    const card = document.createElement('div');
+    card.className = 'traitCard';
+    card.innerHTML =
+      '<div class="tname"><span>'+t+'</span><span class="markbox '+(char.traitsMarked[t]?'checked':'')+'" data-t="'+t+'"></span></div>'+
+      '<div class="tverbs">'+TRAIT_VERBS[t]+'</div>'+
+      '<div class="tvals"><select data-base="'+t+'">'+options+'</select>'+
+      '<span class="ttotal">'+sgn(info.total)+'</span></div>';
+    grid.appendChild(card);
+  });
+  grid.querySelectorAll('select[data-base]').forEach(s=>{
+    s.addEventListener('change', e=>{
+      const t = e.target.getAttribute('data-base');
+      char.traitsBase[t] = e.target.value===""? null : parseInt(e.target.value);
+      save(); renderTraits(); renderCarry(); renderDefense(); renderModPanel();
+    });
+  });
+  grid.querySelectorAll('.markbox').forEach(m=>{
+    m.addEventListener('click', e=>{
+      const t = e.target.getAttribute('data-t');
+      char.traitsMarked[t] = !char.traitsMarked[t]; save(); renderTraits();
+    });
+  });
+}
+function cechaSelectOptions(cechy, selectedIdx){
+  return '<option value="">— wybierz jedną —</option>'+cechy.map((c,i)=>
+    '<option value="'+i+'" '+(String(selectedIdx)===String(i)?'selected':'')+'>'+esc(c.name)+' — '+esc(c.cost)+'</option>').join('');
+}
+function renderCechyPanel(){
+  const host = el('cechyPanel'); let html = "";
+  const originSel = el('cechaOriginPick'), profSel = el('cechaProfessionPick');
+  if(char.origin && wb.origins[char.origin]){
+    const cechy = wb.origins[char.origin].cechy;
+    originSel.style.display = ""; originSel.innerHTML = cechaSelectOptions(cechy, char._originCechaIdx);
+    originSel.value = char._originCechaIdx;
+    html += renderCechaBody('origin', cechy, char._originCechaIdx);
+  } else {
+    originSel.style.display = "none"; originSel.innerHTML = "";
+  }
+  if(char.profession && wb.professions[char.profession]){
+    const cechy = wb.professions[char.profession].cechy;
+    profSel.style.display = ""; profSel.innerHTML = cechaSelectOptions(cechy, char._professionCechaIdx);
+    profSel.value = char._professionCechaIdx;
+    html += renderCechaBody('profession', cechy, char._professionCechaIdx);
+  } else {
+    profSel.style.display = "none"; profSel.innerHTML = "";
+  }
+  host.innerHTML = html || '<div class="caption">Wybierz Pochodzenie i Profesję.</div>';
+  bindExpPicks(host); bindBorrowPicks(host); bindTraitPicks(host);
+}
+/* description styled the same as a Sztuczka entry (.trickItem): name + cost badge in the header row,
+   full mechanic text always visible underneath. */
+function renderCechaBody(which, cechy, selectedIdx){
+  if(selectedIdx===undefined || selectedIdx==="" || !cechy[selectedIdx]) return '';
+  const c = cechy[selectedIdx];
+  let out = '<div class="trickItem">'+
+    '<div class="th"><span>'+tip(c.fluff, esc(c.name))+'</span>'+costBadge(c.cost)+'</div>'+
+    '<div class="te">'+kw(c.effect)+'</div></div>';
+  if(!c.unlock && isFreeTraitChoice(c)) out += traitPickBlock(which, c);
+  if(c.expCount>0) out += expPickBlock(which, c.name, c.expBonus||1, c.expCount);
+  if(c.unlock) out += borrowBlock(which, c.unlock);
+  return out;
+}
+function borrowBlock(key, unlockLabel){
+  const list = allOriginCechy(char.origin);
+  const cur = (char.borrowed && char.borrowed[key]) || "";
+  let html = '<div class="borrowBox"><div class="borrowHead">Wybierz Cechę: '+esc(unlockLabel)+'</div>'+
+    '<select class="wide borrowPick" data-borrowkey="'+esc(key)+'"><option value="">— wybierz Cechę —</option>'+
+    groupedOptions(list, x=>x.group, x=>x.cecha.name+" — "+x.cecha.cost, x=>x.value, cur)+'</select>';
+  const b = borrowedCecha(key);
+  if(b){
+    html += '<div class="trickItem" style="margin-top:6px;"><div class="th"><span>'+tip(b.cecha.fluff, esc(b.cecha.name))+'</span>'+costBadge(b.cecha.cost)+'</div>'+
+      '<div class="te">'+kw(b.cecha.effect)+'</div></div>';
+    if(isFreeTraitChoice(b.cecha)) html += traitPickBlock(key+"::borrowed", b.cecha);
+    if(b.cecha.expCount>0) html += expPickBlock(key+"::borrowed", b.cecha.name, b.cecha.expBonus||1, b.cecha.expCount);
+  }
+  return html+'</div>';
+}
+function bindBorrowPicks(host){
+  host.querySelectorAll('select.borrowPick').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      char.borrowed = char.borrowed || {};
+      char.borrowed[e.target.getAttribute('data-borrowkey')] = e.target.value;
+      save(); renderAll();
+    });
+  });
+}
+function renderModPanel(){
+  const d = derived();
+  const extra = d.overPenalty ? [{src:"Przeciążenie", label:d.weight+" kg / max "+d.carryMax+" kg", mods:{Evasion:-d.overPenalty}}] : [];
+  const rows = d.rows.concat(extra);
+  if(rows.length===0){ el('modPanel').innerHTML = '<div class="caption">Brak aktywnych modyfikatorów.</div>'; return; }
+  const keys = MOD_PANEL_KEYS.filter(k=> rows.some(r=>r.mods[k]!==undefined));
+  let html = '<table class="modTable"><tr><th>Źródło</th><th>Nazwa</th>'+keys.map(k=>'<th>'+MOD_LABEL[k]+'</th>').join('')+'</tr>';
+  rows.forEach(r=>{
+    html += '<tr><td>'+esc(r.src)+'</td><td>'+esc(r.label)+(r.note?'<br><span style="font-size:10.5px;color:#5C5346;">'+kw(r.note)+'</span>':'')+'</td>'+keys.map(k=>{
+      const v = r.mods[k];
+      if(v===undefined) return '<td class="num">·</td>';
+      return '<td class="num '+(v>0?'pos':'neg')+'">'+(k==="Carry"?("×"+v):sgn(v))+'</td>';
+    }).join('')+'</tr>';
+  });
+  const totals = {}; rows.forEach(r=>{ if(r.src.indexOf("Doświadczenie")!==0) addMods(totals, r.mods); });
+  html += '<tr class="totalRow"><td colspan="2">Razem</td>'+keys.map(k=>{
+    const v = k==="Carry" ? (totals.Carry||1) : (totals[k]||0);
+    return '<td class="num '+(v>0?'pos':(v<0?'neg':''))+'">'+(k==="Carry"?("×"+v):sgn(v))+'</td>';
+  }).join('')+'</tr></table>';
+  el('modPanel').innerHTML = html;
+}
+function skillFluff(name){
+  const sk = (wb.skills||[]).find(x=>x.name===name);
+  return sk ? sk.fluff : "";
+}
+function renderExpList(){
+  const host = el('expList'); host.innerHTML = "";
+  grantedExperiences().forEach(g=>{
+    const row = document.createElement('div'); row.className = 'expRow granted';
+    const bonus = expBonusFor(g.name);
+    row.innerHTML = '<span class="grantedName">'+tip(skillFluff(g.name)||g.src, esc(g.name))+' <span class="grantedTag">nadane</span></span>'+
+      '<span class="expTotal'+(bonus?' boosted':'')+'" title="'+(bonus?('baza '+sgn(g.level)+' + bonus '+sgn(bonus)):'modyfikator')+'">'+sgn(g.level+bonus)+'</span>'+
+      '<span style="width:28px;"></span>';
+    host.appendChild(row);
+  });
+  char.experiences.forEach((exp,i)=>{
+    const row = document.createElement('div'); row.className = 'expRow';
+    const bonus = expBonusFor(exp.name);
+    row.innerHTML = '<input type="text" list="expSuggestions" value="'+esc(exp.name||"")+'" data-i="'+i+'" data-f="name" placeholder="np. Weteran frontu">'+
+      '<input type="number" value="'+(exp.level!==undefined?exp.level:2)+'" data-i="'+i+'" data-f="level" title="modyfikator bazowy (edytowalny)">'+
+      (bonus ? '<span class="expTotal boosted" title="modyfikator po bonusach (baza '+sgn(exp.level!==undefined?exp.level:2)+' + bonus '+sgn(bonus)+')">'+sgn(expTotal(exp))+'</span>' : '')+
+      '<button data-rm="'+i+'" title="Usuń">✕</button>';
+    host.appendChild(row);
+  });
+  host.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = parseInt(e.target.getAttribute('data-i')), f = e.target.getAttribute('data-f');
+      char.experiences[i][f] = (f==='name') ? e.target.value : parseInt(e.target.value||0);
+      save(); renderExpList(); renderCechyPanel(); renderTrickList();
+    });
+  });
+  host.querySelectorAll('button[data-rm]').forEach(b=>{
+    b.addEventListener('click', e=>{ char.experiences.splice(parseInt(e.target.getAttribute('data-rm')),1); save(); renderExpList(); renderBack(); });
+  });
+}
+function renderTrickList(){
+  const host = el('trickList'); host.innerHTML = "";
+  char.tricks.forEach((t,i)=>{
+    const div = document.createElement('div'); div.className='trickItem';
+    div.innerHTML = '<div class="th"><span>'+tip(t.fluff, esc(t.name))+' <span class="badge tier">T'+t.tier+'</span> '+costBadge(t.cost)+'</span><button class="rm" data-rm="'+i+'">✕</button></div>'+
+      '<div class="meta">'+esc(t.spec)+(t.mods && Object.keys(t.mods).length ? ' · <b>'+esc(modsText(t.mods))+'</b>' : '')+'</div>'+
+      '<div class="te">'+kw(t.effect)+'</div>'+
+      (t.expCount>0 ? expPickBlock("trick::"+t.name, t.name, t.expBonus||1, t.expCount) : '');
+    host.appendChild(div);
+  });
+  bindExpPicks(host);
+  host.querySelectorAll('button[data-rm]').forEach(b=>{
+    b.addEventListener('click', e=>{ char.tricks.splice(parseInt(e.target.getAttribute('data-rm')),1); save(); renderAll(); });
+  });
+}
+function renderWeaponsList(){
+  const host = el('weaponsList'); host.innerHTML = "";
+  const d = derived();
+  char.weapons.forEach((w,i)=>{
+    const two = isTwoHanded(w);
+    const modes = w.dmg && w.dmg.length ? w.dmg : [{mode:"Atak", v:""}];
+    const mi = Math.min(w.modeIdx||0, modes.length-1);
+    const bonusTxt = (w.bonus===""||w.bonus===undefined||w.bonus===0) ? "" : (' ('+sgn(w.bonus)+')');
+    const card = document.createElement('div'); card.className = 'weaponCard';
+    card.innerHTML =
+      '<div class="wtop"><span class="wtitle">'+tip(w.fluff, esc(w.name))+' <span style="font-weight:400;color:#6E634E;">· '+esc(w.weight)+' kg · '+esc(w.unitPrice||0)+' G</span> '+(two?'<span class="twoHandedTag">DWURĘCZNA</span>':'')+'</span>'+
+      '<div class="wtopRight"><label class="carryToggle" title="Odłożona — nie liczy się do udźwigu"><input type="checkbox" data-i="'+i+'" data-hand="stashed" '+(w.stashed?'checked':'')+'> odłożona</label>'+
+      '<button class="rm" data-rm="'+i+'">✕</button></div></div>'+
+      /* Rząd 1: Trait+bonus / Zasięg / Typ naboju */
+      '<div class="fieldGrid3">'+
+        '<div><label class="fl">Trait (trafienie)</label><div class="readout">'+esc(w.trait)+bonusTxt+'</div></div>'+
+        '<div><label class="fl">Zasięg</label><div class="readout">'+esc(w.range)+'</div></div>'+
+        '<div><label class="fl">Typ naboju</label><div class="readout">'+esc(w.ammo||"—")+'</div></div>'+
+      '</div>'+
+      /* Rząd 2: tryby ognia (kompaktowo) */
+      (w.kind==="gun"
+        ? '<div style="margin-bottom:6px;"><label class="fl">Tryby ognia ('+d.proficiency+'× kość, taka sama we wszystkich trybach — w nawiasie zużyte naboje i dodatkowe HP ponad Threshold celu) — Pojedynczy / Seryjny / Ciągły</label>'+
+          '<div class="readout mono">'+(w.modesCompact||buildModesCompact(w)).map(esc).join(' / ')+'</div></div>'
+        : '<div class="fieldGrid2">'+
+            '<div><label class="fl">Tryb</label>'+
+              (modes.length>1
+                ? '<select data-i="'+i+'" data-f="modeIdx">'+modes.map((m,j)=>'<option value="'+j+'" '+(j===mi?'selected':'')+'>'+esc(m.mode)+'</option>').join('')+'</select>'
+                : '<div class="readout">'+esc(modes[0].mode)+'</div>')+
+            '</div>'+
+            '<div><label class="fl">Obrażenia ('+d.proficiency+'× kość)</label><div class="readout">'+esc(formatDie(modes[mi].v))+'</div></div>'+
+          '</div>')+
+      /* Rząd 3: magazynek / naboje / zapasowe magazynki (tylko broń palna) */
+      (w.kind==="gun" ? '<div class="fieldGrid3">'+
+        '<div><label class="fl">Magazynek</label><div class="readout">'+esc(w.magCap||"—")+'</div></div>'+
+        '<div><label class="fl">Naboje</label><input type="number" class="wide" data-i="'+i+'" data-f="rounds" value="'+(w.rounds!==undefined?w.rounds:"")+'"></div>'+
+        '<div><label class="fl">Zapasowe mag.</label><input type="number" class="wide" data-i="'+i+'" data-f="mags" value="'+(w.mags!==undefined?w.mags:"")+'"></div>'+
+      '</div>' : '')+
+      /* Rząd 4: feature */
+      '<div class="featBox">'+kw(w.feature||"—")+'</div>'+
+      '<div class="handednessRow">'+
+        (two
+          ? '<label title="Broń dwuręczna — zajmuje obie ręce, gdy jest noszona"><input type="checkbox" checked disabled> Ręka główna</label>'+
+            '<label title="Broń dwuręczna — zajmuje obie ręce, gdy jest noszona"><input type="checkbox" checked disabled> Ręka dodatkowa</label>'
+          : '<label><input type="checkbox" data-i="'+i+'" data-hand="primary" '+(w.primary?'checked':'')+'> Ręka główna</label>'+
+            '<label><input type="checkbox" data-i="'+i+'" data-hand="offhand" '+(w.offhand?'checked':'')+'> Ręka dodatkowa</label>')+
+      '</div>';
+    host.appendChild(card);
+  });
+  host.querySelectorAll('select[data-f], input[type=number][data-f]').forEach(inp=>{
+    inp.addEventListener('change', e=>{
+      const i = parseInt(e.target.getAttribute('data-i')), f = e.target.getAttribute('data-f');
+      char.weapons[i][f] = e.target.value===""?"":parseInt(e.target.value);
+      save(); renderWeaponsList();
+    });
+  });
+  host.querySelectorAll('input[type=checkbox][data-hand]').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const i = parseInt(e.target.getAttribute('data-i')), field = e.target.getAttribute('data-hand');
+      char.weapons[i][field] = e.target.checked;
+      if(field==='stashed' && e.target.checked){ char.weapons[i].primary = false; char.weapons[i].offhand = false; }
+      save(); renderAll();
+    });
+  });
+  host.querySelectorAll('button[data-rm]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const i = parseInt(e.target.getAttribute('data-rm'));
+      adjGamble(char.weapons[i].unitPrice||0);
+      char.weapons.splice(i,1); save(); renderAll();
+    });
+  });
+}
+function renderInvList(){
+  const host = el('invList'); host.innerHTML = "";
+  char.inventory.forEach((it,i)=>{
+    const wrap = document.createElement('div');
+    wrap.innerHTML =
+      '<div class="invRow">'+
+        '<input data-i="'+i+'" data-f="name" value="'+esc(it.name||"")+'" placeholder="nazwa">'+
+        '<input type="number" data-i="'+i+'" data-f="qty" value="'+(it.qty!==undefined?it.qty:1)+'" title="ilość">'+
+        '<input type="number" step="0.1" data-i="'+i+'" data-f="weight" value="'+(it.weight!==undefined?it.weight:"")+'" title="waga (kg/szt.)">'+
+        '<label class="carryToggle" title="Odznacz, jeśli przedmiot jest schowany (nie liczy się do udźwigu)"><input type="checkbox" data-i="'+i+'" data-f="stashed" '+(it.stashed?'':'checked')+'> niesiony</label>'+
+        '<button data-rm="'+i+'" title="Usuń">✕</button>'+
+      '</div>'+
+      (it.custom
+        ? '<div style="margin:-2px 0 8px;"><input class="wide" data-i="'+i+'" data-f="effect" value="'+esc(it.effect||"")+'" placeholder="własny efekt / cecha przedmiotu"></div>'
+        : (it.effect ? '<div class="featBox" style="margin:-2px 0 8px;">'+kw(it.effect)+'</div>' : '<div style="height:4px;"></div>'))+
+      (it.unitPrice ? '<div style="margin:-6px 0 8px;font-size:11px;color:#6E634E;">cena jedn.: '+esc(it.unitPrice)+' G · razem: '+esc(Math.round((it.unitPrice*(Number(it.qty)||0))*100)/100)+' G</div>' : '');
+    host.appendChild(wrap);
+  });
+  host.querySelectorAll('input[type=text], input[type=number]').forEach(inp=>{
+    inp.addEventListener('input', e=>{
+      const i = parseInt(e.target.getAttribute('data-i')), f = e.target.getAttribute('data-f');
+      const isNum = f==='qty' || f==='weight';
+      if(f==='qty'){
+        const oldQty = Number(char.inventory[i].qty)||0;
+        const newQty = e.target.value===""?0:(parseFloat(e.target.value)||0);
+        /* buying more units costs Gamble, reducing qty refunds proportionally (e.g. 10 naboi -> 8 naboi zwraca koszt 2 sztuk) */
+        adjGamble((oldQty - newQty) * (char.inventory[i].unitPrice||0));
+      }
+      char.inventory[i][f] = isNum ? (e.target.value===""?"":parseFloat(e.target.value)) : e.target.value;
+      save(); if(isNum){ renderCarry(); renderDefense(); renderGamble(); }
+    });
+  });
+  host.querySelectorAll('input[type=checkbox][data-f="stashed"]').forEach(cb=>{
+    cb.addEventListener('change', e=>{
+      const i = parseInt(e.target.getAttribute('data-i'));
+      char.inventory[i].stashed = !e.target.checked; /* checkbox reads "niesiony" (carried) */
+      save(); renderCarry(); renderDefense();
+    });
+  });
+  host.querySelectorAll('button[data-rm]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const i = parseInt(e.target.getAttribute('data-rm'));
+      const it = char.inventory[i];
+      adjGamble((it.unitPrice||0) * (Number(it.qty)||0));
+      char.inventory.splice(i,1); save(); renderAll();
+    });
+  });
+}
+function renderCarry(){
+  const d = derived();
+  el('carryCur').textContent = d.weight;
+  el('carryCur').style.color = d.overPenalty ? '#F3A08A' : '#F0A177';
+  el('carryMaxLine').textContent = d.overPenalty ? ('max '+d.carryMax+' · '+sgn(-d.overPenalty)+' Evasion') : ('max '+d.carryMax);
+  el('carryMaxLine').style.color = d.overPenalty ? '#F3A08A' : '#D3BE95';
+}
+function renderPips(){
+  const d = derived();
+  if(char.hpMarked>d.hpMax) char.hpMarked = d.hpMax;
+  if(char.stressMarked>d.stressMax) char.stressMarked = d.stressMax;
+  if(char.hopeMarked>d.hopeMax) char.hopeMarked = d.hopeMax;
+  makeFillPipRow(el('hpPips'), d.hpMax, char.hpMarked, 'round', v=>{ char.hpMarked=v; save(); renderPips(); });
+  makeFillPipRow(el('stressPips'), d.stressMax, char.stressMarked, 'round', v=>{ char.stressMarked=v; save(); renderPips(); });
+  makeFillPipRow(el('hopePips'), d.hopeMax, char.hopeMarked, 'diamond', v=>{ char.hopeMarked=v; save(); renderPips(); });
+  el('hpBaseTag').textContent = '(baza: '+(parseInt(char.hpBase)||6)+')';
+  el('stressBaseTag').textContent = '(baza: '+(parseInt(char.stressBase)||6)+')';
+}
+/* per-stage penalty — Advantage/Disadvantage note plus any numeric mods — never the full narrative
+   symptom text (that lives in the source .xlsx, not the sheet). */
+function diseaseStagePenalty(d, stage){
+  if(!stage) return 'brak kar';
+  const bits = [];
+  if(d.dis && d.dis[stage]) bits.push(d.dis[stage]);
+  const mt = modsText((d.mods||[])[stage] || {});
+  if(mt) bits.push(mt);
+  return bits.length ? bits.join(', ') : 'brak dodatkowych kar mechanicznych';
+}
+/* The sheet's "Lekarstwo (nazwa, dostępność, opakowanie)" column is a full free-text sentence
+   mixing the drug's name together with its availability%, packaging and sometimes a whole
+   narrative aside. The card only wants the name(s). That short name is authored directly in
+   the workbook (sheet "7. Choroby", column "Lekarstwo: nazwa (do karty)") — read here as
+   d.lekName — so it stays editable data, not logic baked into the card. The cut-at-first-"("
+   fallback below only kicks in for a workbook that predates that column. */
+function diseaseMedName(d){
+  if(d.lekName) return d.lekName;
+  const lek = d.lek;
+  if(!lek) return '';
+  const cut = lek.split('(')[0].trim().replace(/[-:,;]\s*$/,'').trim();
+  return cut || lek.trim();
+}
+/* one pip per stage, stacked vertically, same round fill-pip look and fill-from-the-top mechanic as
+   the HP/Stress/Hope trackers — checking stage N also checks every stage above it (you pass through
+   the lower ones on the way up), and clicking the current topmost checked pip again steps back down
+   one stage. Every stage's name + penalty is always visible on its own line — nothing to click
+   through to see it. */
+function diseaseStageListHTML(d, currentStage, arrKey, idx){
+  return '<div class="diseaseStageList" data-stageset="'+arrKey+'" data-i="'+idx+'">'+
+    DISEASE_STAGES.map((s,i)=>
+      '<div class="stageRow'+(i===currentStage?' cur':'')+'" data-stage="'+i+'"><div class="pip round'+(i<=currentStage?' checked':'')+'"></div><span><b>'+esc(s)+':</b> '+kw(diseaseStagePenalty(d,i))+'</span></div>'
+    ).join('')+'</div>';
+}
+function diseaseEntryHTML(entry, idx, arrKey){
+  const d = wb.diseases.find(x=>x.name===entry.name);
+  let html = '<div class="diseaseItem">'+
+    '<div class="diseaseItemHead">'+tip(d?d.fluff:"", '<span class="fluffName">'+esc(entry.name)+'</span>')+
+    (d&&d.lek?'<span class="lekInfo">Lek: '+esc(diseaseMedName(d))+'</span>':'')+
+    '<button class="rm" data-rmdisease="'+arrKey+'" data-i="'+idx+'" title="Usuń / wylecz">✕</button></div>';
+  if(d) html += diseaseStageListHTML(d, entry.stage, arrKey, idx);
+  return html+'</div>';
+}
+function renderDiseaseList(hostId, arrKey){
+  const host = el(hostId);
+  const list = char[arrKey] || (char[arrKey] = []);
+  host.innerHTML = list.length ? list.map((entry,idx)=>diseaseEntryHTML(entry,idx,arrKey)).join('') : '<div class="caption">Brak.</div>';
+  host.querySelectorAll('button[data-rmdisease]').forEach(b=>{
+    b.addEventListener('click', e=>{
+      const key = e.target.getAttribute('data-rmdisease'), i = parseInt(e.target.getAttribute('data-i'));
+      char[key].splice(i,1); save(); renderAll();
+    });
+  });
+  host.querySelectorAll('.diseaseStageList .stageRow').forEach(row=>{
+    row.addEventListener('click', e=>{
+      const wrap = e.target.closest('.diseaseStageList');
+      const key = wrap.getAttribute('data-stageset'), i = parseInt(wrap.getAttribute('data-i'));
+      const clicked = parseInt(row.getAttribute('data-stage'));
+      const cur = char[key][i].stage || 0;
+      const next = Math.max(0, clicked===cur ? clicked-1 : clicked);
+      char[key][i].stage = next; save(); renderAll();
+    });
+  });
+}
+function renderDiseases(){
+  renderDiseaseList('diseaseStartList', 'diseasesStart');
+  renderDiseaseList('diseaseAcqList', 'diseasesAcquired');
+}
+/* how many wounds are currently sitting at each of the 3 severity levels */
+function woundLevelCounts(){
+  const counts = [0,0,0];
+  (char.wounds||[]).forEach(w=> counts[(w.level||1)-1]++);
+  return counts;
+}
+function renderWounds(){
+  const list = char.wounds || (char.wounds = []);
+  const counts = woundLevelCounts();
+  el('woundCountsHeader').innerHTML = WOUND_TIERS.map((wt,i)=>
+    '<span class="'+(counts[i]>=wt.max?'full':'')+'" title="'+esc(wt.desc+' '+wt.effect)+'">'+esc(wt.label.split(' — ')[0])+': <b>'+counts[i]+'/'+wt.max+'</b></span>'
+  ).join('');
+  const rowsHost = el('woundRows'); rowsHost.innerHTML = "";
+  list.forEach((w,i)=>{
+    const lvl = w.level||1;
+    const row = document.createElement('div'); row.className = 'woundItem';
+    row.innerHTML =
+      '<div class="woundItemHead">'+
+        '<input type="text" class="wtext" data-i="'+i+'" value="'+esc(w.text||"")+'" placeholder="opis rany, np. złamana ręka">'+
+        '<select class="wtrait" data-i="'+i+'"><option value="">— Trait —</option>'+
+          TRAIT_LIST.map(t=>'<option value="'+t+'" '+(w.trait===t?'selected':'')+'>'+t+'</option>').join('')+
+        '</select>'+
+        '<button class="rm woundRm" data-rm-i="'+i+'" title="Wylecz / usuń">✕</button>'+
+      '</div>'+
+      /* one pip per severity Level, stacked vertically, same round fill-pip look as HP/Stress/Hope —
+         checking Poziom 3 also checks 1 and 2 (you pass through them on the way up); every level's
+         effect text is always visible, on its own line. */
+      '<div class="diseaseStageList woundStageList" data-i="'+i+'">'+
+        WOUND_TIERS.map((wt,t)=>{
+          const n = t+1;
+          return '<div class="stageRow'+(n===lvl?' cur':'')+'" data-lvl="'+n+'"><div class="pip round'+(n<=lvl?' checked':'')+'"></div><span><b>Poziom '+n+':</b> '+kw(wt.effect)+'</span></div>';
+        }).join('')+
+      '</div>';
+    rowsHost.appendChild(row);
+  });
+  rowsHost.querySelectorAll('.wtext').forEach(inp=>{
+    inp.addEventListener('input', e=>{ char.wounds[parseInt(e.target.getAttribute('data-i'))].text = e.target.value; save(); });
+  });
+  rowsHost.querySelectorAll('.wtrait').forEach(sel=>{
+    sel.addEventListener('change', e=>{
+      char.wounds[parseInt(e.target.getAttribute('data-i'))].trait = e.target.value;
+      save(); renderModPanel(); renderTraits(); renderDefense();
+    });
+  });
+  rowsHost.querySelectorAll('.woundRm').forEach(b=>{
+    b.addEventListener('click', e=>{
+      char.wounds.splice(parseInt(e.target.getAttribute('data-rm-i')),1); save(); renderAll();
+    });
+  });
+  rowsHost.querySelectorAll('.woundStageList .stageRow').forEach(row=>{
+    row.addEventListener('click', e=>{
+      const wrap = e.target.closest('.woundStageList'); const i = parseInt(wrap.getAttribute('data-i'));
+      const clicked = parseInt(row.getAttribute('data-lvl'));
+      const cur = char.wounds[i].level||1;
+      const next = Math.max(1, clicked===cur ? clicked-1 : clicked);
+      /* non-blocking heads-up when the target level's bucket is already full — matches the old
+         per-tier "this escalates" warning, but no longer refuses the click: the flat list lets you
+         freely reassign a wound's level, the alert is just the game-rule reminder. */
+      if(next>cur){
+        const wouldBe = woundLevelCounts(); wouldBe[cur-1] = Math.max(0,wouldBe[cur-1]-1); wouldBe[next-1]++;
+        const tier = WOUND_TIERS[next-1];
+        if(wouldBe[next-1] > tier.max){
+          if(next < WOUND_TIERS.length) alert('Poziom "'+tier.label+'" będzie przepełniony. Zgodnie z zasadami rozważ, czy któraś z ran tego Poziomu nie powinna się połączyć z tą, cięższą raną.');
+          else alert('Poziom 3 jest już zapełniony! Kolejna poważna rana przy zapełnionym najwyższym Poziomie oznacza Death Move (patrz zasady Daggerheart) — postać jest bliska śmierci lub trwałego wyłączenia z akcji.');
+        }
+      }
+      char.wounds[i].level = next; save(); renderAll();
+    });
+  });
+}
+/* =========================================================================
+   BACK SIDE — TIERS & ADVANCEMENTS
+   ========================================================================= */
+const ADV_OPTIONS = [
+  {key:'traits2', label:'+1 do dwóch nieoznaczonych Traitów', repeat:3,
+   desc:'Wybierz dwa Traity, które NIE są jeszcze oznaczone, i podnieś każdy o +1 na stałe. Oznaczenia czyszczą się automatycznie na progu poziomu 5 i 8.', picker:'traits'},
+  {key:'hp', label:'Stały +1 slot Hit Points', repeat:3, desc:'Twoja bazowa pula HP rośnie trwale o 1.'},
+  {key:'stress', label:'Stały +1 slot Stress', repeat:3, desc:'Twoja bazowa pula Stress rośnie trwale o 1.'},
+  {key:'exp2', label:'Stały +1 do dwóch Doświadczeń', repeat:3,
+   desc:'Wskaż dwa swoje Doświadczenia — karta doliczy im +1 na stałe.', picker:'exp'},
+  {key:'trick', label:'Dodatkowa Sztuczka (Twój Tier lub niżej)', repeat:3,
+   desc:'Weź Sztuczkę z dowolnej Specjalizacji o Tierze nie wyższym niż Twój. Ten wybór zawsze kosztuje jeden z dwóch wyborów tego levelu (darmowa Sztuczka Twojej Specjalizacji jest osobno — zielony panel wyżej).', picker:'trick'},
+  {key:'evasion', label:'Stały +1 do Evasion', repeat:3, desc:'Twoje bazowe Evasion rośnie trwale o 1.'},
+  {key:'extraCecha', label:'Dodatkowa Cecha (Pochodzenia lub Profesji)', repeat:2, globalCap:2,
+   desc:'Weź dodatkową Cechę — swojego Pochodzenia albo swojej Profesji, dowolną, której jeszcze nie masz. Łącznie możesz to zrobić 2 razy w czasie całej kariery postaci, niezależnie w którym Tierze.', picker:'extraCecha'},
+  {key:'proficiency', label:'+1 Proficiency', repeat:3,
+   desc:'Zwiększa liczbę kości obrażeń Twojej broni o 1 (a także liczbę użyć Cech „Proficiency×/sesję”). UWAGA: zużywa OBA wybory tego levelu.'},
+];
+function tierLabel(n){ return {2:"Tier 2 · Poziomy 2–4",3:"Tier 3 · Poziomy 5–7",4:"Tier 4 · Poziomy 8–10"}[n]; }
+function ensureAdvState(tier){
+  if(!char.adv[tier]) char.adv[tier] = {};
+  ADV_OPTIONS.forEach(o=>{ if(!char.adv[tier][o.key]) char.adv[tier][o.key] = {count:0, picks:[]}; });
+}
+function renderBack(){
+  const d = derived();
+  el('backName').textContent = char.name || '(bez imienia)';
+  el('backLevel').textContent = char.level;
+  el('backSpec').textContent = char.spec || '—';
+  el('backProf').textContent = d.proficiency;
+  el('tierNum2').textContent = 'T'+tierForLevel(char.level);
+  const host = el('tierBlocksHost'); host.innerHTML = "";
+  [2,3,4].forEach(tier=>{
+    ensureAdvState(tier);
+    const block = document.createElement('div'); block.className = 'tierBlock';
+    const grantSpecTricks = wb.tricks.filter(t=>(t.specList.includes(char.spec)||t.specList.includes("Uniwersalna")) && t.tier<=tier);
+    block.innerHTML =
+      '<div class="tbh"><div class="ttitle display" style="font-size:13px;">'+tierLabel(tier)+'</div>'+
+      '<div class="tsub">Na każdym levelu w tym Tierze: weź 2 z poniższych opcji + zawsze 1 darmową Sztuczkę swojej Specjalizacji.</div></div>'+
+      '<div class="tbb"><div class="freeGrant">'+
+        '<div class="fh">✓ Darmowa Sztuczka tego Tieru (nie liczy się do 2 wyborów) — Specjalizacja: '+esc(char.spec||'(nie wybrano)')+', Tier ≤ '+tier+'</div>'+
+        '<select class="wide freeTrickSelect" data-tier="'+tier+'"><option value="">— wybierz darmową Sztuczkę —</option>'+
+        grantSpecTricks.map(t=>'<option value="'+esc(t.name)+'">[T'+t.tier+'] '+esc(t.name)+' — '+esc(t.cost)+'</option>').join('')+
+        '</select></div><div id="advRows-'+tier+'"></div></div>';
+    host.appendChild(block);
+    const rowsHost = block.querySelector('#advRows-'+tier);
+    ADV_OPTIONS.forEach(opt=>{
+      const state = char.adv[tier][opt.key];
+      const row = document.createElement('div'); row.className = 'advRow';
+      let boxes = '';
+      for(let i=0;i<opt.repeat;i++) boxes += '<div class="sb '+(i<state.count?'checked':'')+'" data-tier="'+tier+'" data-key="'+opt.key+'" data-idx="'+i+'">'+(i<state.count?'✓':'')+'</div>';
+      row.innerHTML = '<div class="advHead"><div class="label">'+opt.label+'</div><div class="slotBoxes">'+boxes+'</div></div>'+
+        '<div class="advDesc">'+kw(opt.desc)+'</div>'+
+        '<div class="inlinePick '+(state.count>0&&opt.picker?'show':'')+'" data-picker-host="'+tier+'-'+opt.key+'"></div>';
+      rowsHost.appendChild(row);
+    });
+    block.querySelector('.freeTrickSelect').addEventListener('change', e=>{
+      const val = e.target.value; if(!val) return;
+      addTrickToChar(wb.tricks.find(x=>x.name===val), 'Darmowa (Tier '+tier+')');
+      e.target.value = ""; save(); renderAll();
+    });
+  });
+  host.querySelectorAll('.sb').forEach(sb=>{
+    sb.addEventListener('click', e=>{
+      const tier = e.target.getAttribute('data-tier'), key = e.target.getAttribute('data-key');
+      const idx = parseInt(e.target.getAttribute('data-idx'));
+      const state = char.adv[tier][key], opt = ADV_OPTIONS.find(o=>o.key===key);
+      if(idx < state.count){ state.count = idx; applyAdvSideEffect(opt,-1); }
+      else {
+        if(opt.globalCap!==undefined && advGlobalCount(key) >= opt.globalCap){
+          alert('Tę opcję możesz wybrać maksymalnie '+opt.globalCap+' razy w czasie całej kariery postaci (we wszystkich Tierach razem).');
+          return;
+        }
+        state.count = idx+1; applyAdvSideEffect(opt,+1);
+      }
+      save(); renderAll();
+    });
+  });
+  renderPickers(); renderFooterTotals();
+}
+/* how many times an ADV_OPTIONS entry with a globalCap has been picked across ALL Tier blocks
+   (each Tier block keeps its own {count,...} state, so a career-wide cap has to sum across them) */
+function advGlobalCount(key){
+  let sum = 0;
+  [2,3,4].forEach(t=>{ sum += (char.adv[t] && char.adv[t][key] && char.adv[t][key].count) || 0; });
+  return sum;
+}
+function applyAdvSideEffect(opt, dir){
+  if(opt.key==='hp') char.hpBase = Math.max(1,(char.hpBase||6)+dir);
+  if(opt.key==='stress') char.stressBase = Math.max(1,(char.stressBase||6)+dir);
+  if(opt.key==='evasion') char.evasionAdv = (char.evasionAdv||0)+dir;
+  if(opt.key==='proficiency') char.proficiencyAdv = Math.max(0,(char.proficiencyAdv||0)+dir);
+}
+function renderPickers(){
+  document.querySelectorAll('[data-picker-host]').forEach(host=>{
+    const [tier,key] = host.getAttribute('data-picker-host').split('-');
+    const opt = ADV_OPTIONS.find(o=>o.key===key), state = char.adv[tier][key];
+    host.classList.toggle('show', state.count>0 && !!opt.picker);
+    if(!opt.picker) return;
+    if(opt.picker==='traits'){
+      host.innerHTML = TRAIT_LIST.map(t=>'<label style="font-size:11px;margin-right:10px;"><input type="checkbox" data-tt="'+t+'" data-tier="'+tier+'" '+((state.traitsChosen||[]).includes(t)?'checked':'')+'> '+t+'</label>').join('')+
+        '<div class="pickedEcho">Zaznacz dokładnie 2 Traity na każdy zaznaczony slot.</div>';
+      host.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+        cb.addEventListener('change', e=>{
+          const t = e.target.getAttribute('data-tt');
+          state.traitsChosen = state.traitsChosen || [];
+          if(e.target.checked){ state.traitsChosen.push(t); char.traitsAdvBonus[t] = (char.traitsAdvBonus[t]||0)+1; }
+          else { const i = state.traitsChosen.indexOf(t); if(i>-1) state.traitsChosen.splice(i,1); char.traitsAdvBonus[t] = Math.max(0,(char.traitsAdvBonus[t]||0)-1); }
+          char.traitsMarked[t] = char.traitsAdvBonus[t] > 0;
+          save(); renderTraits(); renderCarry(); renderModPanel(); renderDefense();
+        });
+      });
+    } else if(opt.picker==='extraCecha'){
+      let html = '';
+      for(let i=0;i<state.count;i++){
+        const slotKey = 'extraCecha::'+tier+'::'+i;
+        const excl = excludedCechaNames(slotKey);
+        const list = allExtraCechaOptions(excl);
+        const cur = (char.borrowed && char.borrowed[slotKey]) || "";
+        html += '<div class="borrowBox"><div class="borrowHead">Dodatkowa Cecha #'+(i+1)+'</div>'+
+          '<select class="wide borrowPick" data-borrowkey="'+slotKey+'"><option value="">— wybierz Cechę (Pochodzenie lub Profesja) —</option>'+
+          groupedOptions(list, x=>x.group, x=>x.cecha.name+" — "+x.cecha.cost, x=>x.value, cur)+'</select>';
+        const b = borrowedCecha(slotKey);
+        if(b){
+          html += costBlock(b.cecha.cost)+'<div class="featBox" style="margin-bottom:0;">'+kw(b.cecha.effect)+'</div>';
+          if(isFreeTraitChoice(b.cecha)) html += traitPickBlock(slotKey, b.cecha);
+          if(b.cecha.expCount>0) html += expPickBlock(slotKey, b.cecha.name, b.cecha.expBonus||1, b.cecha.expCount);
+        }
+        html += '</div>';
+      }
+      host.innerHTML = html;
+      bindBorrowPicks(host); bindExpPicks(host); bindTraitPicks(host);
+    } else if(opt.picker==='exp'){
+      let html = '';
+      for(let i=0;i<state.count;i++) html += expPickBlock("adv::"+tier+"::exp2::"+i, "Advancement "+(i+1)+" (Tier "+tier+")", 1, 2);
+      host.innerHTML = html;
+      bindExpPicks(host);
+    } else if(opt.picker==='trick'){
+      const opts = wb.tricks.filter(t=>t.tier<=parseInt(tier));
+      host.innerHTML = '<select class="wide" data-tier="'+tier+'"><option value="">— wybierz Sztuczkę (dowolna Specjalizacja, Tier ≤ '+tier+') —</option>'+
+        groupedOptions(opts, t=>t.specList.join('/'), t=>'[T'+t.tier+'] '+t.name+' — '+t.cost, t=>t.name, "")+'</select>';
+      host.querySelector('select').addEventListener('change', e=>{
+        const t = wb.tricks.find(x=>x.name===e.target.value);
+        if(t){ addTrickToChar(t,'Advancement T'+tier); save(); renderAll(); }
+        e.target.value = "";
+      });
+    }
+  });
+}
+function renderGamble(){ el('f_gamble').value = char.gamble; }
+function renderFooterTotals(){
+  const d = derived();
+  el('footerTotals').innerHTML =
+    '<span><b>'+d.hpMax+'</b> HP</span><span><b>'+d.stressMax+'</b> Stress</span>'+
+    '<span><b>'+d.hopeMax+'</b> Hope</span><span><b>'+d.evasion+'</b> Evasion</span>'+
+    '<span><b>'+d.armorScore+'</b> Armor Score</span><span><b>'+d.thrMajor+' / '+d.thrSevere+'</b> progi</span>'+
+    '<span><b>'+d.proficiency+'</b> Proficiency</span><span><b>'+char.tricks.length+'</b> Sztuczek</span>'+
+    '<span><b>'+char.experiences.length+'</b> Doświadczeń</span>';
+}
+function addTrickToChar(t, source){
+  if(!t || char.tricks.find(x=>x.name===t.name)) return;
+  char.tricks.push({name:t.name, tier:t.tier, spec:t.specList.join('/'), cost:t.cost, effect:t.effect, mods:t.mods||{},
+                    expBonus:t.expBonus||0, expCount:t.expCount||0, grant:t.grant||"", fluff:t.fluff||"", source});
+}
+function mainTraitName(){ return TRAIT_LIST.find(t=>char.traitsBase[t]===2) || ""; }
+
+/* =========================================================================
+   MASTER RENDER + SAVE
+   ========================================================================= */
+function renderAll(){
+  el('f_name').value = char.name; el('f_pronouns').value = char.pronouns;
+  el('f_origin').value = char.origin; el('f_profession').value = char.profession;
+  el('f_spec').value = char.spec; el('f_level').value = char.level;
+  el('tierNum').textContent = 'T'+tierForLevel(char.level);
+  el('f_notes').value = char.notes; el('f_gamble').value = char.gamble;
+  el('armorPick').value = char.armorName; el('helmetPick').value = char.helmetName;
+  renderHeaderTips();
+  syncFreeExpGrants();
+  syncGrantedTricks();
+  renderDefense(); renderArmorPanel(); renderTraits(); renderCechyPanel(); renderModPanel();
+  renderExpList(); renderTrickList(); renderWeaponsList(); renderInvList();
+  renderPips(); renderDiseases(); renderWounds(); renderCarry(); refreshTrickPicker(); renderEngine(); renderBack();
+}
+function renderHeaderTips(){
+  const map = [['f_origin', wb.origins[char.origin]], ['f_profession', wb.professions[char.profession]], ['f_spec', wb.specs[char.spec]]];
+  map.forEach(([id, obj])=>{
+    const sel = el(id);
+    if(obj && obj.fluff){ sel.classList.add('hasTip'); sel.setAttribute('data-tip', obj.fluff); }
+    else { sel.classList.remove('hasTip'); sel.removeAttribute('data-tip'); }
+  });
+}
+let saveTimer = null;
+function save(){ clearTimeout(saveTimer); saveTimer = setTimeout(()=>{ Store.set('character-state', char); }, 250); }
+
+/* =========================================================================
+   FILE LOADING
+   ========================================================================= */
+function statusText(){
+  if(!(wb.loaded && eq.loaded)){ const s = el('fileStatus'); s.textContent = 'Brak danych — wgraj plik NeuroHeart_Baza_Zasad_v2.xlsx.'; s.classList.add('bad'); return; }
+  const bits = [
+    'Pochodzenia: '+Object.keys(wb.origins).length, 'Profesje: '+Object.keys(wb.professions).length,
+    'Sztuczki: '+wb.tricks.length, 'Choroby: '+wb.diseases.length, 'Silniki: '+Object.keys(wb.engines||{}).length,
+    'Broń: '+eq.weapons.length, 'Pancerz: '+eq.armors.length, 'Przedmioty: '+eq.items.length
+  ];
+  const s = el('fileStatus'); s.textContent = 'Baza zasad ✔ ('+bits.join(' · ')+')';
+  s.classList.remove('bad');
+}
+async function handleBaza(file){
+  const buf = await file.arrayBuffer();
+  const workbook = XLSX.read(buf, {type:"array"});
+  wb = parseRules(workbook);
+  eq = parseEquip(workbook);
+  await Store.set('workbook-rules', wb);
+  await Store.set('workbook-equip', eq);
+  statusText(); rebuildAllDropdowns(); renderAll();
+  /* overlay stays open until the user closes it manually — see btnFile/skipImport handlers */
+}
+
+/* =========================================================================
+   EVENTS
+   ========================================================================= */
+function bindSimple(id, field, isNum){
+  el(id).addEventListener('input', e=>{ char[field] = isNum ? (parseInt(e.target.value)||0) : e.target.value; save(); });
+}
+bindSimple('f_name','name'); bindSimple('f_pronouns','pronouns'); bindSimple('f_notes','notes'); bindSimple('f_gamble','gamble',true);
+
+document.querySelectorAll('[data-hpstep]').forEach(b=>{
+  b.addEventListener('click', ()=>{ char.hpBase = Math.max(1,(char.hpBase||6)+parseInt(b.getAttribute('data-hpstep')));
+    if(char.hpMarked>char.hpBase) char.hpMarked = char.hpBase; save(); renderPips(); renderFooterTotals(); });
+});
+document.querySelectorAll('[data-stressstep]').forEach(b=>{
+  b.addEventListener('click', ()=>{ char.stressBase = Math.max(1,(char.stressBase||6)+parseInt(b.getAttribute('data-stressstep')));
+    if(char.stressMarked>char.stressBase) char.stressMarked = char.stressBase; save(); renderPips(); renderFooterTotals(); });
+});
+
+el('f_origin').addEventListener('change', e=>{ char.origin = e.target.value; char._originCechaIdx=""; save(); renderAll(); });
+el('f_profession').addEventListener('change', e=>{
+  char.profession = e.target.value; char._professionCechaIdx="";
+  if(wb.professions[char.profession]){ char.evasionBase = wb.professions[char.profession].evasion; char.hpBase = wb.professions[char.profession].hp; }
+  save(); renderAll();
+});
+el('f_spec').addEventListener('change', e=>{ char.spec = e.target.value; save(); renderAll(); });
+el('f_level').addEventListener('change', e=>{ char.level = parseInt(e.target.value); save(); rebuildAllDropdowns(); renderAll(); });
+
+el('armorPick').addEventListener('change', e=>{
+  adjGamble(char.armorUnitPrice||0); /* refund previously equipped armor */
+  char.armorName = e.target.value;
+  const src = eq.armors.find(a=>a.name===char.armorName);
+  char.armorUnitPrice = src?(src.price||0):0;
+  adjGamble(-char.armorUnitPrice);
+  const d = derived();
+  if(char.armorMarked>d.armorScore) char.armorMarked = d.armorScore;
+  save(); renderAll();
+});
+el('helmetPick').addEventListener('change', e=>{
+  adjGamble(char.helmetUnitPrice||0); /* refund previously equipped helmet */
+  char.helmetName = e.target.value;
+  const src = eq.helmets.find(a=>a.name===char.helmetName);
+  char.helmetUnitPrice = src?(src.price||0):0;
+  adjGamble(-char.helmetUnitPrice);
+  save(); renderAll();
+});
+el('armorCarried').addEventListener('change', e=>{ char.armorStashed = !e.target.checked; save(); renderCarry(); renderDefense(); });
+el('helmetCarried').addEventListener('change', e=>{ char.helmetStashed = !e.target.checked; save(); renderCarry(); renderDefense(); });
+
+el('addExp').addEventListener('click', ()=>{ char.experiences.push({name:"",level:2}); save(); renderExpList(); renderBack(); });
+el('weaponCatPicker').addEventListener('change', refreshWeaponPicker);
+el('invCatPicker').addEventListener('change', refreshInvPicker);
+el('addWeapon').addEventListener('click', ()=>{
+  const v = el('weaponPicker').value; if(!v) return;
+  const [kind,name] = v.split("::");
+  const src = eq.weapons.find(w=>w.kind===kind && w.name===name); if(!src) return;
+  const two = isTwoHanded(src);
+  const mainTaken = char.weapons.some(w=>!w.stashed && (isTwoHanded(w) || w.primary));
+  const offTaken = char.weapons.some(w=>!w.stashed && (isTwoHanded(w) || w.offhand));
+  let primary = false, offhand = false;
+  if(two){ primary = true; offhand = true; }
+  else if(!mainTaken){ primary = true; }
+  else if(!offTaken){ offhand = true; }
+  char.weapons.push(Object.assign({}, src, {modeIdx:0, rounds:"", mags:"", stashed:false, primary, offhand, unitPrice:src.price||0}));
+  adjGamble(-(src.price||0));
+  el('weaponPicker').value = ""; save(); renderAll();
+});
+el('addInv').addEventListener('click', ()=>{
+  const name = el('invPicker').value; if(!name) return;
+  const src = eq.items.find(i=>i.name===name); if(!src) return;
+  char.inventory.push({name:src.name, qty:1, weight:src.weight, effect:src.effect, durable:src.durable, mods:src.mods, custom:false, stashed:false, unitPrice:src.price||0});
+  adjGamble(-(src.price||0));
+  el('invPicker').value = ""; save(); renderAll();
+});
+el('addInvBlank').addEventListener('click', ()=>{ char.inventory.push({name:"",qty:1,weight:"",effect:"",durable:false,mods:{},custom:true,stashed:false,unitPrice:0}); save(); renderInvList(); });
+
+el('trickSpecFilter').addEventListener('change', refreshTrickPicker);
+el('trickTierFilter').addEventListener('change', refreshTrickPicker);
+el('addTrick').addEventListener('click', ()=>{
+  const name = el('trickPicker').value; if(!name) return;
+  addTrickToChar(wb.tricks.find(x=>x.name===name), 'Startowa/ręczna'); save(); renderAll();
+});
+el('addDiseaseAcq').addEventListener('click', ()=>{
+  const name = el('diseaseAcqPicker').value; if(!name) return;
+  if(char.diseasesAcquired.find(x=>x.name===name)){ alert('Ta choroba już jest na liście nabytych.'); return; }
+  char.diseasesAcquired.push({name, stage:0}); el('diseaseAcqPicker').value = ""; save(); renderAll();
+});
+el('addWoundBtn').addEventListener('click', ()=>{
+  char.wounds.push({text:"", trait:"", level:1}); save(); renderAll();
+});
+el('cechaOriginPick').addEventListener('change', e=>{ char._originCechaIdx = e.target.value; save(); renderAll(); });
+el('cechaProfessionPick').addEventListener('change', e=>{ char._professionCechaIdx = e.target.value; save(); renderAll(); });
+
+function toggleFlip(){ el('flipper').classList.toggle('flipped'); }
+el('btnFlip').addEventListener('click', toggleFlip);
+el('btnFlip2').addEventListener('click', toggleFlip);
+el('btnFlip3').addEventListener('click', toggleFlip);
+
+el('btnRollDisease').addEventListener('click', ()=>{
+  const pool = wb.diseases.filter(isBackgroundDisease);
+  if(pool.length===0){ alert('Najpierw wgraj plik z zasadami (.xlsx) — brak chorób wrodzonych (k20) w załadowanych danych.'); return; }
+  const roll = Math.floor(Math.random()*20)+1;
+  const d = pool.find(x=>x.nr===roll) || pool[roll-1];
+  if(char.diseasesStart.find(x=>x.name===d.name)){ alert('Rzut k20: '+roll+' → '+d.name+' — ta choroba już jest na liście, nie dodaję duplikatu.'); return; }
+  char.diseasesStart.push({name:d.name, stage:0}); save(); renderAll();
+  alert('Rzut k20: '+roll+' → '+d.name);
+});
+el('btnFile').addEventListener('click', ()=> el('importOverlay').classList.remove('hidden'));
+el('fileInputBaza').addEventListener('change', e=>{ if(e.target.files[0]) handleBaza(e.target.files[0]); });
+el('skipImport').addEventListener('click', ()=> el('importOverlay').classList.add('hidden'));
+
+el('btnExport').addEventListener('click', ()=>{
+  const blob = new Blob([JSON.stringify(char,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = (char.name||'postac')+'.json'; a.click();
+  URL.revokeObjectURL(url);
+});
+el('btnImportChar').addEventListener('click', ()=> el('charFileInput').click());
+el('charFileInput').addEventListener('change', async e=>{
+  const f = e.target.files[0]; if(!f) return;
+  try{ char = migrateCharSchema(Object.assign(freshChar(), JSON.parse(await f.text()))); save(); rebuildAllDropdowns(); renderAll(); }
+  catch(err){ alert('Nieprawidłowy plik karty.'); }
+});
+el('btnReset').addEventListener('click', ()=>{
+  if(!confirm('Na pewno wyczyścić całą kartę? Tej operacji nie można cofnąć.')) return;
+  char = freshChar(); save(); rebuildAllDropdowns(); renderAll();
+});
+
+/* =========================================================================
+   SCHEMA MIGRATION (older saved cards)
+   ========================================================================= */
+function migrateCharSchema(c){
+  /* HP/Stress/Hope/Armor pips used to be arrays of independently-toggled indices; they're now a single
+     fill-from-the-left count (see makeFillPipRow). A saved card from before this change gets its old
+     marks folded down to a count — how many were marked, not which ones, since the new model only tracks
+     "how far up" the row is filled. */
+  if(Array.isArray(c.hpChecked)){ c.hpMarked = c.hpChecked.length; delete c.hpChecked; }
+  if(Array.isArray(c.stressChecked)){ c.stressMarked = c.stressChecked.length; delete c.stressChecked; }
+  if(Array.isArray(c.hopeChecked)){ c.hopeMarked = c.hopeChecked.length; delete c.hopeChecked; }
+  if(Array.isArray(c.armorPipsChecked)){ c.armorMarked = c.armorPipsChecked.length; delete c.armorPipsChecked; }
+  if(c.hpMarked===undefined) c.hpMarked = 0;
+  if(c.stressMarked===undefined) c.stressMarked = 0;
+  if(c.hopeMarked===undefined) c.hopeMarked = 0;
+  if(c.armorMarked===undefined) c.armorMarked = 0;
+  if(c.evasion!==undefined && c.evasionBase===undefined){ c.evasionBase = c.evasion; delete c.evasion; }
+  if(c.hpMax!==undefined && c.hpBase===undefined){ c.hpBase = c.hpMax; delete c.hpMax; }
+  if(c.stressMax!==undefined && c.stressBase===undefined){ c.stressBase = c.stressMax; delete c.stressMax; }
+  if(c.proficiencyBase!==undefined){ c.proficiencyAdv = Math.max(0,(c.proficiencyBase||1)-1); delete c.proficiencyBase; }
+  if(c.proficiency!==undefined){ delete c.proficiency; }
+  if(c.proficiencyAdv===undefined) c.proficiencyAdv = 0;
+  if(c.armor && typeof c.armor==='object'){ if(!c.armorName && c.armor.name) c.armorName = c.armor.name; delete c.armor; }
+  if(!Array.isArray(c.weapons)) c.weapons = [];
+  c.weapons.forEach(w=>{ if(!w.dmg || !Array.isArray(w.dmg)) w.dmg = [{mode:"Atak", v:w.dmg||""}]; if(!w.mods) w.mods = {}; if(w.stashed===undefined) w.stashed = false;
+    /* broń palna v3 (3 tryby ataku, jedna kość obrażeń): karta zapisana przed tą zmianą ma broń palną
+       w starym 4-trybowym kształcie (brak pola "modes", albo dmg z >1 wpisem Krótka/Długa seria) — odśwież
+       ją z aktualnych reguł po nazwie, żeby nie pokazywać nieaktualnych kości/naboi. */
+    if(w.kind==="gun" && (!Array.isArray(w.modes) || (w.dmg||[]).length>1)){
+      const src = (eq.weapons||[]).find(x=>x.kind==="gun" && x.name===w.name);
+      if(src){ w.dmg = src.dmg; w.modes = src.modes; w.ammoNote = src.ammoNote; w.modesCompact = null; }
+      else { w.modes = w.modes || ["Pojedynczy"]; w.dmg = [w.dmg && w.dmg[0] ? w.dmg[0] : {mode:"Pojedynczy", v:""}]; }
+    }
+    if(w.kind==="gun" && !w.modesCompact) w.modesCompact = buildModesCompact(w);
+    /* cards saved before Gamble-tracking existed have no purchase snapshot — backfill from the current
+       equipment price list so future removal still refunds a sensible amount */
+    if(w.unitPrice===undefined){ const src = (eq.weapons||[]).find(x=>x.kind===w.kind && x.name===w.name); w.unitPrice = src?(src.price||0):0; } });
+  if(!Array.isArray(c.inventory)) c.inventory = [];
+  c.inventory.forEach(it=>{ if(it.mods===undefined) it.mods = {}; if(it.durable===undefined) it.durable = false; if(it.stashed===undefined) it.stashed = false;
+    if(it.unitPrice===undefined){ const src = (eq.items||[]).find(x=>x.name===it.name); it.unitPrice = (!it.custom && src) ? (src.price||0) : 0; } });
+  if(!Array.isArray(c.experiences)) c.experiences = [];
+  c.experiences.forEach(e=>{ if(e.level===undefined){ e.level = (e.base!==undefined?e.base:2)+(e.bonus||0); } delete e.base; delete e.bonus; });
+  (c.tricks||[]).forEach(t=>{ if(!t.mods) t.mods = {}; if(t.expCount===undefined) t.expCount = 0; if(t.expBonus===undefined) t.expBonus = 0; if(t.grant===undefined) t.grant = ""; });
+  if(!c.expPicks || typeof c.expPicks !== 'object') c.expPicks = {};
+  if(!c.borrowed || typeof c.borrowed !== 'object') c.borrowed = {};
+  if(!c.traitPicks || typeof c.traitPicks !== 'object') c.traitPicks = {};
+  /* older cards used a single "secondCecha" advancement (an extra Profession Cecha only, max once) —
+     migrate any existing pick into slot 0 of the new, more general "extraCecha" advancement
+     (Origin OR Profession, up to twice) so nobody's existing choice gets lost. */
+  if(c.secondCecha && c.borrowed.secondCecha){
+    const newKey = "extraCecha::2::0";
+    if(!c.borrowed[newKey]){
+      const parts = String(c.borrowed.secondCecha).split("::");
+      c.borrowed[newKey] = "profession::"+parts[0]+"::"+parts[1];
+      if(c.expPicks.secondCecha){ c.expPicks[newKey] = c.expPicks.secondCecha; delete c.expPicks.secondCecha; }
+      if(!c.adv || typeof c.adv !== 'object') c.adv = {};
+      if(!c.adv[2]) c.adv[2] = {};
+      if(!c.adv[2].extraCecha) c.adv[2].extraCecha = {count:0, picks:[]};
+      c.adv[2].extraCecha.count = Math.max(c.adv[2].extraCecha.count||0, 1);
+    }
+    delete c.borrowed.secondCecha;
+  }
+  delete c.secondCecha;
+  if(c.evasionAdv===undefined) c.evasionAdv = 0;
+  if(c.armorStashed===undefined) c.armorStashed = false;
+  if(c.helmetStashed===undefined) c.helmetStashed = false;
+  if(c.gamble===undefined) c.gamble = 150;
+  if(c.armorUnitPrice===undefined){ const src = (eq.armors||[]).find(a=>a.name===c.armorName); c.armorUnitPrice = src?(src.price||0):0; }
+  if(c.helmetUnitPrice===undefined){ const src = (eq.helmets||[]).find(a=>a.name===c.helmetName); c.helmetUnitPrice = src?(src.price||0):0; }
+  if(!c._materializedGrants || typeof c._materializedGrants !== 'object') c._materializedGrants = {};
+  if(!c._engine || typeof c._engine !== 'object') c._engine = {value:0, tokens:0, fartUsed:0};
+  if(c._engine.value===undefined) c._engine.value = 0;
+  if(c._engine.tokens===undefined) c._engine.tokens = 0;
+  if(c._engine.fartUsed===undefined) c._engine.fartUsed = 0;
+  /* wounds used to live in three separate tier buckets {t1,t2,t3}; they're now one flat list with a
+     per-wound "level" field (1-3) driven by the fill-left severity ticks — fold the old buckets in. */
+  if(c.wounds && !Array.isArray(c.wounds) && typeof c.wounds === 'object'){
+    const flat = [];
+    WOUND_TIERS.forEach((wt,idx)=>{ (Array.isArray(c.wounds[wt.key])?c.wounds[wt.key]:[]).forEach(w=> flat.push({text:w.text||"", trait:w.trait||"", level:idx+1})); });
+    c.wounds = flat;
+  }
+  if(!Array.isArray(c.wounds)) c.wounds = [];
+  c.wounds.forEach(w=>{ if(w.text===undefined) w.text=""; if(w.trait===undefined) w.trait=""; if(!w.level) w.level=1; });
+  /* older cards had a single char.disease/char.diseaseStage — split it into the two new lists.
+     A disease with Nr (k20) in the loaded rules is "wrodzona" (background); anything else (or if the
+     rules aren't loaded yet to tell) defaults to "wrodzona" too, since that's the closest equivalent
+     of the old single slot — the player can always re-add it to the right list by hand. */
+  if(!Array.isArray(c.diseasesStart)) c.diseasesStart = [];
+  if(!Array.isArray(c.diseasesAcquired)) c.diseasesAcquired = [];
+  if(c.disease){
+    const d = wb.diseases.find(x=>x.name===c.disease);
+    const stage = c.diseaseStage||0;
+    const target = (d && !isBackgroundDisease(d)) ? c.diseasesAcquired : c.diseasesStart;
+    if(!target.find(x=>x.name===c.disease)) target.push({name:c.disease, stage});
+  }
+  delete c.disease; delete c.diseaseStage;
+  delete c.thrMajor; delete c.thrSevere; delete c.armorScore; delete c.inv;
+  return c;
+}
+
+/* =========================================================================
+   INIT
+   ========================================================================= */
+async function init(){
+  const storedRules = await Store.get('workbook-rules');
+  const storedEquip = await Store.get('workbook-equip');
+  const storedChar = await Store.get('character-state');
+  if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
+  if(storedEquip){ eq = storedEquip; eq.loaded = true; }
+  if(storedChar){ char = migrateCharSchema(Object.assign(freshChar(), storedChar)); }
+  statusText(); initTooltips();
+  if(!(wb.loaded && eq.loaded)) el('importOverlay').classList.remove('hidden');
+  rebuildAllDropdowns(); renderAll();
+}
+init();
+</script>
+</body>
+</html>
