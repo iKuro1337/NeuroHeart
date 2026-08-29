@@ -2243,15 +2243,37 @@ function statusText(){
   const s = el('fileStatus'); s.textContent = 'Baza zasad ✔ ('+bits.join(' · ')+')';
   s.classList.remove('bad');
 }
-async function handleBaza(file){
-  const buf = await file.arrayBuffer();
+async function loadWorkbookFromBuffer(buf){
   const workbook = XLSX.read(buf, {type:"array"});
   wb = parseRules(workbook);
   eq = parseEquip(workbook);
   await Store.set('workbook-rules', wb);
   await Store.set('workbook-equip', eq);
   statusText(); rebuildAllDropdowns(); renderAll();
+}
+async function handleBaza(file){
+  const buf = await file.arrayBuffer();
+  await loadWorkbookFromBuffer(buf);
   /* overlay stays open until the user closes it manually — see btnFile/skipImport handlers */
+}
+
+/* =========================================================================
+   AUTO-LOAD FROM REPO — gdy karta jest hostowana (np. GitHub Pages),
+   próbuje sama wczytać plik .xlsx leżący obok index.html, bez ręcznego
+   wgrywania. Zmień listę poniżej, jeśli zmienisz nazwę pliku bazy zasad.
+   ========================================================================= */
+const AUTO_XLSX_CANDIDATES = ['NeuroHeart_Baza_Zasad_Finalna.xlsx','NeuroHeart_Baza_Zasad_v2.xlsx'];
+async function tryAutoLoadWorkbook(){
+  for(const name of AUTO_XLSX_CANDIDATES){
+    try{
+      const res = await fetch(encodeURI(name), {cache:'no-store'});
+      if(!res.ok) continue;
+      const buf = await res.arrayBuffer();
+      await loadWorkbookFromBuffer(buf);
+      return true;
+    }catch(e){ /* offline / plik:// / 404 — próbujemy kolejnej nazwy albo wgrania ręcznego */ }
+  }
+  return false;
 }
 
 /* =========================================================================
@@ -2487,10 +2509,16 @@ async function init(){
   const storedRules = await Store.get('workbook-rules');
   const storedEquip = await Store.get('workbook-equip');
   const storedChar = await Store.get('character-state');
-  if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
-  if(storedEquip){ eq = storedEquip; eq.loaded = true; }
   if(storedChar){ char = migrateCharSchema(Object.assign(freshChar(), storedChar)); }
-  statusText(); initTooltips();
+  initTooltips();
+  { const s = el('fileStatus'); if(s) s.textContent = 'Ładowanie bazy zasad z repozytorium…'; }
+
+  const autoLoaded = await tryAutoLoadWorkbook();
+  if(!autoLoaded){
+    if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
+    if(storedEquip){ eq = storedEquip; eq.loaded = true; }
+  }
+  statusText();
   if(!(wb.loaded && eq.loaded)) el('importOverlay').classList.remove('hidden');
   rebuildAllDropdowns(); renderAll();
 }
