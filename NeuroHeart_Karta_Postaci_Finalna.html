@@ -724,6 +724,10 @@ function woundTierIdx(key){ return WOUND_TIERS.findIndex(t=>t.key===key); }
    TRACK SHAPE (die / token-pips / dice-pool) and its numeric cap formula, because those are UI mechanics
    with no single-cell spreadsheet equivalent, not narrative content. */
 const ENGINE_TYPE = {"Wojownik":"die", "Ranger":"tokens", "Technik":"tokens", "Cwaniak":"pool"};
+/* Szperacz (Ranger) / Macher (Technik) / Fuksiarz (Cwaniak): wszystkie trzy mają wg arkusza "8. Silniki
+   Specjalizacji" "Ilość Tokenów równa Twojemu największemu współczynnikowi" — max = najwyższa wartość
+   spośród 6 Traitów (nigdy Proficiency). Tylko Żelazny Trep (Wojownik) rośnie inaczej — z Tierem. */
+function engineTraitCap(d){ return Math.max(1, ...TRAIT_LIST.map(t=>d.traits[t].total)); }
 function renderEngine(){
   const host = el('engineHost');
   const type = ENGINE_TYPE[char.spec];
@@ -742,13 +746,12 @@ function renderEngine(){
     for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=char._engine.value?'checked':'')+'" data-engval="'+i+'"></div>';
     track += '<button class="pipBtn" data-engreset="1" title="Reset (długi odpoczynek)">↺</button>';
   } else if(type==='tokens'){
-    /* Szperacz (Ranger) / Macher (Technik): "Ilość Tokenów równa Twojemu największemu współczynnikowi"
-       (arkusz "8. Silniki Specjalizacji") — max = najwyższa wartość spośród 6 Traitów, dla obu Specjalizacji. */
-    const max = Math.max(1, ...TRAIT_LIST.map(t=>d.traits[t].total));
+    const max = engineTraitCap(d);
     if(char._engine.tokens>max) char._engine.tokens=max;
     for(let i=1;i<=max;i++) track += '<div class="pip '+(i<=char._engine.tokens?'checked':'')+'" data-engtok="'+i+'"></div>';
   } else if(type==='pool'){
-    const max = d.proficiency;
+    /* Pula Fuksiarza i tak resetuje się raz na sesję (przycisk niżej) — tylko max się zmienił. */
+    const max = engineTraitCap(d);
     if(char._engine.fartUsed>max) char._engine.fartUsed=max;
     for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=(max-char._engine.fartUsed)?'checked':'')+'" data-engfart="'+i+'"></div>';
     track += '<button class="pipBtn" data-engreset="1" title="Nowa sesja">↺</button>';
@@ -766,7 +769,7 @@ function renderEngine(){
     const i=parseInt(e.target.getAttribute('data-engtok')); char._engine.tokens=(i===char._engine.tokens)?i-1:i; save(); renderEngine();
   }));
   host.querySelectorAll('[data-engfart]').forEach(p=>p.addEventListener('click', e=>{
-    const i=parseInt(e.target.getAttribute('data-engfart')); const max=derived().proficiency; const usedIfClicked = max-i+1;
+    const i=parseInt(e.target.getAttribute('data-engfart')); const max=engineTraitCap(derived()); const usedIfClicked = max-i+1;
     char._engine.fartUsed = (char._engine.fartUsed===usedIfClicked)? usedIfClicked-1 : usedIfClicked; save(); renderEngine();
   }));
   host.querySelectorAll('[data-engreset]').forEach(b=>b.addEventListener('click', ()=>{
