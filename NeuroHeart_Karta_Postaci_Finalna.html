@@ -350,6 +350,69 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .flipBtnWrap{display:flex;justify-content:center;padding:14px;}
 .progLabel{font-size:11px;color:#5C5346;text-align:center;margin-top:2px;}
 
+/* ---------- new front-page header (Daggerheart-style card top) ---------- */
+.hdrGrid{display:grid;grid-template-columns:1.35fr 1fr 1fr .85fr;grid-template-rows:auto auto;
+  grid-template-areas:"left name name level" "left origin carry level";}
+.hdrBlockLeft{grid-area:left;background:linear-gradient(135deg,#2a2420,#181310);border-right:2px solid var(--rust);
+  padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
+.hdrBlockLeft select.headSel{border:none;border-bottom:1px solid #6a5f52;background-color:transparent;
+  color:#F6EFDE;padding:2px 20px 2px 0;min-height:0;width:100%;}
+.hdrBlockLeft select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
+.hdrBlockLeft select.specSel{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;
+  font-size:16px;letter-spacing:.04em;text-transform:uppercase;}
+.hdrBlockLeft select.profSel{font-size:10.5px;color:#D3BE95;margin-top:1px;}
+.hdrNameWrap{grid-area:name;background:#241d18;display:flex;align-items:center;justify-content:center;padding:6px 10px;
+  border-left:1px solid #3a332c;}
+.nameInput2{background:transparent;border:none;border-bottom:1.5px solid #6a5f52;color:#F6EFDE;
+  font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:2px 4px;border-radius:0;min-height:0;}
+.nameInput2:focus{outline:none;border-bottom-color:var(--rust);}
+.nameInput2::placeholder{color:#8f8577;}
+.hdrGrid .hdrCell{grid-area:origin;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;
+  background:#1c1712;border-top:1px solid #3a332c;border-left:1px solid #3a332c;min-width:0;}
+.hdrGrid .hdrCell.hdrCarry{grid-area:carry;}
+.hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:2px;}
+.hdrGrid .hdrCell select.headSel{padding:2px 20px 2px 0;min-height:0;}
+.hdrCarryVal{display:flex;align-items:baseline;gap:5px;color:#F0A177;}
+.hdrCarryVal span:last-child{color:#D3BE95;}
+.hdrBlockRight{grid-area:level;background:linear-gradient(135deg,#2a2420,#181310);border-left:2px solid var(--rust);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 8px;min-width:0;}
+.hdrBlockRight .lv{font-size:9px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;}
+.hdrBlockRight select.mono{width:56px;text-align:center;background:#241d18;color:#F0A177;border:1px solid #4a4239;
+  font-size:20px;font-weight:800;border-radius:5px;min-height:30px;padding:2px 16px 2px 6px;}
+.tierHint2{font-size:9.5px;color:#D3BE95;margin-top:1px;font-weight:700;}
+@media (max-width:640px){
+  .hdrGrid{grid-template-columns:1fr 1fr .7fr;grid-template-areas:"left name level" "left origin level" "carry carry carry";}
+}
+
+/* ---------- Damage & Health: arrow-chained threshold strip ---------- */
+.dmgCaption{font-size:9px;color:#6E634E;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;text-align:center;}
+.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:wrap;margin-bottom:10px;}
+.dmgArrow{background:#fff;border:2px solid var(--teal);padding:6px 16px 6px 10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;min-width:72px;text-align:center;
+  clip-path:polygon(0 0, calc(100% - 11px) 0, 100% 50%, calc(100% - 11px) 100%, 0 100%);margin-right:-10px;position:relative;z-index:1;}
+.dmgArrow .dLabel{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--teal-dark);}
+.dmgArrow .dMark{font-size:8px;color:#6E634E;margin-top:2px;}
+.dmgThrVal{background:#F4EFE2;border:2px solid var(--ink);border-radius:6px;min-width:34px;display:flex;
+  align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--ink);padding:2px 8px;
+  margin:0 3px;position:relative;z-index:0;}
+
+/* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern ---------- */
+.armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:2px;flex:1 1 150px;min-width:130px;}
+
+/* ---------- traits in a single row (per reference layout) ---------- */
+.traitsGrid.oneRow{grid-template-columns:repeat(6,1fr);}
+@media (max-width:900px){.traitsGrid.oneRow{grid-template-columns:repeat(3,1fr);}}
+@media (max-width:560px){.traitsGrid.oneRow{grid-template-columns:repeat(2,1fr);}}
+
+/* ---------- Proficiency: static (read-only) 6-pip display ---------- */
+.pip.static{cursor:default;}
+
+/* ---------- Gamble, tucked into the Ekwipunek panel header ---------- */
+.panel > .ph .phGamble{display:flex;align-items:center;gap:4px;font-size:10px;color:#F6EFDE;text-transform:none;font-weight:600;}
+.panel > .ph .phGamble input{width:56px;text-align:center;font-size:11px;padding:3px 6px;min-height:0;border-radius:6px;
+  border:1px solid rgba(255,255,255,.4);background:#FBF6EA;color:#241E17;}
+
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
   body{background:#fff;padding:0;}
@@ -395,42 +458,30 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
     <!-- ============ FRONT ============ -->
     <div class="face front">
       <div class="sheetHeader">
-        <div class="hdrRow1">
-          <div class="brand">
-            <div class="nameRow">
-              <input class="nameInput" id="f_name" type="text" placeholder="IMIĘ POSTACI">
-              <input class="pronounsInput" id="f_pronouns" type="text" placeholder="zaimki">
-            </div>
-            <div class="subline">NeuroHeart · Neuroshima × Daggerheart</div>
+        <div class="hdrGrid">
+          <div class="hdrBlockLeft">
+            <select id="f_spec" class="wide headSel specSel"></select>
+            <select id="f_profession" class="wide headSel profSel"></select>
           </div>
-          <div class="statGroup">
-            <div class="statCell">
-              <div class="lv">Poziom</div>
-              <select id="f_level" class="mono">
-                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-              </select>
-              <div class="tierHint" id="tierNum">T1</div>
-            </div>
-            <div class="statCell">
-              <div class="lv">Proficiency</div>
-              <div class="num" id="profStamp">1</div>
-            </div>
-            <div class="statCell">
-              <div class="lv">Udźwig kg</div>
-              <div class="num mono" id="carryCur" style="font-size:15px;">0</div>
-              <div class="lv" id="carryMaxLine" style="font-size:7px;">max 15</div>
-            </div>
-            <div class="statCell gambleCell">
-              <div class="lv">Gamble</div>
-              <input class="mono" id="f_gamble" type="number" min="0" value="0">
-            </div>
+          <div class="hdrNameWrap">
+            <input class="nameInput2" id="f_name" type="text" placeholder="IMIĘ POSTACI">
           </div>
-        </div>
-        <div class="hdrRow2">
-          <div class="cell"><label>Pochodzenie</label><select id="f_origin" class="wide headSel"></select></div>
-          <div class="cell"><label>Profesja</label><select id="f_profession" class="wide headSel"></select></div>
-          <div class="cell"><label>Specjalizacja</label><select id="f_spec" class="wide headSel"></select></div>
+          <div class="hdrCell">
+            <label>Pochodzenie</label>
+            <select id="f_origin" class="wide headSel"></select>
+          </div>
+          <div class="hdrCell hdrCarry">
+            <label>Udźwig kg</label>
+            <div class="hdrCarryVal"><span class="mono" id="carryCur" style="font-size:15px;">0</span><span id="carryMaxLine" style="font-size:8px;">max 15</span></div>
+          </div>
+          <div class="hdrBlockRight">
+            <div class="lv">Poziom</div>
+            <select id="f_level" class="mono">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            </select>
+            <div class="tierHint2" id="tierNum">T1</div>
+          </div>
         </div>
       </div>
 
@@ -438,7 +489,7 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
         <!-- LEFT -->
         <div>
           <div class="panel">
-            <div class="ph"><span style="font-size:11.5px;">Obrona i progi obrażeń</span></div>
+            <div class="ph"><span style="font-size:11.5px;">Obrona i Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
             <div class="pb">
               <div class="statRow" style="margin-bottom:10px;">
                 <div class="circleStat">
@@ -449,61 +500,85 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                   <div class="circ"><div class="big" id="asTotal">0</div></div>
                   <label>Armor Score</label>
                 </div>
-                <div class="thrBox">
-                  <div class="thrCard"><div class="t">Próg Major</div><div class="v" id="thrMajorV">1</div></div>
-                  <div class="thrCard"><div class="t">Próg Severe</div><div class="v" id="thrSevereV">2</div></div>
+                <div class="armorSlotsBlock">
+                  <label class="fl">Sloty Pancerza <span class="baseTag" id="armorBaseTag"></span></label>
+                  <div class="pipLine"><button class="pipBtn" data-armorstep="-1">−</button><div class="pipRow" id="armorPips"></div><button class="pipBtn" data-armorstep="1">+</button></div>
                 </div>
               </div>
-              <label class="fl">Sloty Pancerza</label>
-              <div class="pipRow" id="armorPips"></div>
+              <div class="traitsGrid oneRow" id="traitsGrid"></div>
             </div>
           </div>
 
           <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
+            <div class="ph"><span class="display" style="font-size:12px;">Obrażenia i Zdrowie</span></div>
             <div class="pb">
-              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:8px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony (liczy się do udźwigu)</label>
-              <div class="fieldGrid4">
-                <div><label class="fl">Próg Major</label><div class="readout" id="a_thrMajor">—</div></div>
-                <div><label class="fl">Próg Severe</label><div class="readout" id="a_thrSevere">—</div></div>
-                <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
-                <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+              <div class="dmgCaption">Dodaj swój aktualny Poziom do progów obrażeń</div>
+              <div class="dmgThreshRow">
+                <div class="dmgArrow"><div class="dLabel">Minor Damage</div><div class="dMark">zaznacz 1 HP</div></div>
+                <div class="dmgThrVal" id="thrMajorV">1</div>
+                <div class="dmgArrow"><div class="dLabel">Major Damage</div><div class="dMark">zaznacz 2 HP</div></div>
+                <div class="dmgThrVal" id="thrSevereV">2</div>
+                <div class="dmgArrow"><div class="dLabel">Severe Damage</div><div class="dMark">zaznacz 3 HP</div></div>
               </div>
-              <div class="featBox" id="a_feature">—</div>
-              <label class="fl">Dodatek (hełm)</label>
-              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony (liczy się do udźwigu)</label>
-              <div class="featBox" id="h_feature" style="display:none;"></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span style="font-size:11.5px;">Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
-            <div class="pb"><div class="traitsGrid" id="traitsGrid"></div></div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">HP, Stres i Hope</span></div>
-            <div class="pb vitalsPanel">
-              <div class="vitalsBlock">
-                <label class="fl">HP <span class="baseTag" id="hpBaseTag"></span></label>
-                <div class="pipLine"><button class="pipBtn" data-hpstep="-1">−</button><div class="pipRow" id="hpPips"></div><button class="pipBtn" data-hpstep="1">+</button></div>
-              </div>
-              <div class="vitalsBlock">
-                <label class="fl">Stress <span class="baseTag" id="stressBaseTag"></span></label>
-                <div class="pipLine"><button class="pipBtn" data-stressstep="-1">−</button><div class="pipRow" id="stressPips"></div><button class="pipBtn" data-stressstep="1">+</button></div>
-              </div>
-              <div class="vitalsBlock">
-                <label class="fl">Hope</label>
-                <div class="pipRow" id="hopePips"></div>
+              <div class="vitalsPanel">
+                <div class="vitalsBlock">
+                  <label class="fl">HP <span class="baseTag" id="hpBaseTag"></span></label>
+                  <div class="pipLine"><button class="pipBtn" data-hpstep="-1">−</button><div class="pipRow" id="hpPips"></div><button class="pipBtn" data-hpstep="1">+</button></div>
+                </div>
+                <div class="vitalsBlock">
+                  <label class="fl">Stress <span class="baseTag" id="stressBaseTag"></span></label>
+                  <div class="pipLine"><button class="pipBtn" data-stressstep="-1">−</button><div class="pipRow" id="stressPips"></div><button class="pipBtn" data-stressstep="1">+</button></div>
+                </div>
               </div>
             </div>
           </div>
 
           <div class="panel">
-            <div class="ph rust"><span style="font-size:11.5px;">Silnik Specjalizacji</span></div>
-            <div class="pb" id="engineHost"></div>
+            <div class="ph rust"><span class="display" style="font-size:12px;">Hope i Silnik Specjalizacji</span></div>
+            <div class="pb">
+              <div class="vitalsPanel" style="margin-bottom:8px;">
+                <div class="vitalsBlock" style="margin-bottom:0;">
+                  <label class="fl">Hope</label>
+                  <div class="pipRow" id="hopePips"></div>
+                </div>
+              </div>
+              <div id="engineHost"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Choroby</span>
+              <div class="phActions"><button class="phBtn" id="btnRollDisease">🎲 Wylosuj (k20)</button></div>
+            </div>
+            <div class="pb">
+              <div class="diseaseSection">
+                <div class="dsHead">Choroba wrodzona</div>
+                <div id="diseaseStartList"></div>
+              </div>
+
+              <div class="diseaseSection" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">
+                <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
+                <div id="diseaseAcqList"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div>
+          <div class="panel">
+            <div class="ph"><span style="font-size:11.5px;">Proficiency</span></div>
+            <div class="pb"><div class="pipRow" id="profPips"></div></div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
+              <div class="phActions"><button class="phBtn" id="addExp">+ Dodaj</button></div>
+            </div>
+            <div class="pb">
+              <div id="expList"></div>
+              <datalist id="expSuggestions"></datalist>
+            </div>
           </div>
 
           <div class="panel">
@@ -514,19 +589,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
               </div>
             </div>
             <div class="pb"><div id="cechyPanel"></div></div>
-          </div>
-        </div>
-
-        <!-- RIGHT -->
-        <div>
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
-              <div class="phActions"><button class="phBtn" id="addExp">+ Dodaj</button></div>
-            </div>
-            <div class="pb">
-              <div id="expList"></div>
-              <datalist id="expSuggestions"></datalist>
-            </div>
           </div>
 
           <div class="panel">
@@ -558,8 +620,30 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
           </div>
 
           <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
+            <div class="pb">
+              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
+              <label class="carryToggle" style="margin-bottom:8px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony (liczy się do udźwigu)</label>
+              <div class="fieldGrid4">
+                <div><label class="fl">Próg Major</label><div class="readout" id="a_thrMajor">—</div></div>
+                <div><label class="fl">Próg Severe</label><div class="readout" id="a_thrSevere">—</div></div>
+                <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
+                <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+              </div>
+              <div class="featBox" id="a_feature">—</div>
+              <label class="fl">Dodatek (hełm)</label>
+              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
+              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony (liczy się do udźwigu)</label>
+              <div class="featBox" id="h_feature" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
-              <div class="phActions"><button class="phBtn" id="addInv">+ Dodaj</button><button class="phBtn" id="addInvBlank">+ Własna</button></div>
+              <div class="phActions">
+                <span class="phGamble">💰 Gamble <input class="mono" id="f_gamble" type="number" min="0" value="0"></span>
+                <button class="phBtn" id="addInv">+ Dodaj</button><button class="phBtn" id="addInvBlank">+ Własna</button>
+              </div>
             </div>
             <div class="pb">
               <div class="fieldGrid2" style="margin-bottom:8px;">
@@ -571,23 +655,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
           </div>
 
           <div class="panel">
-            <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Choroby</span>
-              <div class="phActions"><button class="phBtn" id="btnRollDisease">🎲 Wylosuj (k20)</button></div>
-            </div>
-            <div class="pb">
-              <div class="diseaseSection">
-                <div class="dsHead">Choroba wrodzona</div>
-                <div id="diseaseStartList"></div>
-              </div>
-
-              <div class="diseaseSection" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">
-                <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
-                <div id="diseaseAcqList"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
             <div class="ph phStack" style="background:var(--maroon);">
               <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
               <div class="phSub" id="woundCountsHeader"></div>
@@ -595,11 +662,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
             <div class="pb">
               <div id="woundRows"></div>
             </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
-            <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
           </div>
         </div>
       </div>
@@ -624,6 +686,11 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
           </div>
         </div>
         <span id="tierNum2" style="display:none;"></span>
+      </div>
+
+      <div class="panel" style="margin:14px 18px;">
+        <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
+        <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
       </div>
 
       <div class="panel" style="margin:14px 18px;">
@@ -1009,7 +1076,7 @@ function parseEquip(workbook){
 function freshChar(){
   return {
     name:"", pronouns:"", origin:"", profession:"", spec:"", level:1,
-    evasionBase:10, evasionAdv:0, armorMarked:0,
+    evasionBase:10, evasionAdv:0, armorMarked:0, armorSlotsAdv:0,
     traitsBase:{Agility:null,Strength:null,Finesse:null,Instinct:null,Presence:null,Knowledge:null},
     traitsMarked:{Agility:false,Strength:false,Finesse:false,Instinct:false,Presence:false,Knowledge:false},
     traitsAdvBonus:{Agility:0,Strength:0,Finesse:0,Instinct:0,Presence:0,Knowledge:0},
@@ -1146,7 +1213,7 @@ function derived(){
   const out = {
     rows, total, lvl,
     evasion: (parseInt(char.evasionBase)||10) + (char.evasionAdv||0) + (total.Evasion||0),
-    armorScore: Math.max(0, Math.min(12, armorScoreBase + (total.ArmorScore||0))),
+    armorScore: Math.max(0, Math.min(12, armorScoreBase + (total.ArmorScore||0) + (char.armorSlotsAdv||0))),
     armorScoreBase,
     thrMajor: (arm ? thrMajorBase + lvl : lvl) + (total.ThrMajor||0),
     thrSevere: (arm ? thrSevereBase + lvl : 2*lvl) + (total.ThrSevere||0),
@@ -1574,7 +1641,15 @@ function renderDefense(){
   el('thrSevereV').textContent = d.thrSevere;
   if(char.armorMarked>d.armorScore) char.armorMarked = d.armorScore;
   makeFillPipRow(el('armorPips'), d.armorScore, char.armorMarked, 'round', v=>{ char.armorMarked=v; save(); renderDefense(); });
-  el('profStamp').textContent = d.proficiency;
+  el('armorBaseTag').textContent = char.armorSlotsAdv ? '(ręcznie '+sgn(char.armorSlotsAdv)+')' : '';
+  renderProficiencyPips(d);
+}
+function renderProficiencyPips(d){
+  const host = el('profPips'); if(!host) return;
+  const val = Math.max(1, Math.min(6, d.proficiency));
+  let html = '';
+  for(let i=1;i<=6;i++) html += '<div class="pip round static'+(i<=val?' checked':'')+'"></div>';
+  host.innerHTML = html;
 }
 function renderArmorPanel(){
   const a = currentArmor(), h = currentHelmet();
@@ -2212,7 +2287,7 @@ function mainTraitName(){ return TRAIT_LIST.find(t=>char.traitsBase[t]===2) || "
    MASTER RENDER + SAVE
    ========================================================================= */
 function renderAll(){
-  el('f_name').value = char.name; el('f_pronouns').value = char.pronouns;
+  el('f_name').value = char.name;
   el('f_origin').value = char.origin; el('f_profession').value = char.profession;
   el('f_spec').value = char.spec; el('f_level').value = char.level;
   el('tierNum').textContent = 'T'+tierForLevel(char.level);
@@ -2266,7 +2341,7 @@ async function handleBaza(file){
 function bindSimple(id, field, isNum){
   el(id).addEventListener('input', e=>{ char[field] = isNum ? (parseInt(e.target.value)||0) : e.target.value; save(); });
 }
-bindSimple('f_name','name'); bindSimple('f_pronouns','pronouns'); bindSimple('f_notes','notes'); bindSimple('f_gamble','gamble',true);
+bindSimple('f_name','name'); bindSimple('f_notes','notes'); bindSimple('f_gamble','gamble',true);
 
 document.querySelectorAll('[data-hpstep]').forEach(b=>{
   b.addEventListener('click', ()=>{ char.hpBase = Math.max(1,(char.hpBase||6)+parseInt(b.getAttribute('data-hpstep')));
@@ -2275,6 +2350,10 @@ document.querySelectorAll('[data-hpstep]').forEach(b=>{
 document.querySelectorAll('[data-stressstep]').forEach(b=>{
   b.addEventListener('click', ()=>{ char.stressBase = Math.max(1,(char.stressBase||6)+parseInt(b.getAttribute('data-stressstep')));
     if(char.stressMarked>char.stressBase) char.stressMarked = char.stressBase; save(); renderPips(); renderFooterTotals(); });
+});
+document.querySelectorAll('[data-armorstep]').forEach(b=>{
+  b.addEventListener('click', ()=>{ char.armorSlotsAdv = (char.armorSlotsAdv||0)+parseInt(b.getAttribute('data-armorstep'));
+    save(); renderDefense(); renderFooterTotals(); });
 });
 
 el('f_origin').addEventListener('change', e=>{ char.origin = e.target.value; char._originCechaIdx=""; save(); renderAll(); });
@@ -2402,6 +2481,7 @@ function migrateCharSchema(c){
   if(c.stressMarked===undefined) c.stressMarked = 0;
   if(c.hopeMarked===undefined) c.hopeMarked = 0;
   if(c.armorMarked===undefined) c.armorMarked = 0;
+  if(c.armorSlotsAdv===undefined) c.armorSlotsAdv = 0;
   if(c.evasion!==undefined && c.evasionBase===undefined){ c.evasionBase = c.evasion; delete c.evasion; }
   if(c.hpMax!==undefined && c.hpBase===undefined){ c.hpBase = c.hpMax; delete c.hpMax; }
   if(c.stressMax!==undefined && c.stressBase===undefined){ c.stressBase = c.stressMax; delete c.stressMax; }
