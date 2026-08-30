@@ -83,12 +83,12 @@ button.btn:disabled{opacity:.45;cursor:not-allowed;}
 #stage{max-width:var(--page-w);margin:0 auto;perspective:2400px;}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1);}
 .flipper.flipped{transform:rotateY(180deg);}
-.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:0 0 14px;
+.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:3px 3px 14px;
   width:var(--page-w);}
 .face.back{position:absolute;top:0;left:0;width:100%;transform:rotateY(180deg);}
 
 /* header strip */
-.sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;}
+.sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;margin-bottom:3px;}
 .hdrRow1{display:flex;align-items:stretch;flex-wrap:nowrap;}
 .brand{background:linear-gradient(135deg,#2a2420,#181310);padding:8px 12px;flex:1.5;min-width:0;
   display:flex;flex-direction:column;justify-content:center;gap:2px;border-right:2px solid var(--rust);}
@@ -121,7 +121,7 @@ select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 select.headSel option{color:#111;}
 
 /* body grid */
-.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:12px;padding:12px 14px 0;}
+.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:3px;padding:0;}
 .body2col > div{min-width:0;}
 @media screen and (max-width:980px){.body2col{grid-template-columns:1fr;}}
 
@@ -137,7 +137,7 @@ select.headSel option{color:#111;}
 select, input, textarea{min-width:0;box-sizing:border-box;}
 .face{overflow-x:hidden;}
 
-.panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:visible;
+.panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:0;margin-bottom:3px;overflow:visible;
   break-inside:avoid;page-break-inside:avoid;}
 .panel > .ph{position:relative;background:var(--ink);color:#F6EFDE;font-size:11.5px;font-weight:800;letter-spacing:.05em;
   padding:6px 14px 6px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
@@ -207,13 +207,21 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 /* traits / umiejętności */
 .traitsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
 @media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-.traitCard{border:1px solid var(--line);border-radius:7px;padding:6px 5px;background:#fff;min-width:0;}
+.traitCard{border:1px solid var(--line);padding:6px 5px 7px;background:#fff;min-width:0;display:flex;flex-direction:column;}
 .traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;display:flex;justify-content:space-between;align-items:center;gap:3px;white-space:nowrap;}
 .traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
-.traitCard .tvals{display:flex;align-items:center;gap:5px;font-size:10.5px;}
-.traitCard select{font-size:11px;padding:2px 18px 2px 4px;min-height:24px;}
-.traitCard .ttotal{margin-left:auto;font-size:18px;font-weight:800;color:var(--rust-dark);}
-.markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;border-radius:3px;flex:0 0 auto;}
+/* the Trait's value is the single most important number on the card: it's the
+   dominant visual element, and — since margin-top:auto pins it to the bottom of the
+   (flex column) card while every card in the row is stretched to equal height by the
+   grid — it sits at the exact same vertical position on every card regardless of how
+   many lines .tverbs wraps to. Clicking it opens the real <select> underneath (the
+   select is absolutely positioned over the whole value area, invisible, on top); when
+   that select isn't open, only the plain current value is visible. */
+.traitCard .tvalWrap{position:relative;margin-top:auto;text-align:center;padding-top:4px;}
+.traitCard .tvalWrap select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  padding:0;min-height:0;border:none;background:none;appearance:none;-webkit-appearance:none;}
+.traitCard .tvalDisplay{display:block;font-size:27px;font-weight:800;color:var(--rust-dark);line-height:1;pointer-events:none;}
+.markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;flex:0 0 auto;}
 .markbox.checked{background:var(--teal);border-color:var(--teal-dark);}
 .tbreak{font-size:8px;color:#6E634E;}
 
@@ -385,27 +393,36 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
   .hdrGrid{grid-template-columns:1fr 1fr .7fr;grid-template-areas:"left name level" "left origin level" "carry carry carry";}
 }
 
-/* ---------- Damage & Health: arrow-chained threshold strip ---------- */
-.dmgCaption{font-size:9px;color:#6E634E;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;text-align:center;}
+/* ---------- Damage & Health: arrow-chained threshold strip ----------
+   Every link in the chain is a hexagonal "arrow": a notch cut into its left edge
+   (fitting the point of the link before it) and a point on its right edge (aimed at
+   the link after it). The two end links (first dmgArrow / last dmgArrow) drop the
+   notch or the tip they don't need, since nothing sits on that side. Links simply
+   abut with 0 gap — the coincident points at each seam are what reads as "an arrow
+   pointing at the threshold box on both sides". */
 .dmgThreshRow{display:flex;align-items:stretch;flex-wrap:nowrap;margin-bottom:9px;}
-.dmgArrow{background:#fff;border:2px solid var(--teal);padding:3px 10px 3px 4px;display:flex;flex-direction:column;
+.dmgArrow{background:#fff;border:2px solid var(--teal);padding:3px 12px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;flex:1 1 0;min-width:0;text-align:center;overflow:hidden;
-  clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);margin-right:-8px;position:relative;z-index:1;}
-.dmgArrow.noTip{clip-path:none;margin-right:0;padding-right:4px;}
+  clip-path:polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);
+  position:relative;z-index:1;}
+.dmgArrow.noTail{clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);}
+.dmgArrow.noTip{clip-path:polygon(8px 0, 100% 0, 100% 100%, 8px 100%, 0 50%);}
 .dmgArrow .dLabel{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.01em;color:var(--teal-dark);line-height:1.15;}
 .dmgArrow .dMark{font-size:6.5px;color:#6E634E;margin-top:1px;line-height:1.1;white-space:nowrap;}
-.dmgThrVal{background:#F4EFE2;border:2px solid var(--ink);border-radius:5px;flex:0 0 26px;display:flex;
-  align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ink);padding:3px 3px;
-  margin:0 3px;position:relative;z-index:0;}
+.dmgThrVal{background:#F4EFE2;border:2px solid var(--ink);flex:0 0 40px;display:flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ink);padding:3px 8px;
+  margin:0;position:relative;z-index:0;
+  clip-path:polygon(8px 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 8px 100%, 0 50%);}
 
 /* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern ---------- */
 .armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:3px;flex:1 1 auto;min-width:70px;}
 
 /* ---------- top stat strip: two separate panels (Obrona i Pancerz / Umiejętności), kept on one
    line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
-.topStatSplit{display:flex;gap:12px;align-items:flex-start;flex-wrap:nowrap;}
-.topStatSplit > .panel{margin-bottom:10px;}
-.defenseCol{flex:0 0 300px;min-width:230px;}
+.topStatSplit{display:flex;gap:3px;align-items:stretch;flex-wrap:nowrap;margin-bottom:3px;}
+.topStatSplit > .panel{margin-bottom:0;}
+.defenseCol{flex:0 0 300px;min-width:230px;display:flex;flex-direction:column;}
+.defenseCol .pb{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;}
 .defenseCol .statRow{flex-wrap:nowrap;}
 .traitsCol{flex:1 1 auto;min-width:0;}
 
@@ -421,6 +438,20 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .panel > .ph .phGamble{display:flex;align-items:center;gap:4px;font-size:10px;color:#F6EFDE;text-transform:none;font-weight:600;}
 .panel > .ph .phGamble input{width:56px;text-align:center;font-size:11px;padding:3px 6px;min-height:0;border-radius:6px;
   border:1px solid rgba(255,255,255,.4);background:#FBF6EA;color:#241E17;}
+
+/* ---------- point 3: square corners everywhere on the sheet itself (front + back);
+   the "cut corner" on panel headers / threshold arrows is a clip-path, not a
+   border-radius, so it's untouched by this reset. Only genuinely round/pill/diamond
+   shape-language elements (stat orbs, round & diamond pips, pill badges/tags) are
+   explicitly restored below, since they read as intentional shapes, not "areas". ---------- */
+.face, .face *{border-radius:0 !important;}
+.face .circleStat .circ,
+.face .pip.round{border-radius:50% !important;}
+.face .pip.diamond{border-radius:2px !important;}
+.face .badge,
+.face .panel > .ph .phSub span,
+.face .grantedTag,
+.face .twoHandedTag{border-radius:20px !important;}
 
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
@@ -489,7 +520,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
               <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
               <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
             </select>
-            <div class="tierHint2" id="tierNum">T1</div>
           </div>
         </div>
       </div>
@@ -528,9 +558,8 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Obrażenia i Zdrowie</span></div>
             <div class="pb">
-              <div class="dmgCaption">Dodaj swój aktualny Poziom do progów obrażeń</div>
               <div class="dmgThreshRow">
-                <div class="dmgArrow"><div class="dLabel">Minor Damage</div><div class="dMark">zaznacz 1 HP</div></div>
+                <div class="dmgArrow noTail"><div class="dLabel">Minor Damage</div><div class="dMark">zaznacz 1 HP</div></div>
                 <div class="dmgThrVal" id="thrMajorV">1</div>
                 <div class="dmgArrow"><div class="dLabel">Major Damage</div><div class="dMark">zaznacz 2 HP</div></div>
                 <div class="dmgThrVal" id="thrSevereV">2</div>
@@ -559,6 +588,31 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                 </div>
               </div>
               <div id="engineHost"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Cechy</span>
+              <div class="phActions">
+                <select class="phSelect" id="cechaOriginPick" style="display:none;"></select>
+                <select class="phSelect" id="cechaProfessionPick" style="display:none;"></select>
+              </div>
+            </div>
+            <div class="pb"><div id="cechyPanel"></div></div>
+          </div>
+
+          <div class="panel">
+            <div class="ph phStack">
+              <div class="phTop"><span class="display" style="font-size:12px;">Sztuczki</span>
+                <div class="phActions"><select id="trickPicker" class="phSelect"></select><button class="phBtn" id="addTrick">+ Dodaj</button></div>
+              </div>
+              <div class="phActions phRow2">
+                <select id="trickSpecFilter" class="phSelect"></select>
+                <select id="trickTierFilter" class="phSelect"></select>
+              </div>
+            </div>
+            <div class="pb">
+              <div id="trickList"></div>
             </div>
           </div>
 
@@ -604,31 +658,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
             <div class="pb">
               <div id="expList"></div>
               <datalist id="expSuggestions"></datalist>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Cechy</span>
-              <div class="phActions">
-                <select class="phSelect" id="cechaOriginPick" style="display:none;"></select>
-                <select class="phSelect" id="cechaProfessionPick" style="display:none;"></select>
-              </div>
-            </div>
-            <div class="pb"><div id="cechyPanel"></div></div>
-          </div>
-
-          <div class="panel">
-            <div class="ph phStack">
-              <div class="phTop"><span class="display" style="font-size:12px;">Sztuczki</span>
-                <div class="phActions"><select id="trickPicker" class="phSelect"></select><button class="phBtn" id="addTrick">+ Dodaj</button></div>
-              </div>
-              <div class="phActions phRow2">
-                <select id="trickSpecFilter" class="phSelect"></select>
-                <select id="trickTierFilter" class="phSelect"></select>
-              </div>
-            </div>
-            <div class="pb">
-              <div id="trickList"></div>
             </div>
           </div>
 
@@ -1706,8 +1735,8 @@ function renderTraits(){
     card.innerHTML =
       '<div class="tname"><span>'+t+'</span><span class="markbox '+(char.traitsMarked[t]?'checked':'')+'" data-t="'+t+'"></span></div>'+
       '<div class="tverbs">'+TRAIT_VERBS[t]+'</div>'+
-      '<div class="tvals"><select data-base="'+t+'">'+options+'</select>'+
-      '<span class="ttotal">'+sgn(info.total)+'</span></div>';
+      '<div class="tvalWrap"><span class="tvalDisplay">'+sgn(info.total)+'</span>'+
+      '<select data-base="'+t+'">'+options+'</select></div>';
     grid.appendChild(card);
   });
   grid.querySelectorAll('select[data-base]').forEach(s=>{
@@ -1848,7 +1877,7 @@ function renderTrickList(){
   const host = el('trickList'); host.innerHTML = "";
   char.tricks.forEach((t,i)=>{
     const div = document.createElement('div'); div.className='trickItem';
-    div.innerHTML = '<div class="th"><span>'+tip(t.fluff, esc(t.name))+' <span class="badge tier">T'+t.tier+'</span> '+costBadge(t.cost)+'</span><button class="rm" data-rm="'+i+'">✕</button></div>'+
+    div.innerHTML = '<div class="th"><span>'+tip(t.fluff, esc(t.name))+' '+costBadge(t.cost)+'</span><button class="rm" data-rm="'+i+'">✕</button></div>'+
       '<div class="meta">'+esc(t.spec)+(t.mods && Object.keys(t.mods).length ? ' · <b>'+esc(modsText(t.mods))+'</b>' : '')+'</div>'+
       '<div class="te">'+kw(t.effect)+'</div>'+
       (t.expCount>0 ? expPickBlock("trick::"+t.name, t.name, t.expBonus||1, t.expCount) : '');
@@ -2306,7 +2335,6 @@ function renderAll(){
   el('f_name').value = char.name;
   el('f_origin').value = char.origin; el('f_profession').value = char.profession;
   el('f_spec').value = char.spec; el('f_level').value = char.level;
-  el('tierNum').textContent = 'T'+tierForLevel(char.level);
   el('f_notes').value = char.notes; el('f_gamble').value = char.gamble;
   el('armorPick').value = char.armorName; el('helmetPick').value = char.helmetName;
   renderHeaderTips();
