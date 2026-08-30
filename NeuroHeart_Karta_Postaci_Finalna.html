@@ -433,16 +433,24 @@ input.nameInput2::placeholder{color:#8f8577;}
    Styled as a third circleStat-style column (box, then an English label below it in
    the same type as Evasion/Armor Score) so all three read as one consistent row. The
    pips fill 3-per-row (up to 4 rows = 12 slots) instead of free-wrapping. ---------- */
-.armorSlotsBlock{flex:0 0 auto;}
+.armorSlotsBlock{flex:0 0 auto;position:relative;}
 #armorPips{display:grid;grid-template-columns:repeat(3,15px);grid-auto-rows:15px;gap:4px;}
 .armorSlotsBlock label{display:flex;align-items:center;gap:4px;}
+/* the manual-adjustment note is taken out of flow so it can never push the "Armor
+   Slots" label away from its fixed position — it just floats under the row */
+.armorSlotsBlock .baseTag{position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  white-space:nowrap;margin-top:2px;}
 
 /* ---------- top stat strip: two separate panels (Obrona i Pancerz / Umiejętności), kept on one
    line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
 .topStatSplit{display:flex;gap:3px;align-items:stretch;flex-wrap:nowrap;margin-bottom:3px;}
 .topStatSplit > .panel{margin-bottom:0;}
 .defenseCol{flex:0 0 300px;min-width:230px;display:flex;flex-direction:column;}
-.defenseCol .pb{flex:1 1 auto;display:flex;flex-direction:column;justify-content:center;}
+/* bottom-anchored, not centered: growing the Armor Slots pip grid (more rows as
+   slots are added) must never shift Evasion / Armor Score / the Armor Slots label —
+   pinning the row's bottom edge means it only ever grows upward, in its own space,
+   without moving anything that's already aligned to that bottom line. */
+.defenseCol .pb{flex:1 1 auto;display:flex;flex-direction:column;justify-content:flex-end;}
 .defenseCol .statRow{flex-wrap:nowrap;}
 .traitsCol{flex:1 1 auto;min-width:0;}
 
@@ -561,7 +569,7 @@ input.nameInput2::placeholder{color:#8f8577;}
               </div>
               <div class="circleStat armorSlotsBlock">
                 <div class="pipRow" id="armorPips"></div>
-                <label>Armor Slots <button class="pipBtn sm" data-armorstep="-1">−</button><button class="pipBtn sm" data-armorstep="1">+</button></label>
+                <label><button class="pipBtn sm" data-armorstep="-1">−</button><span>Armor Slots</span><button class="pipBtn sm" data-armorstep="1">+</button></label>
                 <span class="baseTag" id="armorBaseTag"></span>
               </div>
             </div>
@@ -1579,8 +1587,12 @@ function expPickBlock(key, label, bonus, count){
     return html;
   }
   for(let i=0;i<count;i++){
+    /* the same Doświadczenie can't be picked twice within this one grant's slots —
+       each already-used-by-a-sibling-slot option is disabled (but stays selectable
+       in its own slot, so re-rendering doesn't un-pick it) */
+    const usedByOther = picks.filter((p,j)=>j!==i && p);
     html += '<select class="wide expPick" data-expkey="'+esc(key)+'" data-expidx="'+i+'"><option value="">— wybierz Doświadczenie —</option>'+
-      names.map(n=>'<option value="'+esc(n)+'"'+(picks[i]===n?' selected':'')+'>'+esc(n)+'</option>').join('')+'</select>';
+      names.map(n=>'<option value="'+esc(n)+'"'+(picks[i]===n?' selected':'')+(usedByOther.includes(n)?' disabled':'')+'>'+esc(n)+(usedByOther.includes(n)?' (już wybrane)':'')+'</option>').join('')+'</select>';
   }
   return html+'</div>';
 }
@@ -1890,6 +1902,11 @@ function renderExpList(){
       '<button data-rm="'+i+'" title="Usuń">✕</button>';
     host.appendChild(row);
   });
+  /* 'input' only writes the keystroke into state — it must NOT re-render the list,
+     or rebuilding the input's own DOM node mid-type steals focus after every single
+     character (that was the "can only type one letter" bug). The full re-render
+     (which refreshes the boosted/bonus styling and cross-references elsewhere on the
+     sheet) happens once, on 'change', when the field is done being edited. */
   host.querySelectorAll('input').forEach(inp=>{
     inp.addEventListener('input', e=>{
       const i = parseInt(e.target.getAttribute('data-i')), f = e.target.getAttribute('data-f');
@@ -1899,8 +1916,9 @@ function renderExpList(){
       } else {
         char.experiences[i][f] = e.target.value;
       }
-      save(); renderExpList(); renderCechyPanel(); renderTrickList();
+      save();
     });
+    inp.addEventListener('change', ()=>{ renderExpList(); renderCechyPanel(); renderTrickList(); });
   });
   host.querySelectorAll('button[data-rm]').forEach(b=>{
     b.addEventListener('click', e=>{ char.experiences.splice(parseInt(e.target.getAttribute('data-rm')),1); save(); renderExpList(); renderBack(); });
