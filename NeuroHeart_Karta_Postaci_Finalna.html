@@ -398,7 +398,13 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
   margin:0 3px;position:relative;z-index:0;}
 
 /* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern ---------- */
-.armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:2px;flex:1 1 150px;min-width:130px;}
+.armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:2px;}
+
+/* ---------- top stat strip: narrow Defense/Armor sub-column + wide Traits sub-column,
+   side by side, spanning the full card width (matches the reference Daggerheart sheet) ---------- */
+.topStatSplit{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
+.defenseCol{flex:0 0 200px;display:flex;flex-direction:column;gap:9px;min-width:170px;}
+.traitsCol{flex:1 1 380px;min-width:260px;}
 
 /* ---------- traits in a single row (per reference layout) ---------- */
 .traitsGrid.oneRow{grid-template-columns:repeat(6,1fr);}
@@ -485,13 +491,12 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
         </div>
       </div>
 
-      <div class="body2col">
-        <!-- LEFT -->
-        <div>
-          <div class="panel">
-            <div class="ph"><span style="font-size:11.5px;">Obrona i Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
-            <div class="pb">
-              <div class="statRow" style="margin-bottom:10px;">
+      <div class="panel">
+        <div class="ph"><span style="font-size:11.5px;">Obrona, Pancerz i Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
+        <div class="pb">
+          <div class="topStatSplit">
+            <div class="defenseCol">
+              <div class="statRow">
                 <div class="circleStat">
                   <div class="circ"><div class="big" id="evTotal">10</div></div>
                   <label>Evasion</label>
@@ -500,15 +505,22 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                   <div class="circ"><div class="big" id="asTotal">0</div></div>
                   <label>Armor Score</label>
                 </div>
-                <div class="armorSlotsBlock">
-                  <label class="fl">Sloty Pancerza <span class="baseTag" id="armorBaseTag"></span></label>
-                  <div class="pipLine"><button class="pipBtn" data-armorstep="-1">−</button><div class="pipRow" id="armorPips"></div><button class="pipBtn" data-armorstep="1">+</button></div>
-                </div>
               </div>
+              <div class="armorSlotsBlock">
+                <label class="fl">Sloty Pancerza <span class="baseTag" id="armorBaseTag"></span></label>
+                <div class="pipLine"><button class="pipBtn" data-armorstep="-1">−</button><div class="pipRow" id="armorPips"></div><button class="pipBtn" data-armorstep="1">+</button></div>
+              </div>
+            </div>
+            <div class="traitsCol">
               <div class="traitsGrid oneRow" id="traitsGrid"></div>
             </div>
           </div>
+        </div>
+      </div>
 
+      <div class="body2col">
+        <!-- LEFT -->
+        <div>
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Obrażenia i Zdrowie</span></div>
             <div class="pb">
