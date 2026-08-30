@@ -205,10 +205,10 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .pipBtn:hover{background:#F1E8D4;}
 
 /* traits / umiejętności */
-.traitsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-@media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,1fr);}}
-.traitCard{border:1px solid var(--line);border-radius:7px;padding:7px;background:#fff;}
-.traitCard .tname{font-size:11.5px;font-weight:800;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center;}
+.traitsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+@media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.traitCard{border:1px solid var(--line);border-radius:7px;padding:6px 5px;background:#fff;min-width:0;}
+.traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;display:flex;justify-content:space-between;align-items:center;gap:3px;white-space:nowrap;}
 .traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
 .traitCard .tvals{display:flex;align-items:center;gap:5px;font-size:10.5px;}
 .traitCard select{font-size:11px;padding:2px 18px 2px 4px;min-height:24px;}
@@ -356,7 +356,7 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .hdrBlockLeft{grid-area:left;background:linear-gradient(135deg,#2a2420,#181310);border-right:2px solid var(--rust);
   padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
 .hdrBlockLeft select.headSel{border:none;border-bottom:1px solid #6a5f52;background-color:transparent;
-  color:#F6EFDE;padding:2px 20px 2px 0;min-height:0;width:100%;}
+  color:#F6EFDE;padding:3px 20px 3px 3px;min-height:0;width:100%;}
 .hdrBlockLeft select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 .hdrBlockLeft select.specSel{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;
   font-size:16px;letter-spacing:.04em;text-transform:uppercase;}
@@ -365,21 +365,21 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
   border-left:1px solid #3a332c;}
 .nameInput2{background:transparent;border:none;border-bottom:1.5px solid #6a5f52;color:#F6EFDE;
   font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.03em;
-  text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:2px 4px;border-radius:0;min-height:0;}
+  text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:3px 5px;border-radius:0;min-height:0;}
 .nameInput2:focus{outline:none;border-bottom-color:var(--rust);}
 .nameInput2::placeholder{color:#8f8577;}
 .hdrGrid .hdrCell{grid-area:origin;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;
   background:#1c1712;border-top:1px solid #3a332c;border-left:1px solid #3a332c;min-width:0;}
 .hdrGrid .hdrCell.hdrCarry{grid-area:carry;}
 .hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:2px;}
-.hdrGrid .hdrCell select.headSel{padding:2px 20px 2px 0;min-height:0;}
+.hdrGrid .hdrCell select.headSel{padding:3px 20px 3px 3px;min-height:0;}
 .hdrCarryVal{display:flex;align-items:baseline;gap:5px;color:#F0A177;}
 .hdrCarryVal span:last-child{color:#D3BE95;}
 .hdrBlockRight{grid-area:level;background:linear-gradient(135deg,#2a2420,#181310);border-left:2px solid var(--rust);
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 8px;min-width:0;}
 .hdrBlockRight .lv{font-size:9px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;}
 .hdrBlockRight select.mono{width:56px;text-align:center;background:#241d18;color:#F0A177;border:1px solid #4a4239;
-  font-size:20px;font-weight:800;border-radius:5px;min-height:30px;padding:2px 16px 2px 6px;}
+  font-size:20px;font-weight:800;border-radius:5px;min-height:30px;padding:3px 16px 3px 6px;}
 .tierHint2{font-size:9.5px;color:#D3BE95;margin-top:1px;font-weight:700;}
 @media (max-width:640px){
   .hdrGrid{grid-template-columns:1fr 1fr .7fr;grid-template-areas:"left name level" "left origin level" "carry carry carry";}
@@ -387,29 +387,32 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 
 /* ---------- Damage & Health: arrow-chained threshold strip ---------- */
 .dmgCaption{font-size:9px;color:#6E634E;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;text-align:center;}
-.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:wrap;margin-bottom:10px;}
-.dmgArrow{background:#fff;border:2px solid var(--teal);padding:6px 16px 6px 10px;display:flex;flex-direction:column;
-  align-items:center;justify-content:center;min-width:72px;text-align:center;
-  clip-path:polygon(0 0, calc(100% - 11px) 0, 100% 50%, calc(100% - 11px) 100%, 0 100%);margin-right:-10px;position:relative;z-index:1;}
-.dmgArrow .dLabel{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--teal-dark);}
-.dmgArrow .dMark{font-size:8px;color:#6E634E;margin-top:2px;}
-.dmgThrVal{background:#F4EFE2;border:2px solid var(--ink);border-radius:6px;min-width:34px;display:flex;
-  align-items:center;justify-content:center;font-size:16px;font-weight:800;color:var(--ink);padding:2px 8px;
+.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:nowrap;margin-bottom:9px;}
+.dmgArrow{background:#fff;border:2px solid var(--teal);padding:3px 10px 3px 4px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex:1 1 0;min-width:0;text-align:center;overflow:hidden;
+  clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);margin-right:-8px;position:relative;z-index:1;}
+.dmgArrow.noTip{clip-path:none;margin-right:0;padding-right:4px;}
+.dmgArrow .dLabel{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.01em;color:var(--teal-dark);line-height:1.15;}
+.dmgArrow .dMark{font-size:6.5px;color:#6E634E;margin-top:1px;line-height:1.1;white-space:nowrap;}
+.dmgThrVal{background:#F4EFE2;border:2px solid var(--ink);border-radius:5px;flex:0 0 26px;display:flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ink);padding:3px 3px;
   margin:0 3px;position:relative;z-index:0;}
 
 /* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern ---------- */
-.armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:2px;}
+.armorSlotsBlock{display:flex;flex-direction:column;justify-content:center;gap:3px;flex:1 1 auto;min-width:70px;}
 
-/* ---------- top stat strip: narrow Defense/Armor sub-column + wide Traits sub-column,
-   side by side, spanning the full card width (matches the reference Daggerheart sheet) ---------- */
-.topStatSplit{display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap;}
-.defenseCol{flex:0 0 200px;display:flex;flex-direction:column;gap:9px;min-width:170px;}
-.traitsCol{flex:1 1 380px;min-width:260px;}
+/* ---------- top stat strip: two separate panels (Obrona i Pancerz / Umiejętności), kept on one
+   line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
+.topStatSplit{display:flex;gap:12px;align-items:flex-start;flex-wrap:nowrap;}
+.topStatSplit > .panel{margin-bottom:10px;}
+.defenseCol{flex:0 0 300px;min-width:230px;}
+.defenseCol .statRow{flex-wrap:nowrap;}
+.traitsCol{flex:1 1 auto;min-width:0;}
 
 /* ---------- traits in a single row (per reference layout) ---------- */
-.traitsGrid.oneRow{grid-template-columns:repeat(6,1fr);}
-@media (max-width:900px){.traitsGrid.oneRow{grid-template-columns:repeat(3,1fr);}}
-@media (max-width:560px){.traitsGrid.oneRow{grid-template-columns:repeat(2,1fr);}}
+.traitsGrid.oneRow{grid-template-columns:repeat(6,minmax(0,1fr));}
+@media (max-width:900px){.traitsGrid.oneRow{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media (max-width:560px){.traitsGrid.oneRow{grid-template-columns:repeat(2,minmax(0,1fr));}}
 
 /* ---------- Proficiency: static (read-only) 6-pip display ---------- */
 .pip.static{cursor:default;}
@@ -491,29 +494,30 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
         </div>
       </div>
 
-      <div class="panel">
-        <div class="ph"><span style="font-size:11.5px;">Obrona, Pancerz i Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
-        <div class="pb">
-          <div class="topStatSplit">
-            <div class="defenseCol">
-              <div class="statRow">
-                <div class="circleStat">
-                  <div class="circ"><div class="big" id="evTotal">10</div></div>
-                  <label>Evasion</label>
-                </div>
-                <div class="circleStat">
-                  <div class="circ"><div class="big" id="asTotal">0</div></div>
-                  <label>Armor Score</label>
-                </div>
+      <div class="topStatSplit">
+        <div class="panel defenseCol">
+          <div class="ph"><span style="font-size:11.5px;">Obrona i Pancerz</span></div>
+          <div class="pb">
+            <div class="statRow">
+              <div class="circleStat">
+                <div class="circ"><div class="big" id="evTotal">10</div></div>
+                <label>Evasion</label>
+              </div>
+              <div class="circleStat">
+                <div class="circ"><div class="big" id="asTotal">0</div></div>
+                <label>Armor Score</label>
               </div>
               <div class="armorSlotsBlock">
                 <label class="fl">Sloty Pancerza <span class="baseTag" id="armorBaseTag"></span></label>
                 <div class="pipLine"><button class="pipBtn" data-armorstep="-1">−</button><div class="pipRow" id="armorPips"></div><button class="pipBtn" data-armorstep="1">+</button></div>
               </div>
             </div>
-            <div class="traitsCol">
-              <div class="traitsGrid oneRow" id="traitsGrid"></div>
-            </div>
+          </div>
+        </div>
+        <div class="panel traitsCol">
+          <div class="ph"><span style="font-size:11.5px;">Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
+          <div class="pb">
+            <div class="traitsGrid oneRow" id="traitsGrid"></div>
           </div>
         </div>
       </div>
@@ -530,7 +534,7 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                 <div class="dmgThrVal" id="thrMajorV">1</div>
                 <div class="dmgArrow"><div class="dLabel">Major Damage</div><div class="dMark">zaznacz 2 HP</div></div>
                 <div class="dmgThrVal" id="thrSevereV">2</div>
-                <div class="dmgArrow"><div class="dLabel">Severe Damage</div><div class="dMark">zaznacz 3 HP</div></div>
+                <div class="dmgArrow noTip"><div class="dLabel">Severe Damage</div><div class="dMark">zaznacz 3 HP</div></div>
               </div>
               <div class="vitalsPanel">
                 <div class="vitalsBlock">
@@ -572,6 +576,16 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                 <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
                 <div id="diseaseAcqList"></div>
               </div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph phStack" style="background:var(--maroon);">
+              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
+              <div class="phSub" id="woundCountsHeader"></div>
+            </div>
+            <div class="pb">
+              <div id="woundRows"></div>
             </div>
           </div>
         </div>
@@ -663,16 +677,6 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
                 <select id="invPicker" class="wide"></select>
               </div>
               <div id="invList"></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph phStack" style="background:var(--maroon);">
-              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
-              <div class="phSub" id="woundCountsHeader"></div>
-            </div>
-            <div class="pb">
-              <div id="woundRows"></div>
             </div>
           </div>
         </div>
