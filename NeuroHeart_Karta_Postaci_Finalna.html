@@ -205,6 +205,9 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .pip.diamond.checked{background:var(--ok);border-color:#16281B;}
 .pipLine{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .pipLine .pipRow{margin-top:0;flex:0 1 auto;}
+/* the "+" step button always sits flush against the panel's right edge, regardless
+   of how many pips are filled in */
+.pipLine .pipBtn:last-child{margin-left:auto;}
 .pipBtn{width:24px;height:24px;border-radius:6px;border:1.5px solid #6E634E;background:#fff;cursor:pointer;font-weight:800;font-size:14px;
   line-height:1;color:var(--ink);flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
 .pipBtn:hover{background:#F1E8D4;}
@@ -215,7 +218,10 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 @media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .traitCard{border:1px solid var(--line);padding:6px 5px 7px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
 .traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;}
-.traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+/* full 3-word description, never truncated — free to wrap onto a second line;
+   every card in the row is still stretched to the same height by the grid, so this
+   never throws the row out of alignment, and the value below is unaffected. */
+.traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
 /* the Trait's value is the single most important number on the card: it's the
    dominant visual element, and — since margin-top:auto pins it to the bottom of the
    (flex column) card while every card in the row is stretched to equal height by the
@@ -419,8 +425,9 @@ input.nameInput2::placeholder{color:#8f8577;}
 .dmgArrow .dMark{font-size:6.5px;color:#6E634E;margin-top:1px;line-height:1.1;white-space:nowrap;}
 .dmgThrVal{background:#F4EFE2;flex:0 0 36px;display:flex;
   align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ink);padding:3px 6px;}
-.dmgDivider{flex:0 0 auto;width:13px;display:flex;align-items:center;justify-content:center;
-  background:var(--ink);color:#F6EFDE;font-size:7px;line-height:1;}
+.dmgDivider{flex:0 0 auto;width:13px;display:flex;align-items:center;justify-content:center;background:var(--ink);}
+.dmgDivider svg{width:7px;height:12px;display:block;}
+.dmgDivider svg polygon{fill:#F6EFDE;}
 
 /* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern.
    Styled as a third circleStat-style column (box, then an English label below it in
@@ -428,6 +435,7 @@ input.nameInput2::placeholder{color:#8f8577;}
    pips fill 3-per-row (up to 4 rows = 12 slots) instead of free-wrapping. ---------- */
 .armorSlotsBlock{flex:0 0 auto;}
 #armorPips{display:grid;grid-template-columns:repeat(3,15px);grid-auto-rows:15px;gap:4px;}
+.armorSlotsBlock label{display:flex;align-items:center;gap:4px;}
 
 /* ---------- top stat strip: two separate panels (Obrona i Pancerz / Umiejętności), kept on one
    line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
@@ -552,14 +560,15 @@ input.nameInput2::placeholder{color:#8f8577;}
                 <label>Armor Score</label>
               </div>
               <div class="circleStat armorSlotsBlock">
-                <div class="pipLine"><button class="pipBtn sm" data-armorstep="-1">−</button><div class="pipRow" id="armorPips"></div><button class="pipBtn sm" data-armorstep="1">+</button></div>
-                <label>Armor Slots <span class="baseTag" id="armorBaseTag"></span></label>
+                <div class="pipRow" id="armorPips"></div>
+                <label>Armor Slots <button class="pipBtn sm" data-armorstep="-1">−</button><button class="pipBtn sm" data-armorstep="1">+</button></label>
+                <span class="baseTag" id="armorBaseTag"></span>
               </div>
             </div>
           </div>
         </div>
         <div class="panel traitsCol">
-          <div class="ph"><span style="font-size:11.5px;">Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
+          <div class="ph"><span style="font-size:11.5px;">Umiejętności</span></div>
           <div class="pb">
             <div class="traitsGrid oneRow" id="traitsGrid"></div>
           </div>
@@ -574,13 +583,13 @@ input.nameInput2::placeholder{color:#8f8577;}
             <div class="pb">
               <div class="dmgThreshRow">
                 <div class="dmgArrow"><div class="dLabel">Minor Damage</div><div class="dMark">zaznacz 1 HP</div></div>
-                <div class="dmgDivider">◀</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
                 <div class="dmgThrVal" id="thrMajorV">1</div>
-                <div class="dmgDivider">◀</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
                 <div class="dmgArrow"><div class="dLabel">Major Damage</div><div class="dMark">zaznacz 2 HP</div></div>
-                <div class="dmgDivider">◀</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
                 <div class="dmgThrVal" id="thrSevereV">2</div>
-                <div class="dmgDivider">◀</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
                 <div class="dmgArrow"><div class="dLabel">Severe Damage</div><div class="dMark">zaznacz 3 HP</div></div>
               </div>
               <div class="vitalsPanel">
@@ -620,13 +629,13 @@ input.nameInput2::placeholder{color:#8f8577;}
           </div>
 
           <div class="panel">
-            <div class="ph phStack">
-              <div class="phTop"><span class="display" style="font-size:12px;">Sztuczki</span>
-                <div class="phActions"><select id="trickPicker" class="phSelect"></select><button class="phBtn" id="addTrick">+ Dodaj</button></div>
-              </div>
-              <div class="phActions phRow2">
+            <div class="ph">
+              <span class="display" style="font-size:12px;">Sztuczki</span>
+              <div class="phActions">
                 <select id="trickSpecFilter" class="phSelect"></select>
                 <select id="trickTierFilter" class="phSelect"></select>
+                <select id="trickPicker" class="phSelect"></select>
+                <button class="phBtn" id="addTrick">+</button>
               </div>
             </div>
             <div class="pb">
@@ -653,7 +662,7 @@ input.nameInput2::placeholder{color:#8f8577;}
 
           <div class="panel">
             <div class="ph phStack" style="background:var(--maroon);">
-              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
+              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+</button></div></div>
               <div class="phSub" id="woundCountsHeader"></div>
             </div>
             <div class="pb">
@@ -671,17 +680,16 @@ input.nameInput2::placeholder{color:#8f8577;}
 
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
-              <div class="phActions"><button class="phBtn" id="addExp">+ Dodaj</button></div>
+              <div class="phActions"><button class="phBtn" id="addExp">+</button></div>
             </div>
             <div class="pb">
               <div id="expList"></div>
-              <datalist id="expSuggestions"></datalist>
             </div>
           </div>
 
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Broń</span>
-              <div class="phActions"><button class="phBtn" id="addWeapon">+ Dodaj</button></div>
+              <div class="phActions"><button class="phBtn" id="addWeapon">+</button></div>
             </div>
             <div class="pb">
               <div class="fieldGrid2" style="margin-bottom:8px;">
@@ -696,17 +704,16 @@ input.nameInput2::placeholder{color:#8f8577;}
             <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
             <div class="pb">
               <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:8px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony (liczy się do udźwigu)</label>
               <div class="fieldGrid4">
-                <div><label class="fl">Próg Major</label><div class="readout" id="a_thrMajor">—</div></div>
-                <div><label class="fl">Próg Severe</label><div class="readout" id="a_thrSevere">—</div></div>
+                <div><label class="fl">Progi</label><div class="readout" id="a_thr">—</div></div>
                 <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
                 <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+                <div><label class="fl">&nbsp;</label><label class="carryToggle" style="min-height:28px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony</label></div>
               </div>
               <div class="featBox" id="a_feature">—</div>
               <label class="fl">Dodatek (hełm)</label>
               <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony (liczy się do udźwigu)</label>
+              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony</label>
               <div class="featBox" id="h_feature" style="display:none;"></div>
             </div>
           </div>
@@ -715,7 +722,7 @@ input.nameInput2::placeholder{color:#8f8577;}
             <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
               <div class="phActions">
                 <span class="phGamble">💰 Gamble <input class="mono" id="f_gamble" type="number" min="0" value="0"></span>
-                <button class="phBtn" id="addInv">+ Dodaj</button><button class="phBtn" id="addInvBlank">+ Własna</button>
+                <button class="phBtn" id="addInv">+</button><button class="phBtn" id="addInvBlank">+ Własna</button>
               </div>
             </div>
             <div class="pb">
@@ -763,7 +770,7 @@ input.nameInput2::placeholder{color:#8f8577;}
 
       <div class="panel" style="margin:14px 18px;">
         <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Dodaj chorobę nabytą</span>
-          <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+ Dodaj</button></div>
+          <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+</button></div>
         </div>
         <div class="pb">
           <div class="caption">Dodana choroba pojawi się na przodzie karty, w panelu Choroby → Choroby nabyte.</div>
@@ -1281,8 +1288,8 @@ function derived(){
     thrMajor: (arm ? thrMajorBase + lvl : lvl) + (total.ThrMajor||0),
     thrSevere: (arm ? thrSevereBase + lvl : 2*lvl) + (total.ThrSevere||0),
     traits,
-    hpMax: Math.max(1, (parseInt(char.hpBase)||6) + (total.HP||0)),
-    stressMax: Math.max(1, (parseInt(char.stressBase)||6) + (total.Stress||0)),
+    hpMax: Math.min(15, Math.max(1, (parseInt(char.hpBase)||6) + (total.HP||0))),
+    stressMax: Math.min(15, Math.max(1, (parseInt(char.stressBase)||6) + (total.Stress||0))),
     hopeMax: Math.max(1, 6 + (total.Hope||0)),
     proficiency: Math.max(1, tierForLevel(char.level) + (char.proficiencyAdv||0) + (total.Proficiency||0)),
     carryMult: total.Carry || 1
@@ -1639,8 +1646,6 @@ function rebuildAllDropdowns(){
   const maxTier = tierForLevel(char.level);
   el('trickTierFilter').innerHTML = '<option value="">≤ '+maxTier+'</option>'+[1,2,3,4].map(n=>'<option value="'+n+'">T'+n+'</option>').join('');
 
-  el('expSuggestions').innerHTML = [...new Set(wb.skills.map(s=>s.name))].map(n=>'<option value="'+esc(n)+'">').join('');
-
   /* diseases with Nr (k20) are the random background-illness table, drawn only via the k20 roll button;
      diseases without it (Nr 0 / blank) are picked up during play (infections, radiation, ...) and chosen
      manually here, on the back of the card. */
@@ -1718,8 +1723,7 @@ function renderArmorPanel(){
   const a = currentArmor(), h = currentHelmet();
   el('armorCarried').checked = !char.armorStashed;
   el('helmetCarried').checked = !char.helmetStashed;
-  el('a_thrMajor').textContent = a ? a.major : "—";
-  el('a_thrSevere').textContent = a ? a.severe : "—";
+  el('a_thr').textContent = a ? (a.major+'/'+a.severe) : "—";
   el('a_score').textContent = a ? a.score : "0";
   el('a_weight').textContent = a ? a.weight : "0";
   el('a_feature').innerHTML = (a ? tip(a.fluff, '<span class="fluffName">'+esc(a.name)+'</span>', 'block')+' ' : '')+(a ? kw(a.feature||"—") : "—");
@@ -1880,7 +1884,7 @@ function renderExpList(){
        it's simply folded straight into the number shown in the field next to the
        name — the field is still editable, it just reads (and writes) the boosted
        total rather than the hidden base. */
-    row.innerHTML = '<input type="text" list="expSuggestions" value="'+esc(exp.name||"")+'" data-i="'+i+'" data-f="name" placeholder="np. Weteran frontu">'+
+    row.innerHTML = '<input type="text" value="'+esc(exp.name||"")+'" data-i="'+i+'" data-f="name" placeholder="np. Weteran frontu">'+
       '<input type="number" class="'+(bonus?'boosted':'')+'" value="'+(base+bonus)+'" data-i="'+i+'" data-f="level" data-bonus="'+bonus+'"'+
       (bonus?' title="baza '+sgn(base)+' + bonus '+sgn(bonus)+' (wartość już z bonusem)"':' title="modyfikator (edytowalny)"')+'>'+
       '<button data-rm="'+i+'" title="Usuń">✕</button>';
