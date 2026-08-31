@@ -1,0 +1,330 @@
+{
+  "name": "Hytrus",
+  "pronouns": "",
+  "origin": "Salt Lake City",
+  "profession": "Mafiozo",
+  "spec": "Cwaniak",
+  "level": 1,
+  "evasionBase": 10,
+  "evasionAdv": 0,
+  "armorMarked": 0,
+  "armorSlotsAdv": 0,
+  "traitsBase": {
+    "Agility": 0,
+    "Strength": -1,
+    "Finesse": 1,
+    "Instinct": 1,
+    "Presence": 2,
+    "Knowledge": 0
+  },
+  "traitsMarked": {
+    "Agility": false,
+    "Strength": false,
+    "Finesse": false,
+    "Instinct": false,
+    "Presence": false,
+    "Knowledge": false
+  },
+  "traitsAdvBonus": {
+    "Agility": 0,
+    "Strength": 0,
+    "Finesse": 0,
+    "Instinct": 0,
+    "Presence": 0,
+    "Knowledge": 0
+  },
+  "hpBase": 6,
+  "hpMarked": 0,
+  "stressBase": 6,
+  "stressMarked": 0,
+  "hopeMarked": 2,
+  "gamble": 0,
+  "experiences": [
+    {
+      "name": "Szczwany Lis",
+      "level": 2
+    },
+    {
+      "name": "Nie przegadasz",
+      "level": 2
+    }
+  ],
+  "tricks": [
+    {
+      "name": "Inspiracja",
+      "tier": 1,
+      "spec": "Cwaniak",
+      "cost": "1 kostka Fartu (zamiast 1 Hope)",
+      "effect": "Wydaj kostkę Fartu: cała drużyna zyskuje Advantage do najbliższego Reaction Roll (Instinct) przeciw strachowi.",
+      "mods": {},
+      "expBonus": 0,
+      "expCount": 0,
+      "grant": "",
+      "fluff": "Trudny test Zdolności przywódczych obniża o jeden Poziom Trudności najbliższy test Morale wszystkich Twoich podkomendnych lub towarzyszy.",
+      "source": "Startowa/ręczna"
+    },
+    {
+      "name": "Cassanova / Mata Hari",
+      "tier": 1,
+      "spec": "Cwaniak",
+      "cost": "1 kostka Fartu (zamiast 1 Hope)",
+      "effect": "W testach Charakteru związanych z uwodzeniem możesz wydać kostkę Fartu zamiast Hope, by przerzucić gorszą kość Duality.",
+      "mods": {},
+      "expBonus": 0,
+      "expCount": 0,
+      "grant": "",
+      "fluff": "Przerzucasz każdy test Charakteru związany z uwodzeniem.",
+      "source": "Startowa/ręczna"
+    }
+  ],
+  "weapons": [
+    {
+      "kind": "gun",
+      "name": "Browning HP",
+      "kat": "Pistolet",
+      "fluff": "Klasyk, którego wyprodukowano tyle, że wciąż wypływa ze starych magazynów.",
+      "ammo": "9mm",
+      "trait": "Agility",
+      "range": "Close",
+      "dmg": [
+        {
+          "mode": "Pojedynczy",
+          "v": "d6"
+        }
+      ],
+      "modes": [
+        "Pojedynczy"
+      ],
+      "bonus": 2,
+      "burden": "Jednoręczna",
+      "feature": "Standard: zacina się przy rzucie z Fear, gdy Fear Die pokazał 1. Wolne przeładowanie: przeładowanie w walce kosztuje 1 Stress i nie możesz w tym samym ruchu w Spotlight strzelić.",
+      "weight": 0.9,
+      "price": 45,
+      "magCap": "13",
+      "ammoNote": "1 / — / —",
+      "modesCompact": [
+        "D6 (1 nab.)",
+        "–",
+        "–"
+      ],
+      "mods": {},
+      "modeIdx": 0,
+      "rounds": 13,
+      "mags": 0,
+      "stashed": false,
+      "primary": true,
+      "offhand": false,
+      "unitPrice": 45
+    }
+  ],
+  "inventory": [
+    {
+      "name": "Środki czyszczące (1l)",
+      "qty": 1,
+      "weight": 1,
+      "effect": "Ulotny: czyszczenie broni i sprzętu — zaniedbana broń wraca do swojego poziomu zawodności.",
+      "durable": false,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 10
+    },
+    {
+      "name": "Lornetka",
+      "qty": 1,
+      "weight": 0.6,
+      "effect": "Obserwacja na Very Far i dalej: rozpoznawanie odległych celów bez rzutu; Advantage do Instinct Roll na wypatrywanie.",
+      "durable": true,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 30
+    },
+    {
+      "name": "Śpiwór",
+      "qty": 1,
+      "weight": 1.5,
+      "effect": "Długi odpoczynek w terenie: czyścisz pełną pulę Stress jak w łóżku (bez śpiwora na zimnie: o 2 mniej).",
+      "durable": true,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 5
+    },
+    {
+      "name": "Namiot",
+      "qty": 1,
+      "weight": 3,
+      "effect": "Schronienie: długi odpoczynek w terenie liczy się jako w bezpiecznym miejscu (pełne efekty odpoczynku).",
+      "durable": true,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 10
+    },
+    {
+      "name": "Koc",
+      "qty": 1,
+      "weight": 1,
+      "effect": "Podczas odpoczynku na zimnie bez koca czyścisz o 1 Stress mniej; z kocem normalnie.",
+      "durable": true,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 5
+    },
+    {
+      "name": "Amunicja pistoletowa 9mm",
+      "qty": 30,
+      "weight": 0.02,
+      "effect": "1 sztuka = 1 strzał w trybie pojedynczym; serie zużywają tyle sztuk, ile podano przy broni. Bez amunicji broń jest tylko pałką (d6).",
+      "durable": false,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 3
+    },
+    {
+      "name": "Narkotyk łatwy do wyprodukowania",
+      "qty": 1,
+      "weight": 0.01,
+      "effect": "Ulotny: zażyj (w walce oznacz 1 Stress za sięgnięcie po dawkę), by na scenę mieć +1 do jednego wybranego Traita; na koniec sceny oznacz 2 Stress. Przy rzucie z Fear w tej scenie — uzależnienie (Reaction Roll Strength).",
+      "durable": false,
+      "mods": {},
+      "custom": false,
+      "stashed": false,
+      "unitPrice": 10
+    }
+  ],
+  "armorName": "Klasa ogólna: Lekki (skórzana zbroja, cienka blacha)",
+  "helmetName": "",
+  "armorUnitPrice": 15,
+  "helmetUnitPrice": 0,
+  "armorStashed": false,
+  "helmetStashed": false,
+  "proficiencyAdv": 0,
+  "diseasesStart": [
+    {
+      "name": "Niewydolność krążenia",
+      "stage": 0
+    }
+  ],
+  "diseasesAcquired": [],
+  "notes": "",
+  "adv": {
+    "2": {
+      "traits2": {
+        "count": 0,
+        "picks": []
+      },
+      "hp": {
+        "count": 0,
+        "picks": []
+      },
+      "stress": {
+        "count": 0,
+        "picks": []
+      },
+      "exp2": {
+        "count": 0,
+        "picks": []
+      },
+      "trick": {
+        "count": 0,
+        "picks": []
+      },
+      "evasion": {
+        "count": 0,
+        "picks": []
+      },
+      "extraCecha": {
+        "count": 0,
+        "picks": []
+      },
+      "proficiency": {
+        "count": 0,
+        "picks": []
+      }
+    },
+    "3": {
+      "traits2": {
+        "count": 0,
+        "picks": []
+      },
+      "hp": {
+        "count": 0,
+        "picks": []
+      },
+      "stress": {
+        "count": 0,
+        "picks": []
+      },
+      "exp2": {
+        "count": 0,
+        "picks": []
+      },
+      "trick": {
+        "count": 0,
+        "picks": []
+      },
+      "evasion": {
+        "count": 0,
+        "picks": []
+      },
+      "extraCecha": {
+        "count": 0,
+        "picks": []
+      },
+      "proficiency": {
+        "count": 0,
+        "picks": []
+      }
+    },
+    "4": {
+      "traits2": {
+        "count": 0,
+        "picks": []
+      },
+      "hp": {
+        "count": 0,
+        "picks": []
+      },
+      "stress": {
+        "count": 0,
+        "picks": []
+      },
+      "exp2": {
+        "count": 0,
+        "picks": []
+      },
+      "trick": {
+        "count": 0,
+        "picks": []
+      },
+      "evasion": {
+        "count": 0,
+        "picks": []
+      },
+      "extraCecha": {
+        "count": 0,
+        "picks": []
+      },
+      "proficiency": {
+        "count": 0,
+        "picks": []
+      }
+    }
+  },
+  "expPicks": {},
+  "borrowed": {},
+  "traitPicks": {},
+  "wounds": [],
+  "_originCechaIdx": "1",
+  "_professionCechaIdx": "1",
+  "_materializedGrants": {},
+  "_engine": {
+    "value": 0,
+    "tokens": 0,
+    "fartUsed": 0
+  }
+}
