@@ -83,12 +83,12 @@ button.btn:disabled{opacity:.45;cursor:not-allowed;}
 #stage{max-width:var(--page-w);margin:0 auto;perspective:2400px;}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1);}
 .flipper.flipped{transform:rotateY(180deg);}
-.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:0 0 14px;
+.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:3px 3px 14px;
   width:var(--page-w);}
 .face.back{position:absolute;top:0;left:0;width:100%;transform:rotateY(180deg);}
 
 /* header strip */
-.sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;}
+.sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;margin-bottom:3px;}
 .hdrRow1{display:flex;align-items:stretch;flex-wrap:nowrap;}
 .brand{background:linear-gradient(135deg,#2a2420,#181310);padding:8px 12px;flex:1.5;min-width:0;
   display:flex;flex-direction:column;justify-content:center;gap:2px;border-right:2px solid var(--rust);}
@@ -121,7 +121,7 @@ select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 select.headSel option{color:#111;}
 
 /* body grid */
-.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:12px;padding:12px 14px 0;}
+.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:3px;padding:0;}
 .body2col > div{min-width:0;}
 @media screen and (max-width:980px){.body2col{grid-template-columns:1fr;}}
 
@@ -137,7 +137,7 @@ select.headSel option{color:#111;}
 select, input, textarea{min-width:0;box-sizing:border-box;}
 .face{overflow-x:hidden;}
 
-.panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:10px;overflow:visible;
+.panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:0;margin-bottom:3px;overflow:visible;
   break-inside:avoid;page-break-inside:avoid;}
 .panel > .ph{position:relative;background:var(--ink);color:#F6EFDE;font-size:11.5px;font-weight:800;letter-spacing:.05em;
   padding:6px 14px 6px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
@@ -159,6 +159,11 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .panel > .ph select.phSelect{font-size:10.5px;font-weight:600;letter-spacing:0;text-transform:none;
   font-family:"Segoe UI",Arial,sans-serif;padding:3px 6px;border-radius:6px;border:1px solid rgba(255,255,255,.4);
   background:#FBF6EA;color:#241E17;max-width:150px;min-width:60px;}
+/* size to content instead of the shared 150px cap: without the old long
+   "Specjalizacja: wszystkie" placeholder, the box should just fit the longest
+   Specialization word / the compact T1..T4 labels, not stay unnecessarily wide */
+#trickSpecFilter{width:auto;max-width:none;min-width:0;}
+#trickTierFilter{width:auto;max-width:none;min-width:0;padding-right:20px;}
 .panel > .ph.phStack{flex-direction:column;align-items:stretch;gap:5px;}
 .panel > .ph.phStack .phTop{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
 .panel > .ph.phStack .phActions.phRow2{width:100%;justify-content:flex-end;}
@@ -180,7 +185,7 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .costLine .lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#6E634E;display:block;margin-bottom:2px;}
 
 /* stat circles */
-.statRow{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap;}
+.statRow{display:flex;gap:10px;align-items:flex-end;justify-content:space-evenly;flex-wrap:nowrap;}
 .circleStat{display:flex;flex-direction:column;align-items:center;gap:3px;}
 .circleStat .circ{width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;flex:0 0 auto;}
 .circleStat .circ .big{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
@@ -200,20 +205,38 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .pip.diamond.checked{background:var(--ok);border-color:#16281B;}
 .pipLine{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
 .pipLine .pipRow{margin-top:0;flex:0 1 auto;}
+/* the "+" step button always sits flush against the panel's right edge, regardless
+   of how many pips are filled in */
+.pipLine .pipBtn:last-child{margin-left:auto;}
 .pipBtn{width:24px;height:24px;border-radius:6px;border:1.5px solid #6E634E;background:#fff;cursor:pointer;font-weight:800;font-size:14px;
   line-height:1;color:var(--ink);flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
 .pipBtn:hover{background:#F1E8D4;}
+.pipBtn.sm{width:15px;height:15px;font-size:9px;}
 
 /* traits / umiejętności */
-.traitsGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
-@media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,1fr);}}
-.traitCard{border:1px solid var(--line);border-radius:7px;padding:7px;background:#fff;}
-.traitCard .tname{font-size:11.5px;font-weight:800;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center;}
+.traitsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
+@media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.traitCard{border:1px solid var(--line);padding:6px 5px 7px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
+.traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;}
+/* full 3-word description, never truncated — free to wrap onto a second line;
+   every card in the row is still stretched to the same height by the grid, so this
+   never throws the row out of alignment, and the value below is unaffected. */
 .traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
-.traitCard .tvals{display:flex;align-items:center;gap:5px;font-size:10.5px;}
-.traitCard select{font-size:11px;padding:2px 18px 2px 4px;min-height:24px;}
-.traitCard .ttotal{margin-left:auto;font-size:18px;font-weight:800;color:var(--rust-dark);}
-.markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;border-radius:3px;flex:0 0 auto;}
+/* the Trait's value is the single most important number on the card: it's the
+   dominant visual element, and — since margin-top:auto pins it to the bottom of the
+   (flex column) card while every card in the row is stretched to equal height by the
+   grid — it sits at the exact same vertical position on every card regardless of how
+   many lines .tverbs wraps to. Clicking it opens the real <select> underneath (the
+   select is absolutely positioned over the whole value area, invisible, on top); when
+   that select isn't open, only the plain current value is visible. */
+.traitCard .tvalWrap{position:relative;margin-top:auto;text-align:center;padding-top:4px;}
+.traitCard .tvalWrap select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
+  padding:0;min-height:0;border:none;background:none;appearance:none;-webkit-appearance:none;}
+.traitCard .tvalDisplay{display:block;font-size:27px;font-weight:800;color:var(--rust-dark);line-height:1;pointer-events:none;}
+/* fixed 3px from the card's top-right corner at all times — never reflows with the
+   trait name's text, so it can't drift/"float" depending on content. */
+.markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;flex:0 0 auto;
+  position:absolute;top:3px;right:3px;}
 .markbox.checked{background:var(--teal);border-color:var(--teal-dark);}
 .tbreak{font-size:8px;color:#6E634E;}
 
@@ -238,6 +261,7 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .grantedBase{width:60px;text-align:center;font-size:12px;color:#5C5346;}
 .expTotal{min-width:30px;text-align:center;font-weight:800;font-size:13px;color:#5C5346;flex:0 0 auto;}
 .expTotal.boosted{color:var(--rust-dark);background:#FBE0D0;border:1px solid #D89C79;border-radius:5px;padding:2px 4px;}
+.expRow input[type=number].boosted{color:var(--rust-dark);background:#FBE0D0;border-color:#D89C79;font-weight:800;}
 .expPickBox{background:#F4F7F3;border:1px solid #9DB39B;border-radius:7px;padding:6px 7px;margin-top:5px;}
 .expPickHead{font-size:9.5px;font-weight:800;color:#2A4A2E;text-transform:uppercase;letter-spacing:.03em;margin-bottom:4px;}
 .expPickBox select{margin-bottom:4px;}
@@ -279,9 +303,11 @@ label.fl{font-size:8.5px;color:#5C5346;letter-spacing:.05em;text-transform:upper
 
 /* vitals: HP / Stress / Hope combined panel */
 .vitalsPanel .fl{font-size:12px;letter-spacing:.03em;}
-.vitalsPanel .baseTag{font-size:10px;font-weight:700;color:#6E634E;text-transform:none;letter-spacing:0;margin-left:5px;}
+.baseTag{font-size:10px;font-weight:700;color:#6E634E;text-transform:none;letter-spacing:0;margin-left:5px;}
 .vitalsBlock{margin-bottom:11px;}
 .vitalsBlock:last-child{margin-bottom:0;}
+.hopeBlock{text-align:center;}
+.hopeBlock .pipRow{justify-content:center;gap:5px;}
 
 /* silnik specjalizacji */
 .engineBox{background:linear-gradient(180deg,#FFF8EC,#F4EFE2);border:1.5px solid var(--rust);border-radius:8px;padding:8px 10px;}
@@ -350,6 +376,113 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .flipBtnWrap{display:flex;justify-content:center;padding:14px;}
 .progLabel{font-size:11px;color:#5C5346;text-align:center;margin-top:2px;}
 
+/* ---------- new front-page header (Daggerheart-style card top) ---------- */
+.hdrGrid{display:grid;grid-template-columns:1.45fr 1.1fr 1.05fr .5fr;grid-template-rows:auto auto;
+  grid-template-areas:"left name name level" "left origin carry level";}
+.hdrBlockLeft{grid-area:left;background:linear-gradient(135deg,#2a2420,#181310);border-right:2px solid var(--rust);
+  padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
+.hdrBlockLeft select.headSel{border:none;border-bottom:1px solid #6a5f52;background-color:transparent;
+  color:#F6EFDE;padding:3px 20px 3px 3px;min-height:0;width:100%;}
+.hdrBlockLeft select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
+.hdrBlockLeft select.specSel{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;
+  font-size:16px;letter-spacing:.04em;text-transform:uppercase;}
+.hdrBlockLeft select.profSel{font-size:10.5px;color:#D3BE95;margin-top:1px;}
+.hdrNameWrap{grid-area:name;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:6px 10px;
+  border-left:1px solid #3a332c;}
+/* blends into the header instead of reading as its own boxed field — no background,
+   no border until it's actually focused for editing */
+input.nameInput2{background:transparent;border:none;border-bottom:1.5px solid transparent;color:#F6EFDE;
+  font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.03em;
+  text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:3px 5px;border-radius:0;min-height:0;}
+input.nameInput2:focus{outline:none;border-bottom-color:var(--rust);}
+input.nameInput2::placeholder{color:#8f8577;}
+.hdrGrid .hdrCell{grid-area:origin;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;
+  background:#1c1712;border-top:1px solid #3a332c;border-left:1px solid #3a332c;min-width:0;}
+.hdrGrid .hdrCell.hdrCarry{grid-area:carry;}
+.hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:2px;}
+.hdrGrid .hdrCell select.headSel{padding:3px 20px 3px 3px;min-height:0;}
+.hdrCarryVal{display:flex;align-items:baseline;gap:5px;color:#F0A177;}
+.hdrCarryVal span:last-child{color:#D3BE95;}
+.hdrBlockRight{grid-area:level;background:linear-gradient(135deg,#2a2420,#181310);border-left:2px solid var(--rust);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 8px;min-width:0;}
+.hdrBlockRight .lv{font-size:9px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;}
+.hdrBlockRight select.mono{width:28px;text-align:center;text-align-last:center;background:transparent;color:#F0A177;border:none;
+  font-size:20px;font-weight:800;min-height:0;padding:3px 0;background-image:none;appearance:none;-webkit-appearance:none;cursor:pointer;}
+.tierHint2{font-size:9.5px;color:#D3BE95;margin-top:1px;font-weight:700;}
+@media (max-width:640px){
+  .hdrGrid{grid-template-columns:1fr 1fr .7fr;grid-template-areas:"left name level" "left origin level" "carry carry carry";}
+}
+
+/* ---------- Damage & Health: threshold strip ----------
+   One continuous black-bordered strip (the row itself carries the outer border, so
+   every cell reads as an extension of the same frame — no separate floating shapes).
+   Small dividers between cells carry a left-pointing arrow, uniformly, all pointing
+   the same direction. */
+.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:nowrap;margin-bottom:9px;border:2px solid var(--ink);background:#fff;}
+.dmgArrow{background:#fff;padding:3px 10px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;flex:1 1 0;min-width:0;text-align:center;overflow:hidden;}
+.dmgArrow .dLabel{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.01em;color:var(--teal-dark);line-height:1.15;}
+.dmgArrow .dMark{font-size:6.5px;color:#6E634E;margin-top:1px;line-height:1.1;white-space:nowrap;}
+.dmgThrVal{background:#F4EFE2;flex:0 0 36px;display:flex;
+  align-items:center;justify-content:center;font-size:12px;font-weight:800;color:var(--ink);padding:3px 6px;}
+.dmgDivider{flex:0 0 auto;width:13px;display:flex;align-items:center;justify-content:center;background:var(--ink);}
+.dmgDivider svg{width:7px;height:12px;display:block;}
+.dmgDivider svg polygon{fill:#F6EFDE;}
+
+/* ---------- Armor Slots: manual max +/- control, matching the HP/Stress pattern.
+   Styled as a third circleStat-style column (box, then an English label below it in
+   the same type as Evasion/Armor Score) so all three read as one consistent row. The
+   pips fill 3-per-row (up to 4 rows = 12 slots) instead of free-wrapping. ---------- */
+.armorSlotsBlock{flex:0 0 auto;position:relative;}
+#armorPips{display:grid;grid-template-columns:repeat(3,15px);grid-auto-rows:15px;gap:4px;}
+.armorSlotsBlock label{display:flex;align-items:center;gap:4px;}
+/* the manual-adjustment note is taken out of flow so it can never push the "Armor
+   Slots" label away from its fixed position — it just floats under the row */
+.armorSlotsBlock .baseTag{position:absolute;top:100%;left:50%;transform:translateX(-50%);
+  white-space:nowrap;margin-top:2px;}
+
+/* ---------- top stat strip: two separate panels (Obrona i Pancerz / Umiejętności), kept on one
+   line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
+.topStatSplit{display:flex;gap:3px;align-items:stretch;flex-wrap:nowrap;margin-bottom:3px;}
+.topStatSplit > .panel{margin-bottom:0;}
+.defenseCol{flex:0 0 300px;min-width:230px;display:flex;flex-direction:column;}
+/* bottom-anchored, not centered: growing the Armor Slots pip grid (more rows as
+   slots are added) must never shift Evasion / Armor Score / the Armor Slots label —
+   pinning the row's bottom edge means it only ever grows upward, in its own space,
+   without moving anything that's already aligned to that bottom line. */
+.defenseCol .pb{flex:1 1 auto;display:flex;flex-direction:column;justify-content:flex-end;}
+.defenseCol .statRow{flex-wrap:nowrap;}
+.traitsCol{flex:1 1 auto;min-width:0;}
+
+/* ---------- traits in a single row (per reference layout) ---------- */
+.traitsGrid.oneRow{grid-template-columns:repeat(6,minmax(0,1fr));}
+@media (max-width:900px){.traitsGrid.oneRow{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media (max-width:560px){.traitsGrid.oneRow{grid-template-columns:repeat(2,minmax(0,1fr));}}
+
+/* ---------- Proficiency: static (read-only) 6-pip display, centered, same
+   diamond shape as Hope ---------- */
+.pip.static{cursor:default;}
+#profPips{justify-content:center;gap:5px;}
+
+/* ---------- Gamble, tucked into the Ekwipunek panel header ---------- */
+.panel > .ph .phGamble{display:flex;align-items:center;gap:4px;font-size:10px;color:#F6EFDE;text-transform:none;font-weight:600;}
+.panel > .ph .phGamble input{width:56px;text-align:center;font-size:11px;padding:3px 6px;min-height:0;border-radius:6px;
+  border:1px solid rgba(255,255,255,.4);background:#FBF6EA;color:#241E17;}
+
+/* ---------- point 3: square corners everywhere on the sheet itself (front + back);
+   the "cut corner" on panel headers / threshold arrows is a clip-path, not a
+   border-radius, so it's untouched by this reset. Only genuinely round/pill/diamond
+   shape-language elements (stat orbs, round & diamond pips, pill badges/tags) are
+   explicitly restored below, since they read as intentional shapes, not "areas". ---------- */
+.face, .face *{border-radius:0 !important;}
+.face .circleStat .circ,
+.face .pip.round{border-radius:50% !important;}
+.face .pip.diamond{border-radius:2px !important;}
+.face .badge,
+.face .panel > .ph .phSub span,
+.face .grantedTag,
+.face .twoHandedTag{border-radius:20px !important;}
+
 @media print{
   *{-webkit-print-color-adjust:exact;print-color-adjust:exact;color-adjust:exact;}
   body{background:#fff;padding:0;}
@@ -395,42 +528,58 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
     <!-- ============ FRONT ============ -->
     <div class="face front">
       <div class="sheetHeader">
-        <div class="hdrRow1">
-          <div class="brand">
-            <div class="nameRow">
-              <input class="nameInput" id="f_name" type="text" placeholder="IMIĘ POSTACI">
-              <input class="pronounsInput" id="f_pronouns" type="text" placeholder="zaimki">
-            </div>
-            <div class="subline">NeuroHeart · Neuroshima × Daggerheart</div>
+        <div class="hdrGrid">
+          <div class="hdrBlockLeft">
+            <select id="f_spec" class="wide headSel specSel"></select>
+            <select id="f_profession" class="wide headSel profSel"></select>
           </div>
-          <div class="statGroup">
-            <div class="statCell">
-              <div class="lv">Poziom</div>
-              <select id="f_level" class="mono">
-                <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-                <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-              </select>
-              <div class="tierHint" id="tierNum">T1</div>
-            </div>
-            <div class="statCell">
-              <div class="lv">Proficiency</div>
-              <div class="num" id="profStamp">1</div>
-            </div>
-            <div class="statCell">
-              <div class="lv">Udźwig kg</div>
-              <div class="num mono" id="carryCur" style="font-size:15px;">0</div>
-              <div class="lv" id="carryMaxLine" style="font-size:7px;">max 15</div>
-            </div>
-            <div class="statCell gambleCell">
-              <div class="lv">Gamble</div>
-              <input class="mono" id="f_gamble" type="number" min="0" value="0">
+          <div class="hdrNameWrap">
+            <input class="nameInput2" id="f_name" type="text" placeholder="IMIĘ POSTACI">
+          </div>
+          <div class="hdrCell">
+            <label>Pochodzenie</label>
+            <select id="f_origin" class="wide headSel"></select>
+          </div>
+          <div class="hdrCell hdrCarry">
+            <label>Udźwig kg</label>
+            <div class="hdrCarryVal"><span class="mono" id="carryCur" style="font-size:15px;">0</span><span id="carryMaxLine" style="font-size:8px;">max 15</span></div>
+          </div>
+          <div class="hdrBlockRight">
+            <div class="lv">Poziom</div>
+            <select id="f_level" class="mono">
+              <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+              <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="topStatSplit">
+        <div class="panel defenseCol">
+          <div class="ph"><span style="font-size:11.5px;">Obrona i Pancerz</span></div>
+          <div class="pb">
+            <div class="statRow">
+              <div class="circleStat">
+                <div class="circ"><div class="big" id="evTotal">10</div></div>
+                <label>Evasion</label>
+              </div>
+              <div class="circleStat">
+                <div class="circ"><div class="big" id="asTotal">0</div></div>
+                <label>Armor Score</label>
+              </div>
+              <div class="circleStat armorSlotsBlock">
+                <div class="pipRow" id="armorPips"></div>
+                <label><button class="pipBtn sm" data-armorstep="-1">−</button><span>Armor Slots</span><button class="pipBtn sm" data-armorstep="1">+</button></label>
+                <span class="baseTag" id="armorBaseTag"></span>
+              </div>
             </div>
           </div>
         </div>
-        <div class="hdrRow2">
-          <div class="cell"><label>Pochodzenie</label><select id="f_origin" class="wide headSel"></select></div>
-          <div class="cell"><label>Profesja</label><select id="f_profession" class="wide headSel"></select></div>
-          <div class="cell"><label>Specjalizacja</label><select id="f_spec" class="wide headSel"></select></div>
+        <div class="panel traitsCol">
+          <div class="ph"><span style="font-size:11.5px;">Umiejętności</span></div>
+          <div class="pb">
+            <div class="traitsGrid oneRow" id="traitsGrid"></div>
+          </div>
         </div>
       </div>
 
@@ -438,72 +587,43 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
         <!-- LEFT -->
         <div>
           <div class="panel">
-            <div class="ph"><span style="font-size:11.5px;">Obrona i progi obrażeń</span></div>
+            <div class="ph"><span class="display" style="font-size:12px;">Obrażenia i Zdrowie</span></div>
             <div class="pb">
-              <div class="statRow" style="margin-bottom:10px;">
-                <div class="circleStat">
-                  <div class="circ"><div class="big" id="evTotal">10</div></div>
-                  <label>Evasion</label>
+              <div class="dmgThreshRow">
+                <div class="dmgArrow"><div class="dLabel">Minor Damage</div><div class="dMark">zaznacz 1 HP</div></div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
+                <div class="dmgThrVal" id="thrMajorV">1</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
+                <div class="dmgArrow"><div class="dLabel">Major Damage</div><div class="dMark">zaznacz 2 HP</div></div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
+                <div class="dmgThrVal" id="thrSevereV">2</div>
+                <div class="dmgDivider"><svg viewBox="0 0 10 16"><polygon points="0,0 10,8 0,16"></polygon></svg></div>
+                <div class="dmgArrow"><div class="dLabel">Severe Damage</div><div class="dMark">zaznacz 3 HP</div></div>
+              </div>
+              <div class="vitalsPanel">
+                <div class="vitalsBlock">
+                  <label class="fl">HP <span class="baseTag" id="hpBaseTag"></span></label>
+                  <div class="pipLine"><button class="pipBtn" data-hpstep="-1">−</button><div class="pipRow" id="hpPips"></div><button class="pipBtn" data-hpstep="1">+</button></div>
                 </div>
-                <div class="circleStat">
-                  <div class="circ"><div class="big" id="asTotal">0</div></div>
-                  <label>Armor Score</label>
-                </div>
-                <div class="thrBox">
-                  <div class="thrCard"><div class="t">Próg Major</div><div class="v" id="thrMajorV">1</div></div>
-                  <div class="thrCard"><div class="t">Próg Severe</div><div class="v" id="thrSevereV">2</div></div>
+                <div class="vitalsBlock">
+                  <label class="fl">Stress <span class="baseTag" id="stressBaseTag"></span></label>
+                  <div class="pipLine"><button class="pipBtn" data-stressstep="-1">−</button><div class="pipRow" id="stressPips"></div><button class="pipBtn" data-stressstep="1">+</button></div>
                 </div>
               </div>
-              <label class="fl">Sloty Pancerza</label>
-              <div class="pipRow" id="armorPips"></div>
             </div>
           </div>
 
           <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
+            <div class="ph rust"><span class="display" style="font-size:12px;">Hope i Silnik Specjalizacji</span></div>
             <div class="pb">
-              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:8px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony (liczy się do udźwigu)</label>
-              <div class="fieldGrid4">
-                <div><label class="fl">Próg Major</label><div class="readout" id="a_thrMajor">—</div></div>
-                <div><label class="fl">Próg Severe</label><div class="readout" id="a_thrSevere">—</div></div>
-                <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
-                <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+              <div class="vitalsPanel" style="margin-bottom:8px;">
+                <div class="vitalsBlock hopeBlock" style="margin-bottom:0;">
+                  <label class="fl">Hope</label>
+                  <div class="pipRow" id="hopePips"></div>
+                </div>
               </div>
-              <div class="featBox" id="a_feature">—</div>
-              <label class="fl">Dodatek (hełm)</label>
-              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony (liczy się do udźwigu)</label>
-              <div class="featBox" id="h_feature" style="display:none;"></div>
+              <div id="engineHost"></div>
             </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span style="font-size:11.5px;">Umiejętności</span><span class="sub">6 cech, kliknij • by oznaczyć użycie</span></div>
-            <div class="pb"><div class="traitsGrid" id="traitsGrid"></div></div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">HP, Stres i Hope</span></div>
-            <div class="pb vitalsPanel">
-              <div class="vitalsBlock">
-                <label class="fl">HP <span class="baseTag" id="hpBaseTag"></span></label>
-                <div class="pipLine"><button class="pipBtn" data-hpstep="-1">−</button><div class="pipRow" id="hpPips"></div><button class="pipBtn" data-hpstep="1">+</button></div>
-              </div>
-              <div class="vitalsBlock">
-                <label class="fl">Stress <span class="baseTag" id="stressBaseTag"></span></label>
-                <div class="pipLine"><button class="pipBtn" data-stressstep="-1">−</button><div class="pipRow" id="stressPips"></div><button class="pipBtn" data-stressstep="1">+</button></div>
-              </div>
-              <div class="vitalsBlock">
-                <label class="fl">Hope</label>
-                <div class="pipRow" id="hopePips"></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph rust"><span style="font-size:11.5px;">Silnik Specjalizacji</span></div>
-            <div class="pb" id="engineHost"></div>
           </div>
 
           <div class="panel">
@@ -515,58 +635,19 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
             </div>
             <div class="pb"><div id="cechyPanel"></div></div>
           </div>
-        </div>
-
-        <!-- RIGHT -->
-        <div>
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
-              <div class="phActions"><button class="phBtn" id="addExp">+ Dodaj</button></div>
-            </div>
-            <div class="pb">
-              <div id="expList"></div>
-              <datalist id="expSuggestions"></datalist>
-            </div>
-          </div>
 
           <div class="panel">
-            <div class="ph phStack">
-              <div class="phTop"><span class="display" style="font-size:12px;">Sztuczki</span>
-                <div class="phActions"><select id="trickPicker" class="phSelect"></select><button class="phBtn" id="addTrick">+ Dodaj</button></div>
-              </div>
-              <div class="phActions phRow2">
+            <div class="ph">
+              <span class="display" style="font-size:12px;">Sztuczki</span>
+              <div class="phActions">
                 <select id="trickSpecFilter" class="phSelect"></select>
                 <select id="trickTierFilter" class="phSelect"></select>
+                <select id="trickPicker" class="phSelect"></select>
+                <button class="phBtn" id="addTrick">+</button>
               </div>
             </div>
             <div class="pb">
               <div id="trickList"></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Broń</span>
-              <div class="phActions"><button class="phBtn" id="addWeapon">+ Dodaj</button></div>
-            </div>
-            <div class="pb">
-              <div class="fieldGrid2" style="margin-bottom:8px;">
-                <select id="weaponCatPicker" class="wide"></select>
-                <select id="weaponPicker" class="wide"></select>
-              </div>
-              <div id="weaponsList"></div>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
-              <div class="phActions"><button class="phBtn" id="addInv">+ Dodaj</button><button class="phBtn" id="addInvBlank">+ Własna</button></div>
-            </div>
-            <div class="pb">
-              <div class="fieldGrid2" style="margin-bottom:8px;">
-                <select id="invCatPicker" class="wide"></select>
-                <select id="invPicker" class="wide"></select>
-              </div>
-              <div id="invList"></div>
             </div>
           </div>
 
@@ -589,17 +670,76 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 
           <div class="panel">
             <div class="ph phStack" style="background:var(--maroon);">
-              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+ Dodaj</button></div></div>
+              <div class="phTop"><span class="display" style="font-size:12px;">Rany</span><div class="phActions"><button class="phBtn" id="addWoundBtn">+</button></div></div>
               <div class="phSub" id="woundCountsHeader"></div>
             </div>
             <div class="pb">
               <div id="woundRows"></div>
             </div>
           </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div>
+          <div class="panel">
+            <div class="ph"><span style="font-size:11.5px;">Proficiency</span></div>
+            <div class="pb"><div class="pipRow" id="profPips"></div></div>
+          </div>
 
           <div class="panel">
-            <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
-            <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
+            <div class="ph"><span class="display" style="font-size:12px;">Doświadczenia</span>
+              <div class="phActions"><button class="phBtn" id="addExp">+</button></div>
+            </div>
+            <div class="pb">
+              <div id="expList"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Broń</span>
+              <div class="phActions"><button class="phBtn" id="addWeapon">+</button></div>
+            </div>
+            <div class="pb">
+              <div class="fieldGrid2" style="margin-bottom:8px;">
+                <select id="weaponCatPicker" class="wide"></select>
+                <select id="weaponPicker" class="wide"></select>
+              </div>
+              <div id="weaponsList"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
+            <div class="pb">
+              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
+              <div class="fieldGrid4">
+                <div><label class="fl">Progi</label><div class="readout" id="a_thr">—</div></div>
+                <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
+                <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
+                <div><label class="fl">&nbsp;</label><label class="carryToggle" style="min-height:28px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony</label></div>
+              </div>
+              <div class="featBox" id="a_feature">—</div>
+              <label class="fl">Dodatek (hełm)</label>
+              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
+              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony</label>
+              <div class="featBox" id="h_feature" style="display:none;"></div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
+              <div class="phActions">
+                <span class="phGamble">💰 Gamble <input class="mono" id="f_gamble" type="number" min="0" value="0"></span>
+                <button class="phBtn" id="addInv">+</button><button class="phBtn" id="addInvBlank">+ Własna</button>
+              </div>
+            </div>
+            <div class="pb">
+              <div class="fieldGrid2" style="margin-bottom:8px;">
+                <select id="invCatPicker" class="wide"></select>
+                <select id="invPicker" class="wide"></select>
+              </div>
+              <div id="invList"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -627,13 +767,18 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
       </div>
 
       <div class="panel" style="margin:14px 18px;">
+        <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
+        <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
+      </div>
+
+      <div class="panel" style="margin:14px 18px;">
         <div class="ph"><span class="display" style="font-size:12px;">Modyfikatory — skąd się biorą</span></div>
         <div class="pb"><div id="modPanel"></div></div>
       </div>
 
       <div class="panel" style="margin:14px 18px;">
         <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Dodaj chorobę nabytą</span>
-          <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+ Dodaj</button></div>
+          <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+</button></div>
         </div>
         <div class="pb">
           <div class="caption">Dodana choroba pojawi się na przodzie karty, w panelu Choroby → Choroby nabyte.</div>
@@ -724,6 +869,10 @@ function woundTierIdx(key){ return WOUND_TIERS.findIndex(t=>t.key===key); }
    TRACK SHAPE (die / token-pips / dice-pool) and its numeric cap formula, because those are UI mechanics
    with no single-cell spreadsheet equivalent, not narrative content. */
 const ENGINE_TYPE = {"Wojownik":"die", "Ranger":"tokens", "Technik":"tokens", "Cwaniak":"pool"};
+/* Szperacz (Ranger) / Macher (Technik) / Fuksiarz (Cwaniak): wszystkie trzy mają wg arkusza "8. Silniki
+   Specjalizacji" "Ilość Tokenów równa Twojemu największemu współczynnikowi" — max = najwyższa wartość
+   spośród 6 Traitów (nigdy Proficiency). Tylko Żelazny Trep (Wojownik) rośnie inaczej — z Tierem. */
+function engineTraitCap(d){ return Math.max(1, ...TRAIT_LIST.map(t=>d.traits[t].total)); }
 function renderEngine(){
   const host = el('engineHost');
   const type = ENGINE_TYPE[char.spec];
@@ -742,13 +891,12 @@ function renderEngine(){
     for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=char._engine.value?'checked':'')+'" data-engval="'+i+'"></div>';
     track += '<button class="pipBtn" data-engreset="1" title="Reset (długi odpoczynek)">↺</button>';
   } else if(type==='tokens'){
-    /* Szperacz (Ranger) / Macher (Technik): "Ilość Tokenów równa Twojemu największemu współczynnikowi"
-       (arkusz "8. Silniki Specjalizacji") — max = najwyższa wartość spośród 6 Traitów, dla obu Specjalizacji. */
-    const max = Math.max(1, ...TRAIT_LIST.map(t=>d.traits[t].total));
+    const max = engineTraitCap(d);
     if(char._engine.tokens>max) char._engine.tokens=max;
     for(let i=1;i<=max;i++) track += '<div class="pip '+(i<=char._engine.tokens?'checked':'')+'" data-engtok="'+i+'"></div>';
   } else if(type==='pool'){
-    const max = d.proficiency;
+    /* Pula Fuksiarza i tak resetuje się raz na sesję (przycisk niżej) — tylko max się zmienił. */
+    const max = engineTraitCap(d);
     if(char._engine.fartUsed>max) char._engine.fartUsed=max;
     for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=(max-char._engine.fartUsed)?'checked':'')+'" data-engfart="'+i+'"></div>';
     track += '<button class="pipBtn" data-engreset="1" title="Nowa sesja">↺</button>';
@@ -766,7 +914,7 @@ function renderEngine(){
     const i=parseInt(e.target.getAttribute('data-engtok')); char._engine.tokens=(i===char._engine.tokens)?i-1:i; save(); renderEngine();
   }));
   host.querySelectorAll('[data-engfart]').forEach(p=>p.addEventListener('click', e=>{
-    const i=parseInt(e.target.getAttribute('data-engfart')); const max=derived().proficiency; const usedIfClicked = max-i+1;
+    const i=parseInt(e.target.getAttribute('data-engfart')); const max=engineTraitCap(derived()); const usedIfClicked = max-i+1;
     char._engine.fartUsed = (char._engine.fartUsed===usedIfClicked)? usedIfClicked-1 : usedIfClicked; save(); renderEngine();
   }));
   host.querySelectorAll('[data-engreset]').forEach(b=>b.addEventListener('click', ()=>{
@@ -1006,7 +1154,7 @@ function parseEquip(workbook){
 function freshChar(){
   return {
     name:"", pronouns:"", origin:"", profession:"", spec:"", level:1,
-    evasionBase:10, evasionAdv:0, armorMarked:0,
+    evasionBase:10, evasionAdv:0, armorMarked:0, armorSlotsAdv:0,
     traitsBase:{Agility:null,Strength:null,Finesse:null,Instinct:null,Presence:null,Knowledge:null},
     traitsMarked:{Agility:false,Strength:false,Finesse:false,Instinct:false,Presence:false,Knowledge:false},
     traitsAdvBonus:{Agility:0,Strength:0,Finesse:0,Instinct:0,Presence:0,Knowledge:0},
@@ -1041,10 +1189,11 @@ function collectMods(){
        into ONE row, so the origin/profession Trait bonus is visible — and correctly summed — in the
        "Modyfikatory" audit table on the back of the card, not just silently applied to the trait total. */
     const mods = Object.assign({}, entry.cecha.mods||{});
-    if(!entry.cecha.unlock){
-      const t = traitBonusOf(entry);
-      if(t) mods[t] = (mods[t]||0) + 1;
-    }
+    /* a Cecha that unlocks borrowing another Cechę (c.unlock) can ALSO carry its own "+1 do dowolnego
+       Traita" bonus at the same time (e.g. Pochodzenie "Człowiek z... (nie twój zasrany interes)" →
+       Cecha "Wszechstronność do kwadratu") — the two are independent, so unlock must NOT suppress this. */
+    const t = traitBonusOf(entry);
+    if(t) mods[t] = (mods[t]||0) + 1;
     push(entry.src, entry.cecha.name, mods);
   });
   (char.tricks||[]).forEach(t=> push("Sztuczka", t.name, t.mods));
@@ -1142,13 +1291,13 @@ function derived(){
   const out = {
     rows, total, lvl,
     evasion: (parseInt(char.evasionBase)||10) + (char.evasionAdv||0) + (total.Evasion||0),
-    armorScore: Math.max(0, Math.min(12, armorScoreBase + (total.ArmorScore||0))),
+    armorScore: Math.max(0, Math.min(12, armorScoreBase + (total.ArmorScore||0) + (char.armorSlotsAdv||0))),
     armorScoreBase,
     thrMajor: (arm ? thrMajorBase + lvl : lvl) + (total.ThrMajor||0),
     thrSevere: (arm ? thrSevereBase + lvl : 2*lvl) + (total.ThrSevere||0),
     traits,
-    hpMax: Math.max(1, (parseInt(char.hpBase)||6) + (total.HP||0)),
-    stressMax: Math.max(1, (parseInt(char.stressBase)||6) + (total.Stress||0)),
+    hpMax: Math.min(15, Math.max(1, (parseInt(char.hpBase)||6) + (total.HP||0))),
+    stressMax: Math.min(15, Math.max(1, (parseInt(char.stressBase)||6) + (total.Stress||0))),
     hopeMax: Math.max(1, 6 + (total.Hope||0)),
     proficiency: Math.max(1, tierForLevel(char.level) + (char.proficiencyAdv||0) + (total.Proficiency||0)),
     carryMult: total.Carry || 1
@@ -1438,8 +1587,12 @@ function expPickBlock(key, label, bonus, count){
     return html;
   }
   for(let i=0;i<count;i++){
+    /* the same Doświadczenie can't be picked twice within this one grant's slots —
+       each already-used-by-a-sibling-slot option is disabled (but stays selectable
+       in its own slot, so re-rendering doesn't un-pick it) */
+    const usedByOther = picks.filter((p,j)=>j!==i && p);
     html += '<select class="wide expPick" data-expkey="'+esc(key)+'" data-expidx="'+i+'"><option value="">— wybierz Doświadczenie —</option>'+
-      names.map(n=>'<option value="'+esc(n)+'"'+(picks[i]===n?' selected':'')+'>'+esc(n)+'</option>').join('')+'</select>';
+      names.map(n=>'<option value="'+esc(n)+'"'+(picks[i]===n?' selected':'')+(usedByOther.includes(n)?' disabled':'')+'>'+esc(n)+(usedByOther.includes(n)?' (już wybrane)':'')+'</option>').join('')+'</select>';
   }
   return html+'</div>';
 }
@@ -1501,11 +1654,9 @@ function rebuildAllDropdowns(){
   el('f_spec').innerHTML = '<option value="">— wybierz —</option>'+Object.keys(wb.specs).map(o=>'<option value="'+esc(o)+'">'+esc(o)+'</option>').join('');
   el('f_spec').value = char.spec;
 
-  el('trickSpecFilter').innerHTML = '<option value="">Specjalizacja: wszystkie</option>'+SPEC_CATEGORIES.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
+  el('trickSpecFilter').innerHTML = SPEC_CATEGORIES.map(s=>'<option value="'+s+'">'+s+'</option>').join('');
   const maxTier = tierForLevel(char.level);
-  el('trickTierFilter').innerHTML = '<option value="">Tier ≤ '+maxTier+' (Twój)</option>'+[1,2,3,4].map(n=>'<option value="'+n+'">Tylko Tier '+n+'</option>').join('');
-
-  el('expSuggestions').innerHTML = [...new Set(wb.skills.map(s=>s.name))].map(n=>'<option value="'+esc(n)+'">').join('');
+  el('trickTierFilter').innerHTML = '<option value="">≤ '+maxTier+'</option>'+[1,2,3,4].map(n=>'<option value="'+n+'">T'+n+'</option>').join('');
 
   /* diseases with Nr (k20) are the random background-illness table, drawn only via the k20 roll button;
      diseases without it (Nr 0 / blank) are picked up during play (infections, radiation, ...) and chosen
@@ -1556,7 +1707,7 @@ function refreshTrickPicker(){
   else list = list.filter(t=>t.tier<=maxTier);
   if(specFilter) list = list.filter(t=>t.specList.includes(specFilter));
   el('trickPicker').innerHTML = '<option value="">— wybierz Sztuczkę —</option>'+
-    flatOptions(list, t=>"[T"+t.tier+"] "+t.name+" — "+t.cost, t=>t.name, "");
+    flatOptions(list, t=>t.name, t=>t.name, "");
 }
 
 /* =========================================================================
@@ -1570,14 +1721,21 @@ function renderDefense(){
   el('thrSevereV').textContent = d.thrSevere;
   if(char.armorMarked>d.armorScore) char.armorMarked = d.armorScore;
   makeFillPipRow(el('armorPips'), d.armorScore, char.armorMarked, 'round', v=>{ char.armorMarked=v; save(); renderDefense(); });
-  el('profStamp').textContent = d.proficiency;
+  el('armorBaseTag').textContent = char.armorSlotsAdv ? '(ręcznie '+sgn(char.armorSlotsAdv)+')' : '';
+  renderProficiencyPips(d);
+}
+function renderProficiencyPips(d){
+  const host = el('profPips'); if(!host) return;
+  const val = Math.max(1, Math.min(6, d.proficiency));
+  let html = '';
+  for(let i=1;i<=6;i++) html += '<div class="pip diamond static'+(i<=val?' checked':'')+'"></div>';
+  host.innerHTML = html;
 }
 function renderArmorPanel(){
   const a = currentArmor(), h = currentHelmet();
   el('armorCarried').checked = !char.armorStashed;
   el('helmetCarried').checked = !char.helmetStashed;
-  el('a_thrMajor').textContent = a ? a.major : "—";
-  el('a_thrSevere').textContent = a ? a.severe : "—";
+  el('a_thr').textContent = a ? (a.major+'/'+a.severe) : "—";
   el('a_score').textContent = a ? a.score : "0";
   el('a_weight').textContent = a ? a.weight : "0";
   el('a_feature').innerHTML = (a ? tip(a.fluff, '<span class="fluffName">'+esc(a.name)+'</span>', 'block')+' ' : '')+(a ? kw(a.feature||"—") : "—");
@@ -1609,10 +1767,11 @@ function renderTraits(){
     const card = document.createElement('div');
     card.className = 'traitCard';
     card.innerHTML =
-      '<div class="tname"><span>'+t+'</span><span class="markbox '+(char.traitsMarked[t]?'checked':'')+'" data-t="'+t+'"></span></div>'+
+      '<span class="markbox '+(char.traitsMarked[t]?'checked':'')+'" data-t="'+t+'"></span>'+
+      '<div class="tname">'+t+'</div>'+
       '<div class="tverbs">'+TRAIT_VERBS[t]+'</div>'+
-      '<div class="tvals"><select data-base="'+t+'">'+options+'</select>'+
-      '<span class="ttotal">'+sgn(info.total)+'</span></div>';
+      '<div class="tvalWrap"><span class="tvalDisplay">'+sgn(info.total)+'</span>'+
+      '<select data-base="'+t+'">'+options+'</select></div>';
     grid.appendChild(card);
   });
   grid.querySelectorAll('select[data-base]').forEach(s=>{
@@ -1663,7 +1822,9 @@ function renderCechaBody(which, cechy, selectedIdx){
   let out = '<div class="trickItem">'+
     '<div class="th"><span>'+tip(c.fluff, esc(c.name))+'</span>'+costBadge(c.cost)+'</div>'+
     '<div class="te">'+kw(c.effect)+'</div></div>';
-  if(!c.unlock && isFreeTraitChoice(c)) out += traitPickBlock(which, c);
+  /* unlock (borrow a Cechę from elsewhere) and a free "+1 do dowolnego Traita" bonus are independent —
+     a Cecha can grant both at once, so unlock must NOT hide this picker (see collectMods() note above). */
+  if(isFreeTraitChoice(c)) out += traitPickBlock(which, c);
   if(c.expCount>0) out += expPickBlock(which, c.name, c.expBonus||1, c.expCount);
   if(c.unlock) out += borrowBlock(which, c.unlock);
   return out;
@@ -1730,18 +1891,34 @@ function renderExpList(){
   char.experiences.forEach((exp,i)=>{
     const row = document.createElement('div'); row.className = 'expRow';
     const bonus = expBonusFor(exp.name);
-    row.innerHTML = '<input type="text" list="expSuggestions" value="'+esc(exp.name||"")+'" data-i="'+i+'" data-f="name" placeholder="np. Weteran frontu">'+
-      '<input type="number" value="'+(exp.level!==undefined?exp.level:2)+'" data-i="'+i+'" data-f="level" title="modyfikator bazowy (edytowalny)">'+
-      (bonus ? '<span class="expTotal boosted" title="modyfikator po bonusach (baza '+sgn(exp.level!==undefined?exp.level:2)+' + bonus '+sgn(bonus)+')">'+sgn(expTotal(exp))+'</span>' : '')+
+    const base = exp.level!==undefined?exp.level:2;
+    /* no separate "+3" badge next to the value: when a Cecha/Sztuczka grants a bonus,
+       it's simply folded straight into the number shown in the field next to the
+       name — the field is still editable, it just reads (and writes) the boosted
+       total rather than the hidden base. */
+    row.innerHTML = '<input type="text" value="'+esc(exp.name||"")+'" data-i="'+i+'" data-f="name" placeholder="np. Weteran frontu">'+
+      '<input type="number" class="'+(bonus?'boosted':'')+'" value="'+(base+bonus)+'" data-i="'+i+'" data-f="level" data-bonus="'+bonus+'"'+
+      (bonus?' title="baza '+sgn(base)+' + bonus '+sgn(bonus)+' (wartość już z bonusem)"':' title="modyfikator (edytowalny)"')+'>'+
       '<button data-rm="'+i+'" title="Usuń">✕</button>';
     host.appendChild(row);
   });
+  /* 'input' only writes the keystroke into state — it must NOT re-render the list,
+     or rebuilding the input's own DOM node mid-type steals focus after every single
+     character (that was the "can only type one letter" bug). The full re-render
+     (which refreshes the boosted/bonus styling and cross-references elsewhere on the
+     sheet) happens once, on 'change', when the field is done being edited. */
   host.querySelectorAll('input').forEach(inp=>{
     inp.addEventListener('input', e=>{
       const i = parseInt(e.target.getAttribute('data-i')), f = e.target.getAttribute('data-f');
-      char.experiences[i][f] = (f==='name') ? e.target.value : parseInt(e.target.value||0);
-      save(); renderExpList(); renderCechyPanel(); renderTrickList();
+      if(f==='level'){
+        const bonus = parseInt(e.target.getAttribute('data-bonus')||0);
+        char.experiences[i].level = parseInt(e.target.value||0) - bonus;
+      } else {
+        char.experiences[i][f] = e.target.value;
+      }
+      save();
     });
+    inp.addEventListener('change', ()=>{ renderExpList(); renderCechyPanel(); renderTrickList(); });
   });
   host.querySelectorAll('button[data-rm]').forEach(b=>{
     b.addEventListener('click', e=>{ char.experiences.splice(parseInt(e.target.getAttribute('data-rm')),1); save(); renderExpList(); renderBack(); });
@@ -1751,7 +1928,7 @@ function renderTrickList(){
   const host = el('trickList'); host.innerHTML = "";
   char.tricks.forEach((t,i)=>{
     const div = document.createElement('div'); div.className='trickItem';
-    div.innerHTML = '<div class="th"><span>'+tip(t.fluff, esc(t.name))+' <span class="badge tier">T'+t.tier+'</span> '+costBadge(t.cost)+'</span><button class="rm" data-rm="'+i+'">✕</button></div>'+
+    div.innerHTML = '<div class="th"><span>'+tip(t.fluff, esc(t.name))+' '+costBadge(t.cost)+'</span><button class="rm" data-rm="'+i+'">✕</button></div>'+
       '<div class="meta">'+esc(t.spec)+(t.mods && Object.keys(t.mods).length ? ' · <b>'+esc(modsText(t.mods))+'</b>' : '')+'</div>'+
       '<div class="te">'+kw(t.effect)+'</div>'+
       (t.expCount>0 ? expPickBlock("trick::"+t.name, t.name, t.expBonus||1, t.expCount) : '');
@@ -1777,13 +1954,13 @@ function renderWeaponsList(){
       '<button class="rm" data-rm="'+i+'">✕</button></div></div>'+
       /* Rząd 1: Trait+bonus / Zasięg / Typ naboju */
       '<div class="fieldGrid3">'+
-        '<div><label class="fl">Trait (trafienie)</label><div class="readout">'+esc(w.trait)+bonusTxt+'</div></div>'+
+        '<div><label class="fl">Trait</label><div class="readout">'+esc(w.trait)+bonusTxt+'</div></div>'+
         '<div><label class="fl">Zasięg</label><div class="readout">'+esc(w.range)+'</div></div>'+
         '<div><label class="fl">Typ naboju</label><div class="readout">'+esc(w.ammo||"—")+'</div></div>'+
       '</div>'+
       /* Rząd 2: tryby ognia (kompaktowo) */
       (w.kind==="gun"
-        ? '<div style="margin-bottom:6px;"><label class="fl">Tryby ognia ('+d.proficiency+'× kość, taka sama we wszystkich trybach — w nawiasie zużyte naboje i dodatkowe HP ponad Threshold celu) — Pojedynczy / Seryjny / Ciągły</label>'+
+        ? '<div style="margin-bottom:6px;"><label class="fl">Tryby Ognia</label>'+
           '<div class="readout mono">'+(w.modesCompact||buildModesCompact(w)).map(esc).join(' / ')+'</div></div>'
         : '<div class="fieldGrid2">'+
             '<div><label class="fl">Tryb</label>'+
@@ -2206,10 +2383,9 @@ function mainTraitName(){ return TRAIT_LIST.find(t=>char.traitsBase[t]===2) || "
    MASTER RENDER + SAVE
    ========================================================================= */
 function renderAll(){
-  el('f_name').value = char.name; el('f_pronouns').value = char.pronouns;
+  el('f_name').value = char.name;
   el('f_origin').value = char.origin; el('f_profession').value = char.profession;
   el('f_spec').value = char.spec; el('f_level').value = char.level;
-  el('tierNum').textContent = 'T'+tierForLevel(char.level);
   el('f_notes').value = char.notes; el('f_gamble').value = char.gamble;
   el('armorPick').value = char.armorName; el('helmetPick').value = char.helmetName;
   renderHeaderTips();
@@ -2243,37 +2419,15 @@ function statusText(){
   const s = el('fileStatus'); s.textContent = 'Baza zasad ✔ ('+bits.join(' · ')+')';
   s.classList.remove('bad');
 }
-async function loadWorkbookFromBuffer(buf){
+async function handleBaza(file){
+  const buf = await file.arrayBuffer();
   const workbook = XLSX.read(buf, {type:"array"});
   wb = parseRules(workbook);
   eq = parseEquip(workbook);
   await Store.set('workbook-rules', wb);
   await Store.set('workbook-equip', eq);
   statusText(); rebuildAllDropdowns(); renderAll();
-}
-async function handleBaza(file){
-  const buf = await file.arrayBuffer();
-  await loadWorkbookFromBuffer(buf);
   /* overlay stays open until the user closes it manually — see btnFile/skipImport handlers */
-}
-
-/* =========================================================================
-   AUTO-LOAD FROM REPO — gdy karta jest hostowana (np. GitHub Pages),
-   próbuje sama wczytać plik .xlsx leżący obok index.html, bez ręcznego
-   wgrywania. Zmień listę poniżej, jeśli zmienisz nazwę pliku bazy zasad.
-   ========================================================================= */
-const AUTO_XLSX_CANDIDATES = ['NeuroHeart_Baza_Zasad_Finalna.xlsx','NeuroHeart_Baza_Zasad_v2.xlsx'];
-async function tryAutoLoadWorkbook(){
-  for(const name of AUTO_XLSX_CANDIDATES){
-    try{
-      const res = await fetch(encodeURI(name), {cache:'no-store'});
-      if(!res.ok) continue;
-      const buf = await res.arrayBuffer();
-      await loadWorkbookFromBuffer(buf);
-      return true;
-    }catch(e){ /* offline / plik:// / 404 — próbujemy kolejnej nazwy albo wgrania ręcznego */ }
-  }
-  return false;
 }
 
 /* =========================================================================
@@ -2282,7 +2436,7 @@ async function tryAutoLoadWorkbook(){
 function bindSimple(id, field, isNum){
   el(id).addEventListener('input', e=>{ char[field] = isNum ? (parseInt(e.target.value)||0) : e.target.value; save(); });
 }
-bindSimple('f_name','name'); bindSimple('f_pronouns','pronouns'); bindSimple('f_notes','notes'); bindSimple('f_gamble','gamble',true);
+bindSimple('f_name','name'); bindSimple('f_notes','notes'); bindSimple('f_gamble','gamble',true);
 
 document.querySelectorAll('[data-hpstep]').forEach(b=>{
   b.addEventListener('click', ()=>{ char.hpBase = Math.max(1,(char.hpBase||6)+parseInt(b.getAttribute('data-hpstep')));
@@ -2291,6 +2445,10 @@ document.querySelectorAll('[data-hpstep]').forEach(b=>{
 document.querySelectorAll('[data-stressstep]').forEach(b=>{
   b.addEventListener('click', ()=>{ char.stressBase = Math.max(1,(char.stressBase||6)+parseInt(b.getAttribute('data-stressstep')));
     if(char.stressMarked>char.stressBase) char.stressMarked = char.stressBase; save(); renderPips(); renderFooterTotals(); });
+});
+document.querySelectorAll('[data-armorstep]').forEach(b=>{
+  b.addEventListener('click', ()=>{ char.armorSlotsAdv = (char.armorSlotsAdv||0)+parseInt(b.getAttribute('data-armorstep'));
+    save(); renderDefense(); renderFooterTotals(); });
 });
 
 el('f_origin').addEventListener('change', e=>{ char.origin = e.target.value; char._originCechaIdx=""; save(); renderAll(); });
@@ -2418,6 +2576,7 @@ function migrateCharSchema(c){
   if(c.stressMarked===undefined) c.stressMarked = 0;
   if(c.hopeMarked===undefined) c.hopeMarked = 0;
   if(c.armorMarked===undefined) c.armorMarked = 0;
+  if(c.armorSlotsAdv===undefined) c.armorSlotsAdv = 0;
   if(c.evasion!==undefined && c.evasionBase===undefined){ c.evasionBase = c.evasion; delete c.evasion; }
   if(c.hpMax!==undefined && c.hpBase===undefined){ c.hpBase = c.hpMax; delete c.hpMax; }
   if(c.stressMax!==undefined && c.stressBase===undefined){ c.stressBase = c.stressMax; delete c.stressMax; }
@@ -2509,16 +2668,10 @@ async function init(){
   const storedRules = await Store.get('workbook-rules');
   const storedEquip = await Store.get('workbook-equip');
   const storedChar = await Store.get('character-state');
+  if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
+  if(storedEquip){ eq = storedEquip; eq.loaded = true; }
   if(storedChar){ char = migrateCharSchema(Object.assign(freshChar(), storedChar)); }
-  initTooltips();
-  { const s = el('fileStatus'); if(s) s.textContent = 'Ładowanie bazy zasad z repozytorium…'; }
-
-  const autoLoaded = await tryAutoLoadWorkbook();
-  if(!autoLoaded){
-    if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
-    if(storedEquip){ eq = storedEquip; eq.loaded = true; }
-  }
-  statusText();
+  statusText(); initTooltips();
   if(!(wb.loaded && eq.loaded)) el('importOverlay').classList.remove('hidden');
   rebuildAllDropdowns(); renderAll();
 }
