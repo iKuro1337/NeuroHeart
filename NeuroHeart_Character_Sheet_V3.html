@@ -48,7 +48,7 @@ label{color:var(--ink-soft);}
 .hasTip{cursor:help;border-bottom:1px dotted var(--rust);}
 .hasTip.block{border-bottom:none;}
 select.hasTip{border-bottom:1.5px solid #8D7F63;}
-.fluffName{font-weight:800;color:var(--maroon);font-style:italic;}
+.fluffName{font-weight:800;color:var(--maroon);font-style:italic;font-size:10.5px;}
 .fluffTip{position:fixed;z-index:2000;max-width:320px;background:#1B1713;color:#F2E9D6;border:1px solid var(--rust);
   border-radius:8px;padding:9px 11px;font-size:12.5px;line-height:1.45;font-style:italic;box-shadow:0 8px 22px rgba(0,0,0,.45);pointer-events:none;}
 
@@ -83,14 +83,14 @@ button.btn:disabled{opacity:.45;cursor:not-allowed;}
 #stage{max-width:var(--page-w);margin:0 auto;perspective:2400px;}
 .flipper{position:relative;width:100%;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.4,.2,.2,1);}
 .flipper.flipped{transform:rotateY(180deg);}
-.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:3px 3px 14px;
+.face{background:var(--paper);border-radius:10px;box-shadow:var(--shadow);border:1px solid #d8cba9;backface-visibility:hidden;padding:3px 3px 5px;
   width:var(--page-w);}
 .face.back{position:absolute;top:0;left:0;width:100%;transform:rotateY(180deg);}
 
 /* header strip */
 .sheetHeader{border-radius:10px 10px 0 0;overflow:hidden;background:var(--ink);color:#F6EFDE;margin-bottom:3px;}
 .hdrRow1{display:flex;align-items:stretch;flex-wrap:nowrap;}
-.brand{background:linear-gradient(135deg,#2a2420,#181310);padding:8px 12px;flex:1.5;min-width:0;
+.brand{background:linear-gradient(135deg,#2a2420,#181310);padding:5px 12px;flex:1.5;min-width:0;
   display:flex;flex-direction:column;justify-content:center;gap:2px;border-right:2px solid var(--rust);}
 .brand .nameRow{display:flex;align-items:baseline;gap:8px;}
 .brand input.nameInput{background:transparent;border:none;border-bottom:1.5px solid #6a5f52;color:#F6EFDE;
@@ -103,7 +103,7 @@ button.btn:disabled{opacity:.45;cursor:not-allowed;}
 .brand .subline{font-size:8.5px;color:#8f8577;letter-spacing:.12em;text-transform:uppercase;margin-top:1px;}
 .statGroup{display:flex;}
 .statCell{min-width:52px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#1c1712;
-  gap:1px;border-left:1px solid #3a332c;padding:6px 8px;}
+  gap:1px;border-left:1px solid #3a332c;padding:5px 8px;}
 .statCell .lv{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;text-align:center;}
 .statCell .num{font-size:19px;color:#F0A177;font-weight:800;line-height:1.1;}
 .statCell select.mono{width:44px;text-align:center;background:#241d18;color:#F0A177;border:1px solid #4a4239;font-size:12px;
@@ -113,7 +113,7 @@ button.btn:disabled{opacity:.45;cursor:not-allowed;}
   font-size:15px;font-weight:800;border-radius:4px;min-height:22px;padding:2px 4px;}
 .tierHint{display:none;}
 .hdrRow2{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:#3a332c;}
-.hdrRow2 .cell{background:#1c1712;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;}
+.hdrRow2 .cell{background:#1c1712;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;}
 .hdrRow2 label{font-size:8.5px;letter-spacing:.09em;color:#D3BE95;text-transform:uppercase;margin-bottom:3px;}
 select.headSel{background-color:transparent;background-image:linear-gradient(45deg,transparent 50%,#E08A5E 50%),linear-gradient(135deg,#E08A5E 50%,transparent 50%);
   border:none;border-bottom:1px solid #6a5f52;border-radius:0;color:#F6EFDE;padding:2px 20px 3px 0;min-height:22px;}
@@ -140,7 +140,7 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .panel{background:var(--paper-hi);border:1px solid var(--line);border-radius:0;margin-bottom:3px;overflow:visible;
   break-inside:avoid;page-break-inside:avoid;}
 .panel > .ph{position:relative;background:var(--ink);color:#F6EFDE;font-size:11.5px;font-weight:800;letter-spacing:.05em;
-  padding:6px 14px 6px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:5px 14px 5px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;
   clip-path:polygon(0 0,100% 0,calc(100% - 9px) 100%,0 100%);
   font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;text-transform:uppercase;}
 .panel > .ph > span:first-child{font-size:inherit;font-family:inherit;text-transform:inherit;letter-spacing:inherit;font-weight:inherit;}
@@ -173,7 +173,7 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .panel > .ph .phSub span b{color:#FFD9A0;}
 .panel > .ph .phSub span.full{background:#F6D2D2;border-color:#C88686;color:#6E1D1D;}
 .panel > .ph .phSub span.full b{color:#6E1D1D;}
-.panel .pb{padding:10px;}
+.panel .pb{padding:5px 10px;}
 .caption{font-size:11px;color:#5C5346;line-height:1.45;}
 .badge{display:inline-block;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;letter-spacing:.03em;border:1px solid transparent;}
 .badge.free{background:#D7E9D5;color:#1F3A25;border-color:#8FB490;}
@@ -186,11 +186,18 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 
 /* stat circles */
 .statRow{display:flex;gap:10px;align-items:flex-end;justify-content:space-evenly;flex-wrap:nowrap;}
-.circleStat{display:flex;flex-direction:column;align-items:center;gap:3px;}
-.circleStat .circ{width:56px;height:56px;border-radius:50%;border:3px solid var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;background:#fff;flex:0 0 auto;}
+.circleStat{display:flex;flex-direction:column;align-items:center;gap:3px;position:relative;flex:1 1 0;min-width:0;}
+/* iconZone reserves the space between the panel header and the label, and
+   centers whatever's inside it (a fixed-size circle, or the Armor Slots pip
+   grid, whose height changes as slots are added/removed) within that space —
+   so the circle/pips always sit dead-centered between the header and the
+   label text, and the label always sits fixed at the bottom, independent of
+   each other and independent of how tall the pip grid gets. */
+.circleStat .iconZone{position:absolute;top:0;left:0;right:0;bottom:5px;display:flex;align-items:center;justify-content:center;}
+.circleStat .circ{width:56px;height:auto;aspect-ratio:1/1;border-radius:50%;border:3px solid var(--ink);display:grid;place-items:center;background:#fff;flex:0 0 auto;}
 .circleStat .circ .big{font-size:20px;font-weight:800;color:var(--ink);line-height:1;}
 .circleStat .circ .brk{font-size:8px;color:#6E634E;}
-.circleStat label{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);text-align:center;}
+.circleStat label{font-size:9px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-soft);text-align:center;position:absolute;left:0;right:0;bottom:0;}
 .thrBox{display:flex;gap:8px;flex-wrap:wrap;}
 .thrCard{border:2px solid var(--teal);border-radius:7px;background:#fff;padding:5px 9px;min-width:78px;}
 .thrCard .t{font-size:8.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal-dark);font-weight:800;}
@@ -216,7 +223,7 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 /* traits / umiejętności */
 .traitsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
 @media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-.traitCard{border:1px solid var(--line);padding:6px 5px 7px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
+.traitCard{border:1px solid var(--line);padding:5px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
 .traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;}
 /* full 3-word description, never truncated — free to wrap onto a second line;
    every card in the row is still stretched to the same height by the grid, so this
@@ -270,13 +277,13 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 .borrowBox select{margin-bottom:4px;}
 .expRow button, .invRow button{border:1px solid #A2937A;background:#EFE5D0;color:#4A3F2C;border-radius:5px;width:24px;height:24px;
   cursor:pointer;font-weight:800;flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;text-align:center;}
-.trickItem{border:1px solid var(--line);border-radius:7px;padding:7px 9px;margin-bottom:5px;background:#fff;}
+.trickItem{border:1px solid var(--line);border-radius:7px;padding:5px 9px;margin-bottom:5px;background:#fff;}
 .trickItem .th{display:flex;justify-content:space-between;gap:6px;font-size:11.5px;font-weight:800;align-items:flex-start;}
 .trickItem .te{font-size:10.5px;color:var(--ink-soft);margin-top:3px;line-height:1.4;}
 .trickItem .meta{font-size:9px;color:#6E634E;margin-top:2px;}
 .trickItem button.rm{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12px;font-weight:700;}
 
-.weaponCard{border:1px solid var(--line);border-radius:7px;padding:8px;margin-bottom:8px;background:#fff;}
+.weaponCard{border:1px solid var(--line);border-radius:7px;padding:5px 8px;margin-bottom:5px;background:#fff;}
 .weaponCard .wtop{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px;flex-wrap:wrap;}
 .weaponCard .wtitle{font-size:11px;font-weight:800;color:var(--ink-soft);}
 .weaponCard .wtopRight{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
@@ -296,21 +303,21 @@ label.fl{font-size:8.5px;color:#5C5346;letter-spacing:.05em;text-transform:upper
 .twoHandedTag{font-size:9.5px;font-weight:800;color:var(--rust-dark);background:#FBE0D0;padding:2px 8px;border-radius:20px;border:1px solid #D89C79;}
 .featBox{font-size:10.5px;color:var(--ink-soft);background:#F7F2E6;border:1px solid var(--line);border-radius:6px;padding:5px 7px;line-height:1.4;margin-bottom:5px;}
 .invRow{display:grid;grid-template-columns:1.6fr .5fr .55fr auto auto;gap:5px;align-items:center;margin-bottom:4px;}
-.invNote{font-size:10px;color:#5C5346;margin:0 0 8px 2px;line-height:1.4;}
-.pickRow{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:7px;}
+.invNote{font-size:10px;color:#5C5346;margin:0 0 5px 2px;line-height:1.4;}
+.pickRow{display:grid;grid-template-columns:1fr auto;gap:5px;margin-bottom:5px;}
 .carryToggle{display:flex;align-items:center;gap:4px;font-size:9.5px;color:var(--ink-soft);cursor:pointer;white-space:nowrap;}
 .carryToggle input{cursor:pointer;}
 
 /* vitals: HP / Stress / Hope combined panel */
 .vitalsPanel .fl{font-size:12px;letter-spacing:.03em;}
 .baseTag{font-size:10px;font-weight:700;color:#6E634E;text-transform:none;letter-spacing:0;margin-left:5px;}
-.vitalsBlock{margin-bottom:11px;}
+.vitalsBlock{margin-bottom:5px;}
 .vitalsBlock:last-child{margin-bottom:0;}
 .hopeBlock{text-align:center;}
 .hopeBlock .pipRow{justify-content:center;gap:5px;}
 
 /* silnik specjalizacji */
-.engineBox{background:linear-gradient(180deg,#FFF8EC,#F4EFE2);border:1.5px solid var(--rust);border-radius:8px;padding:8px 10px;}
+.engineBox{background:linear-gradient(180deg,#FFF8EC,#F4EFE2);border:1.5px solid var(--rust);border-radius:8px;padding:5px 10px;}
 .engineName{font-size:12px;font-weight:800;color:var(--rust-dark);letter-spacing:.01em;}
 .engineSub{font-size:9.5px;color:#8a5a3f;margin-bottom:6px;}
 .engineTrackRow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin:6px 0;}
@@ -330,7 +337,7 @@ label.fl{font-size:8.5px;color:#5C5346;letter-spacing:.05em;text-transform:upper
 .stageRow.cur{background:#FBE9D2;}
 .stageRow.cur b{color:#6E4408;}
 .dsHead{font-size:10px;font-weight:800;color:var(--danger);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;}
-.diseaseItem{border:1px solid var(--line);border-radius:8px;padding:7px 8px;margin-bottom:7px;background:#FBF7EE;}
+.diseaseItem{border:1px solid var(--line);border-radius:8px;padding:5px 8px;margin-bottom:5px;background:#FBF7EE;}
 .diseaseItemHead{display:flex;align-items:flex-start;gap:6px;margin-bottom:5px;}
 .diseaseItemHead > *:first-child{flex:1 1 90px;min-width:0;}
 .diseaseItemHead .lekInfo{font-size:9.5px;color:#6E634E;font-weight:700;text-align:right;white-space:normal;flex:0 1 auto;min-width:0;}
@@ -339,7 +346,7 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 
 /* wounds — one flat list; each row is a card matching the disease-entry look, with its own vertical
    3-level checkbox list (fill-from-the-top, same mechanic and same visual language as the diseases). */
-.woundItem{border:1px solid var(--line);border-radius:8px;padding:7px 8px;margin-bottom:7px;background:#FBF7EE;}
+.woundItem{border:1px solid var(--line);border-radius:8px;padding:5px 8px;margin-bottom:5px;background:#FBF7EE;}
 .woundItemHead{display:flex;gap:6px;align-items:center;margin-bottom:4px;flex-wrap:wrap;}
 .woundItemHead input[type=text]{flex:1 1 100px;min-width:0;}
 .woundItemHead select{width:100px;flex:0 0 auto;}
@@ -348,13 +355,13 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .woundItem:hover .rm, .woundItem .rm:focus{opacity:1;}
 
 /* back side */
-.tierBlock{border:1px solid var(--line);border-radius:9px;margin:10px 14px;background:var(--paper-hi);overflow:hidden;
+.tierBlock{border:1px solid var(--line);border-radius:9px;margin:5px 14px;background:var(--paper-hi);overflow:hidden;
   break-inside:avoid;page-break-inside:avoid;}
-.tierBlock .tbh{background:linear-gradient(90deg,var(--teal-dark),var(--teal));color:#fff;padding:7px 12px;}
+.tierBlock .tbh{background:linear-gradient(90deg,var(--teal-dark),var(--teal));color:#fff;padding:5px 12px;}
 .tierBlock .tbh .ttitle{font-size:12.5px;}
 .tierBlock .tbh .tsub{font-size:10px;color:#D6EAF0;margin-top:2px;}
-.tierBlock .tbb{padding:9px 11px;}
-.advRow{border-top:1px dashed var(--line);padding:7px 0;}
+.tierBlock .tbb{padding:5px 11px;}
+.advRow{border-top:1px dashed var(--line);padding:5px 0;}
 .advRow:first-child{border-top:none;}
 .advHead{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
 .advHead .label{font-size:11.5px;font-weight:800;}
@@ -367,27 +374,27 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .inlinePick.show{display:block;}
 .inlinePick select{margin-right:5px;margin-bottom:5px;}
 .pickedEcho{font-size:10px;color:var(--teal-dark);margin-top:4px;}
-.freeGrant{background:#E6F1E4;border:1px solid #8FB490;border-radius:8px;padding:8px 10px;margin-bottom:9px;}
+.freeGrant{background:#E6F1E4;border:1px solid #8FB490;border-radius:8px;padding:5px 10px;margin-bottom:5px;}
 .freeGrant .fh{font-size:11px;font-weight:800;color:#1F3A25;margin-bottom:5px;}
-.achieveBox{margin:10px 14px 0;background:#241E19;color:#F3EBD8;border-radius:9px;padding:9px 13px;font-size:11px;line-height:1.5;}
+.achieveBox{margin:5px 14px 0;background:#241E19;color:#F3EBD8;border-radius:9px;padding:5px 13px;font-size:11px;line-height:1.5;}
 .achieveBox b{color:#F2B98F;}
-.footerTotals{display:flex;gap:13px;flex-wrap:wrap;margin:10px 14px 0;font-size:10.5px;color:var(--ink-soft);}
+.footerTotals{display:flex;gap:13px;flex-wrap:wrap;margin:5px 14px 0;font-size:10.5px;color:var(--ink-soft);}
 .footerTotals b{color:var(--ink);}
-.flipBtnWrap{display:flex;justify-content:center;padding:14px;}
+.flipBtnWrap{display:flex;justify-content:center;padding:5px 14px;}
 .progLabel{font-size:11px;color:#5C5346;text-align:center;margin-top:2px;}
 
 /* ---------- new front-page header (Daggerheart-style card top) ---------- */
 .hdrGrid{display:grid;grid-template-columns:1.45fr 1.1fr 1.05fr .5fr;grid-template-rows:auto auto;
   grid-template-areas:"left name name level" "left origin carry level";}
 .hdrBlockLeft{grid-area:left;background:linear-gradient(135deg,#2a2420,#181310);border-right:2px solid var(--rust);
-  padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
+  padding:5px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
 .hdrBlockLeft select.headSel{border:none;border-bottom:1px solid #6a5f52;background-color:transparent;
   color:#F6EFDE;padding:3px 20px 3px 3px;min-height:0;width:100%;}
 .hdrBlockLeft select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 .hdrBlockLeft select.specSel{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;
   font-size:16px;letter-spacing:.04em;text-transform:uppercase;}
 .hdrBlockLeft select.profSel{font-size:10.5px;color:#D3BE95;margin-top:1px;}
-.hdrNameWrap{grid-area:name;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:6px 10px;
+.hdrNameWrap{grid-area:name;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:5px 10px;
   border-left:1px solid #3a332c;}
 /* blends into the header instead of reading as its own boxed field — no background,
    no border until it's actually focused for editing */
@@ -396,7 +403,7 @@ input.nameInput2{background:transparent;border:none;border-bottom:1.5px solid tr
   text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:3px 5px;border-radius:0;min-height:0;}
 input.nameInput2:focus{outline:none;border-bottom-color:var(--rust);}
 input.nameInput2::placeholder{color:#8f8577;}
-.hdrGrid .hdrCell{grid-area:origin;padding:6px 10px;display:flex;flex-direction:column;justify-content:center;
+.hdrGrid .hdrCell{grid-area:origin;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;
   background:#1c1712;border-top:1px solid #3a332c;border-left:1px solid #3a332c;min-width:0;}
 .hdrGrid .hdrCell.hdrCarry{grid-area:carry;}
 .hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:2px;}
@@ -404,7 +411,7 @@ input.nameInput2::placeholder{color:#8f8577;}
 .hdrCarryVal{display:flex;align-items:baseline;gap:5px;color:#F0A177;}
 .hdrCarryVal span:last-child{color:#D3BE95;}
 .hdrBlockRight{grid-area:level;background:linear-gradient(135deg,#2a2420,#181310);border-left:2px solid var(--rust);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 8px;min-width:0;}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 8px;min-width:0;}
 .hdrBlockRight .lv{font-size:9px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;}
 .hdrBlockRight select.mono{width:28px;text-align:center;text-align-last:center;background:transparent;color:#F0A177;border:none;
   font-size:20px;font-weight:800;min-height:0;padding:3px 0;background-image:none;appearance:none;-webkit-appearance:none;cursor:pointer;}
@@ -418,7 +425,7 @@ input.nameInput2::placeholder{color:#8f8577;}
    every cell reads as an extension of the same frame — no separate floating shapes).
    Small dividers between cells carry a left-pointing arrow, uniformly, all pointing
    the same direction. */
-.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:nowrap;margin-bottom:9px;border:2px solid var(--ink);background:#fff;}
+.dmgThreshRow{display:flex;align-items:stretch;flex-wrap:nowrap;margin-bottom:5px;border:2px solid var(--ink);background:#fff;}
 .dmgArrow{background:#fff;padding:3px 10px;display:flex;flex-direction:column;
   align-items:center;justify-content:center;flex:1 1 0;min-width:0;text-align:center;overflow:hidden;}
 .dmgArrow .dLabel{font-size:7px;font-weight:800;text-transform:uppercase;letter-spacing:.01em;color:var(--teal-dark);line-height:1.15;}
@@ -433,9 +440,9 @@ input.nameInput2::placeholder{color:#8f8577;}
    Styled as a third circleStat-style column (box, then an English label below it in
    the same type as Evasion/Armor Score) so all three read as one consistent row. The
    pips fill 3-per-row (up to 4 rows = 12 slots) instead of free-wrapping. ---------- */
-.armorSlotsBlock{flex:0 0 auto;position:relative;}
+.armorSlotsBlock{position:relative;}
 #armorPips{display:grid;grid-template-columns:repeat(3,15px);grid-auto-rows:15px;gap:4px;}
-.armorSlotsBlock label{display:flex;align-items:center;gap:4px;}
+.armorSlotsBlock label{display:flex;align-items:center;justify-content:center;gap:4px;}
 /* the manual-adjustment note is taken out of flow so it can never push the "Armor
    Slots" label away from its fixed position — it just floats under the row */
 .armorSlotsBlock .baseTag{position:absolute;top:100%;left:50%;transform:translateX(-50%);
@@ -445,13 +452,17 @@ input.nameInput2::placeholder{color:#8f8577;}
    line — narrow defense panel, wide traits panel — matching the reference Daggerheart sheet ---------- */
 .topStatSplit{display:flex;gap:3px;align-items:stretch;flex-wrap:nowrap;margin-bottom:3px;}
 .topStatSplit > .panel{margin-bottom:0;}
-.defenseCol{flex:0 0 300px;min-width:230px;display:flex;flex-direction:column;}
-/* bottom-anchored, not centered: growing the Armor Slots pip grid (more rows as
-   slots are added) must never shift Evasion / Armor Score / the Armor Slots label —
-   pinning the row's bottom edge means it only ever grows upward, in its own space,
-   without moving anything that's already aligned to that bottom line. */
-.defenseCol .pb{flex:1 1 auto;display:flex;flex-direction:column;justify-content:flex-end;}
-.defenseCol .statRow{flex-wrap:nowrap;}
+.defenseCol{flex:0 0 300px;min-width:230px;display:flex;flex-direction:column;position:relative;}
+.defenseCol .pb{flex:1 1 auto;}
+/* Evasion / Armor Score / Armor Slots are positioned as one absolute block
+   spanning the WHOLE panel (from the "OBRONA I PANCERZ" header's own top edge
+   down to 10px above the panel's bottom edge — the panel's original padding),
+   not just the space below the header. Inside each column, .iconZone centers
+   the circle (or the Armor Slots pip grid, whose height changes as slots are
+   added/removed) between the header and the label, and the label is pinned to
+   the very bottom — both fixed, independent of the neighbouring Umiejętności
+   panel's height and independent of each other. */
+.defenseCol .statRow{position:absolute;top:0;left:10px;right:10px;bottom:5px;flex-wrap:nowrap;align-items:stretch;}
 .traitsCol{flex:1 1 auto;min-width:0;}
 
 /* ---------- traits in a single row (per reference layout) ---------- */
@@ -502,6 +513,7 @@ input.nameInput2::placeholder{color:#8f8577;}
   <button class="btn" id="btnFile">📄 Wgraj / zmień bazę zasad (.xlsx)</button>
   <button class="btn ghost" id="btnFlip">🔄 Druga strona (Levelowanie)</button>
   <button class="btn ghost" id="btnExport">⬇️ Zapisz kartę (.json)</button>
+  <button class="btn ghost" id="btnExportPdf">🖨️ Generuj PDF</button>
   <button class="btn ghost" id="btnImportChar">⬆️ Wczytaj kartę (.json)</button>
   <button class="btn danger" id="btnReset">🗑️ Wyczyść kartę</button>
   <span id="fileStatus">Brak danych — wgraj plik NeuroHeart_Baza_Zasad_v2.xlsx.</span>
@@ -560,15 +572,15 @@ input.nameInput2::placeholder{color:#8f8577;}
           <div class="pb">
             <div class="statRow">
               <div class="circleStat">
-                <div class="circ"><div class="big" id="evTotal">10</div></div>
+                <div class="iconZone"><div class="circ"><div class="big" id="evTotal">10</div></div></div>
                 <label>Evasion</label>
               </div>
               <div class="circleStat">
-                <div class="circ"><div class="big" id="asTotal">0</div></div>
+                <div class="iconZone"><div class="circ"><div class="big" id="asTotal">0</div></div></div>
                 <label>Armor Score</label>
               </div>
               <div class="circleStat armorSlotsBlock">
-                <div class="pipRow" id="armorPips"></div>
+                <div class="iconZone"><div class="pipRow" id="armorPips"></div></div>
                 <label><button class="pipBtn sm" data-armorstep="-1">−</button><span>Armor Slots</span><button class="pipBtn sm" data-armorstep="1">+</button></label>
                 <span class="baseTag" id="armorBaseTag"></span>
               </div>
@@ -616,7 +628,7 @@ input.nameInput2::placeholder{color:#8f8577;}
           <div class="panel">
             <div class="ph rust"><span class="display" style="font-size:12px;">Hope i Silnik Specjalizacji</span></div>
             <div class="pb">
-              <div class="vitalsPanel" style="margin-bottom:8px;">
+              <div class="vitalsPanel" style="margin-bottom:5px;">
                 <div class="vitalsBlock hopeBlock" style="margin-bottom:0;">
                   <label class="fl">Hope</label>
                   <div class="pipRow" id="hopePips"></div>
@@ -661,7 +673,7 @@ input.nameInput2::placeholder{color:#8f8577;}
                 <div id="diseaseStartList"></div>
               </div>
 
-              <div class="diseaseSection" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px;">
+              <div class="diseaseSection" style="margin-top:5px;border-top:1px dashed var(--line);padding-top:5px;">
                 <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
                 <div id="diseaseAcqList"></div>
               </div>
@@ -700,7 +712,7 @@ input.nameInput2::placeholder{color:#8f8577;}
               <div class="phActions"><button class="phBtn" id="addWeapon">+</button></div>
             </div>
             <div class="pb">
-              <div class="fieldGrid2" style="margin-bottom:8px;">
+              <div class="fieldGrid2" style="margin-bottom:5px;">
                 <select id="weaponCatPicker" class="wide"></select>
                 <select id="weaponPicker" class="wide"></select>
               </div>
@@ -711,17 +723,17 @@ input.nameInput2::placeholder{color:#8f8577;}
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Pancerz</span></div>
             <div class="pb">
-              <select id="armorPick" class="wide" style="margin-bottom:6px;"></select>
+              <select id="armorPick" class="wide" style="margin-bottom:5px;"></select>
               <div class="fieldGrid4">
                 <div><label class="fl">Progi</label><div class="readout" id="a_thr">—</div></div>
                 <div><label class="fl">Armor Score</label><div class="readout" id="a_score">—</div></div>
                 <div><label class="fl">Waga</label><div class="readout" id="a_weight">—</div></div>
-                <div><label class="fl">&nbsp;</label><label class="carryToggle" style="min-height:28px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony</label></div>
+                <div id="armorCarriedWrap"><label class="fl">&nbsp;</label><label class="carryToggle" style="min-height:28px;" title="Odznacz, jeśli pancerz jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="armorCarried"> niesiony</label></div>
               </div>
               <div class="featBox" id="a_feature">—</div>
               <label class="fl">Dodatek (hełm)</label>
-              <select id="helmetPick" class="wide" style="margin-bottom:6px;"></select>
-              <label class="carryToggle" style="margin-bottom:6px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony</label>
+              <select id="helmetPick" class="wide" style="margin-bottom:5px;"></select>
+              <label class="carryToggle" id="helmetCarriedWrap" style="margin-bottom:5px;" title="Odznacz, jeśli dodatek jest schowany (nie liczy się do udźwigu)"><input type="checkbox" id="helmetCarried"> niesiony</label>
               <div class="featBox" id="h_feature" style="display:none;"></div>
             </div>
           </div>
@@ -729,12 +741,13 @@ input.nameInput2::placeholder{color:#8f8577;}
           <div class="panel">
             <div class="ph"><span class="display" style="font-size:12px;">Ekwipunek</span>
               <div class="phActions">
+                <button class="phBtn" id="btnApplyKit" title="Dodaje gotowy zestaw startowy Twojej Specjalizacji (broń, pancerz, amunicja) i ustawia Gamble na jego kieszonkowe — patrz arkusz &quot;8b. Kity Specjalizacji&quot;.">🎒 Kit</button>
                 <span class="phGamble">💰 Gamble <input class="mono" id="f_gamble" type="number" min="0" value="0"></span>
                 <button class="phBtn" id="addInv">+</button><button class="phBtn" id="addInvBlank">+ Własna</button>
               </div>
             </div>
             <div class="pb">
-              <div class="fieldGrid2" style="margin-bottom:8px;">
+              <div class="fieldGrid2" style="margin-bottom:5px;">
                 <select id="invCatPicker" class="wide"></select>
                 <select id="invPicker" class="wide"></select>
               </div>
@@ -766,17 +779,17 @@ input.nameInput2::placeholder{color:#8f8577;}
         <span id="tierNum2" style="display:none;"></span>
       </div>
 
-      <div class="panel" style="margin:14px 18px;">
+      <div class="panel" style="margin:5px 18px;">
         <div class="ph"><span class="display" style="font-size:12px;">Notatki</span></div>
         <div class="pb"><textarea class="note" id="f_notes" placeholder="Historia postaci, powiązania z drużyną, luźne notatki..."></textarea></div>
       </div>
 
-      <div class="panel" style="margin:14px 18px;">
+      <div class="panel" style="margin:5px 18px;">
         <div class="ph"><span class="display" style="font-size:12px;">Modyfikatory — skąd się biorą</span></div>
         <div class="pb"><div id="modPanel"></div></div>
       </div>
 
-      <div class="panel" style="margin:14px 18px;">
+      <div class="panel" style="margin:5px 18px;">
         <div class="ph" style="background:var(--danger);"><span class="display" style="font-size:12px;">Dodaj chorobę nabytą</span>
           <div class="phActions"><select id="diseaseAcqPicker" class="phSelect"></select><button class="phBtn" id="addDiseaseAcq">+</button></div>
         </div>
@@ -1029,11 +1042,11 @@ function normalizeSpecList(raw){
 /* =========================================================================
    DATA MODEL
    ========================================================================= */
-let wb = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, loaded:false};
+let wb = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, kits:{}, kitPocket:{}, loaded:false};
 let eq = {armors:[], helmets:[], weapons:[], items:[], loaded:false};
 
 function parseRules(workbook){
-  const out = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, loaded:true};
+  const out = {origins:{}, professions:{}, specs:{}, traitsRef:{}, skills:[], tricks:[], diseases:[], engines:{}, kits:{}, kitPocket:{}, loaded:true};
   readSheet(workbook,"Pochodzenie").forEach(o=>{
     const key = col(o,"Pochodzenie"); if(!key) return;
     if(!out.origins[key]) out.origins[key] = {fluff:col(o,"Fluff: Opis (chmurka na karcie)"), cechy:[]};
@@ -1090,6 +1103,19 @@ function parseRules(workbook){
     out.engines[s] = {nazwa:col(o,"Nazwa silnika"), rosnie:col(o,"Jak rośnie / jak się zdobywa"),
       naco:col(o,"Na co się wydaje"), reset:col(o,"Reset / odnowienie"),
       sygnaturowy:col(o,"Sygnaturowy ruch (3 Hope)"), uwagi:col(o,"Uwagi projektowe")};
+  });
+  /* Kity Specjalizacji (arkusz "8b. Kity Specjalizacji"): gotowy startowy zestaw sprzętu na
+     Specjalizację — "Ścieżka B" obok ręcznych zakupów za Gamble. Każdy wiersz to jeden przedmiot;
+     "Nazwa przedmiotu" jest dopasowywana do eq.weapons/eq.armors/eq.helmets/eq.items po nazwie w
+     applyKit(). "Kieszonkowe (gb)" jest powtórzone w każdym wierszu tej Specjalizacji — bierzemy je
+     z dowolnego (ostatni wygrywa), więc nie musi być tylko na pierwszym wierszu. */
+  readSheet(workbook,"Kity Specjalizacji").forEach(o=>{
+    const s = col(o,"Specjalizacja"); if(!s) return;
+    const n = col(o,"Nazwa przedmiotu"); if(!n) return;
+    if(!out.kits[s]) out.kits[s] = [];
+    out.kits[s].push({name:n, qty:num(col(o,"Ilość"),1), role:col(o,"Rola w kicie")});
+    const pocket = col(o,"Kieszonkowe (gb)");
+    if(pocket!=="") out.kitPocket[s] = num(pocket,0);
   });
   return out;
 }
@@ -1259,7 +1285,7 @@ function traitBonusOf(entry){
 }
 function traitPickBlock(key, cecha){
   const cur = (char.traitPicks && char.traitPicks[key]) || "";
-  return '<div class="borrowBox" style="margin-top:6px;"><div class="borrowHead">Wybierz Trait do bonusu ('+esc(traitBonusText(cecha))+')</div>'+
+  return '<div class="borrowBox" style="margin-top:5px;"><div class="borrowHead">Wybierz Trait do bonusu ('+esc(traitBonusText(cecha))+')</div>'+
     '<select class="wide traitPick" data-traitpickkey="'+esc(key)+'"><option value="">— wybierz Trait —</option>'+
     TRAIT_LIST.map(t=>'<option value="'+t+'" '+(cur===t?'selected':'')+'>'+t+'</option>').join('')+'</select></div>';
 }
@@ -1739,6 +1765,10 @@ function renderArmorPanel(){
   el('a_score').textContent = a ? a.score : "0";
   el('a_weight').textContent = a ? a.weight : "0";
   el('a_feature').innerHTML = (a ? tip(a.fluff, '<span class="fluffName">'+esc(a.name)+'</span>', 'block')+' ' : '')+(a ? kw(a.feature||"—") : "—");
+  // no pancerz/dodatek selected -> nothing to mark as carried, so hide the
+  // "niesiony" checkbox entirely instead of showing a meaningless control
+  el('armorCarriedWrap').style.display = a ? '' : 'none';
+  el('helmetCarriedWrap').style.display = h ? '' : 'none';
   if(h){ el('h_feature').style.display='block';
     el('h_feature').innerHTML = tip(h.fluff, '<span class="fluffName">'+esc(h.name)+'</span>', 'block')+' '+kw(h.feature||"—"); }
   else el('h_feature').style.display='none';
@@ -1837,7 +1867,7 @@ function borrowBlock(key, unlockLabel){
     groupedOptions(list, x=>x.group, x=>x.cecha.name+" — "+x.cecha.cost, x=>x.value, cur)+'</select>';
   const b = borrowedCecha(key);
   if(b){
-    html += '<div class="trickItem" style="margin-top:6px;"><div class="th"><span>'+tip(b.cecha.fluff, esc(b.cecha.name))+'</span>'+costBadge(b.cecha.cost)+'</div>'+
+    html += '<div class="trickItem" style="margin-top:5px;"><div class="th"><span>'+tip(b.cecha.fluff, esc(b.cecha.name))+'</span>'+costBadge(b.cecha.cost)+'</div>'+
       '<div class="te">'+kw(b.cecha.effect)+'</div></div>';
     if(isFreeTraitChoice(b.cecha)) html += traitPickBlock(key+"::borrowed", b.cecha);
     if(b.cecha.expCount>0) html += expPickBlock(key+"::borrowed", b.cecha.name, b.cecha.expBonus||1, b.cecha.expCount);
@@ -1950,7 +1980,7 @@ function renderWeaponsList(){
     const card = document.createElement('div'); card.className = 'weaponCard';
     card.innerHTML =
       '<div class="wtop"><span class="wtitle">'+tip(w.fluff, esc(w.name))+' <span style="font-weight:400;color:#6E634E;">· '+esc(w.weight)+' kg · '+esc(w.unitPrice||0)+' G</span> '+(two?'<span class="twoHandedTag">DWURĘCZNA</span>':'')+'</span>'+
-      '<div class="wtopRight"><label class="carryToggle" title="Odłożona — nie liczy się do udźwigu"><input type="checkbox" data-i="'+i+'" data-hand="stashed" '+(w.stashed?'checked':'')+'> odłożona</label>'+
+      '<div class="wtopRight"><label class="carryToggle" title="Odznacz, jeśli broń jest schowana (nie liczy się do udźwigu)"><input type="checkbox" data-i="'+i+'" data-hand="stashed" '+(w.stashed?'':'checked')+'> niesiona</label>'+
       '<button class="rm" data-rm="'+i+'">✕</button></div></div>'+
       /* Rząd 1: Trait+bonus / Zasięg / Typ naboju */
       '<div class="fieldGrid3">'+
@@ -1960,7 +1990,7 @@ function renderWeaponsList(){
       '</div>'+
       /* Rząd 2: tryby ognia (kompaktowo) */
       (w.kind==="gun"
-        ? '<div style="margin-bottom:6px;"><label class="fl">Tryby Ognia</label>'+
+        ? '<div style="margin-bottom:5px;"><label class="fl">Tryby Ognia</label>'+
           '<div class="readout mono">'+(w.modesCompact||buildModesCompact(w)).map(esc).join(' / ')+'</div></div>'
         : '<div class="fieldGrid2">'+
             '<div><label class="fl">Tryb</label>'+
@@ -1997,8 +2027,12 @@ function renderWeaponsList(){
   host.querySelectorAll('input[type=checkbox][data-hand]').forEach(cb=>{
     cb.addEventListener('change', e=>{
       const i = parseInt(e.target.getAttribute('data-i')), field = e.target.getAttribute('data-hand');
-      char.weapons[i][field] = e.target.checked;
-      if(field==='stashed' && e.target.checked){ char.weapons[i].primary = false; char.weapons[i].offhand = false; }
+      if(field==='stashed'){
+        char.weapons[i].stashed = !e.target.checked; /* checkbox reads "niesiona" (carried) */
+        if(char.weapons[i].stashed){ char.weapons[i].primary = false; char.weapons[i].offhand = false; }
+      } else {
+        char.weapons[i][field] = e.target.checked;
+      }
       save(); renderAll();
     });
   });
@@ -2016,16 +2050,16 @@ function renderInvList(){
     const wrap = document.createElement('div');
     wrap.innerHTML =
       '<div class="invRow">'+
-        '<input data-i="'+i+'" data-f="name" value="'+esc(it.name||"")+'" placeholder="nazwa">'+
+        '<input type="text" data-i="'+i+'" data-f="name" value="'+esc(it.name||"")+'" placeholder="nazwa">'+
         '<input type="number" data-i="'+i+'" data-f="qty" value="'+(it.qty!==undefined?it.qty:1)+'" title="ilość">'+
         '<input type="number" step="0.1" data-i="'+i+'" data-f="weight" value="'+(it.weight!==undefined?it.weight:"")+'" title="waga (kg/szt.)">'+
         '<label class="carryToggle" title="Odznacz, jeśli przedmiot jest schowany (nie liczy się do udźwigu)"><input type="checkbox" data-i="'+i+'" data-f="stashed" '+(it.stashed?'':'checked')+'> niesiony</label>'+
         '<button data-rm="'+i+'" title="Usuń">✕</button>'+
       '</div>'+
       (it.custom
-        ? '<div style="margin:-2px 0 8px;"><input class="wide" data-i="'+i+'" data-f="effect" value="'+esc(it.effect||"")+'" placeholder="własny efekt / cecha przedmiotu"></div>'
-        : (it.effect ? '<div class="featBox" style="margin:-2px 0 8px;">'+kw(it.effect)+'</div>' : '<div style="height:4px;"></div>'))+
-      (it.unitPrice ? '<div style="margin:-6px 0 8px;font-size:11px;color:#6E634E;">cena jedn.: '+esc(it.unitPrice)+' G · razem: '+esc(Math.round((it.unitPrice*(Number(it.qty)||0))*100)/100)+' G</div>' : '');
+        ? '<div style="margin:-2px 0 5px;"><input class="wide" data-i="'+i+'" data-f="effect" value="'+esc(it.effect||"")+'" placeholder="własny efekt / cecha przedmiotu"></div>'
+        : (it.effect ? '<div class="featBox" style="margin:-2px 0 5px;">'+kw(it.effect)+'</div>' : '<div style="height:4px;"></div>'))+
+      (it.unitPrice ? '<div style="margin:-6px 0 5px;font-size:11px;color:#6E634E;">cena jedn.: '+esc(it.unitPrice)+' G · razem: '+esc(Math.round((it.unitPrice*(Number(it.qty)||0))*100)/100)+' G</div>' : '');
     host.appendChild(wrap);
   });
   host.querySelectorAll('input[type=text], input[type=number]').forEach(inp=>{
@@ -2508,6 +2542,47 @@ el('addInv').addEventListener('click', ()=>{
 });
 el('addInvBlank').addEventListener('click', ()=>{ char.inventory.push({name:"",qty:1,weight:"",effect:"",durable:false,mods:{},custom:true,stashed:false,unitPrice:0}); save(); renderInvList(); });
 
+/* Kit Specjalizacji — "Ścieżka B" ze skoroszytu (arkusz "8b. Kity Specjalizacji"): jednym kliknięciem
+   dopisuje gotowy, tematyczny zestaw startowy (broń, pancerz, amunicja/przedmiot charakterystyczny)
+   do bieżącego ekwipunku i ustawia Gamble na "kieszonkowe" z kitu — zamiast ręcznych zakupów z pełnego
+   katalogu. Każdą pozycję szuka po nazwie kolejno wśród eq.weapons / eq.armors / eq.helmets / eq.items;
+   przedmiot spoza żadnego katalogu (np. czysto fluffowa pozycja) trafia jako pusta, własna pozycja
+   ekwipunku — tak samo jak przycisk "+ Własna" — żeby kit nigdy nie ubił się o brakujący wpis w arkuszu. */
+function applyKit(){
+  const specName = char.spec;
+  const kitList = (wb.kits && wb.kits[specName]) || [];
+  if(!specName){ alert('Najpierw wybierz Specjalizację na przodzie karty.'); return; }
+  if(!kitList.length){ alert('Brak zdefiniowanego Kitu dla Specjalizacji "'+specName+'" — sprawdź, czy w pliku zasad jest arkusz "8b. Kity Specjalizacji" z wierszami dla tej Specjalizacji.'); return; }
+  const pocket = wb.kitPocket[specName];
+  const pocketTxt = pocket!==undefined ? (pocket+' G') : 'bez zmian';
+  if(!confirm('Dodać przedmioty z Kitu "'+specName+'" do Broni/Pancerza/Ekwipunku i ustawić Gamble na kieszonkowe z kitu ('+pocketTxt+')?')) return;
+  kitList.forEach(row=>{
+    const name = row.name, qty = row.qty||1;
+    const w = eq.weapons.find(x=>x.name===name);
+    if(w){
+      const two = isTwoHanded(w);
+      const mainTaken = char.weapons.some(x=>!x.stashed && (isTwoHanded(x) || x.primary));
+      const offTaken = char.weapons.some(x=>!x.stashed && (isTwoHanded(x) || x.offhand));
+      let primary = false, offhand = false;
+      if(two){ primary = true; offhand = true; }
+      else if(!mainTaken){ primary = true; }
+      else if(!offTaken){ offhand = true; }
+      char.weapons.push(Object.assign({}, w, {modeIdx:0, rounds:"", mags:"", stashed:false, primary, offhand, unitPrice:w.price||0}));
+      return;
+    }
+    const a = eq.armors.find(x=>x.name===name);
+    if(a){ char.armorName = a.name; char.armorUnitPrice = a.price||0; return; }
+    const h = eq.helmets.find(x=>x.name===name);
+    if(h){ char.helmetName = h.name; char.helmetUnitPrice = h.price||0; return; }
+    const it = eq.items.find(x=>x.name===name);
+    if(it){ char.inventory.push({name:it.name, qty, weight:it.weight, effect:it.effect, durable:it.durable, mods:it.mods, custom:false, stashed:false, unitPrice:it.price||0}); return; }
+    char.inventory.push({name, qty, weight:0, effect:"", durable:false, mods:{}, custom:true, stashed:false, unitPrice:0});
+  });
+  if(pocket!==undefined) char.gamble = pocket;
+  save(); renderAll();
+}
+el('btnApplyKit').addEventListener('click', applyKit);
+
 el('trickSpecFilter').addEventListener('change', refreshTrickPicker);
 el('trickTierFilter').addEventListener('change', refreshTrickPicker);
 el('addTrick').addEventListener('click', ()=>{
@@ -2549,6 +2624,263 @@ el('btnExport').addEventListener('click', ()=>{
   const a = document.createElement('a'); a.href = url; a.download = (char.name||'postac')+'.json'; a.click();
   URL.revokeObjectURL(url);
 });
+
+/* =========================================================================
+   GENERUJ PDF -- klient-side odpowiednik Karta_PDF/generate_pdf.py.
+
+   v2: drukuje BEZPOSREDNIO caly dokument (window.print()), a nie kopie
+   karty w ukrytym iframe. Powod zmiany: pierwsza wersja (klon #stage w
+   osobnym <iframe>, drukowany przez iframe.contentWindow.print()) dawala
+   w prawdziwym oknie "Drukuj do PDF" na Windows splaszczone/owalne kola
+   Evasion i Armor Score (potwierdzone na plikach chuck.pdf/empty.pdf),
+   mimo ze identyczny HTML/CSS renderowal sie poprawnie w headless
+   Chromium -- drukowanie zagniezdzonego <iframe> to rzadko testowana
+   sciezka w przegladarkach/sterownikach druku. Drukowanie calego okna to
+   najlepiej przetestowana sciezka, wiec jej uzywamy: zamiast klonowac
+   #stage, na chwile podmieniamy CSS calej strony (ten sam
+   calc(*var(--s)) co w generatorze Python) i dodajemy klase
+   "pdfExportMode" do <body>, ktora przez zwykle reguly CSS (ponizej)
+   chowa toolbar/przyciski/pickery i wizualnie zeruje pipsy Hope/
+   Bieglosci/Silnika -- bez ruszania danych postaci (char). Wartosci pol
+   formularza NIE wymagaja juz recznego "zapisywania w atrybutach":
+   drukujemy prawdziwy, zywy DOM, wiec przegladarka sama czyta biezace
+   input.value / checked / selected. Po window.print() (albo po
+   timeout-cie) wszystko wraca do stanu sprzed kliknięcia.
+   ========================================================================= */
+const PDF_MIN_FONT_PX = 11; // minimalny docelowy rozmiar "glownego" tekstu (patrz PDF_MIN_SCALE) -- tez baza dla domyslnego font-size body (patrz PDF_CSS_PATCHES)
+// Najczestszy font-size w calym arkuszu (wartosci Cech, pola formularza itd.)
+// -- 12px to punkt odniesienia: skala NIGDY nie schodzi tak nisko, zeby TEN
+// rozmiar spadl ponizej PDF_MIN_FONT_PX. Zamiast wymuszac to przez osobny
+// floor na samym font-size (co psulo spojnosc -- patrz komentarz w
+// pdfScaleCss ponizej), robimy to jako dolny limit CALEJ zmiennej --s: przy
+// tym limicie WSZYSTKO (fonty i odstepy) skaluje sie dalej tym samym
+// mnoznikiem, wiec uklad zostaje spojny -- a tresc, ktora mimo to sie nie
+// miesci, po prostu splywa na 2. strone (.face.front ma page-break-after:
+// auto), zamiast robic sie nieczytelna.
+const PDF_REF_FONT_PX = 12;
+const PDF_MIN_SCALE = PDF_MIN_FONT_PX / PDF_REF_FONT_PX;
+// Powyzszy PDF_MIN_SCALE to tylko MIEKKI cel (probujemy najpierw NIE schodzic
+// ponizej niego, dla czytelnosci) -- ale zmieszczenie calej karty na 1.
+// stronie ma wyzszy priorytet niz ten cel (jednoznaczne zyczenie usera: karta
+// MA sie miescic na A4, nawet kosztem mniejszej czcionki). Gdy tresci jest za
+// duzo zeby zmiescic sie przy PDF_MIN_SCALE, petla auto-fit (patrz
+// pdfExport()) przechodzi w tryb bez tego "miekkiego" ograniczenia i schodzi
+// dalej, az do tego twardego, awaryjnego minimum -- ma tylko chronic przed
+// calkiem zerowa/nieczytelna skala, tak jak dawne 0.12 przed wprowadzeniem
+// PDF_MIN_SCALE.
+const PDF_ABS_MIN_SCALE = 0.12;
+const PDF_A4_W_MM = 210, PDF_A4_H_MM = 297, PDF_MARGIN_MM = 8, PDF_PX_PER_MM = 96/25.4;
+
+// reguly aktywne TYLKO gdy <body class="pdfExportMode"> -- ida razem z resztą
+// arkusza stylow przez pdfScaleCss(), wiec same tez dostają calc(*var(--s)),
+// z wyjątkiem @page (fizyczny margines strony, ma zostac staly).
+const PDF_CSS_PATCHES = `
+body.pdfExportMode #toolbar,
+body.pdfExportMode #pageTitle,
+body.pdfExportMode #importOverlay,
+body.pdfExportMode .face.back,
+body.pdfExportMode .flipBtnWrap,
+body.pdfExportMode button,
+body.pdfExportMode #weaponCatPicker,
+body.pdfExportMode #weaponPicker,
+body.pdfExportMode #invCatPicker,
+body.pdfExportMode #invPicker,
+body.pdfExportMode #trickPicker,
+body.pdfExportMode #trickSpecFilter,
+body.pdfExportMode #trickTierFilter,
+body.pdfExportMode #cechaOriginPick,
+body.pdfExportMode #cechaProfessionPick,
+body.pdfExportMode .phActions{display:none !important;}
+/* Hope / Bieglosc / Silnik Specjalizacji: karta drukowana ma byc pusta do
+   uzupelnienia recznie przy stole -- wizualnie "odznacz" kazdy pip, bez
+   ruszania char.* (dane wracają nietkniete, bo to tylko CSS). */
+body.pdfExportMode #hopePips .pip.checked,
+body.pdfExportMode #profPips .pip.checked,
+body.pdfExportMode #engineHost .pip.checked{background:#fff !important;border-color:var(--ink) !important;}
+/* karta ma zostac PELNEJ szerokosci strony (nie skurczyc sie razem z
+   fontami/odstepami) -- to samo co @media print w tym arkuszu, ale musi
+   dzialac JUZ w trakcie petli auto-fit (jeszcze na ekranie, przed
+   wywolaniem print()), stad bez media query. */
+body.pdfExportMode #stage{max-width:none !important;}
+body.pdfExportMode .flipper{transform:none !important;}
+body.pdfExportMode .face{box-shadow:none;position:static !important;transform:none !important;width:100% !important;}
+body.pdfExportMode .face.front{page-break-after:auto !important;}
+body.pdfExportMode .armorSlotsBlock label{display:block;text-align:center;}
+body.pdfExportMode .circleStat .circ{width:46px;height:auto;aspect-ratio:1/1;}
+body.pdfExportMode .circleStat .circ .big{font-size:16px;}
+body.pdfExportMode #armorPips{grid-template-columns:repeat(3,12px);grid-auto-rows:12px;gap:3px;}
+body.pdfExportMode .defenseCol{flex-basis:340px;}
+/* Evasion/Armor Score/Armor Slots: na wydruku etykiety maja stac 5px nad
+   dolna krawedzia panelu (zamiast domyslnych ~10px), a rezerwacja miejsca
+   na "(recznie +N)" pod etykieta Armor Slots ma zniknac calkiem -- ten tekst
+   sie nie drukuje. Kolka/kropki zostaja wyśrodkowane poziomo jak dotychczas
+   (.statRow justify-content:space-evenly + .circleStat align-items:center
+   -- niezmienione). */
+body.pdfExportMode .defenseCol .statRow{bottom:5px;}
+body.pdfExportMode #armorBaseTag{display:none !important;}
+/* Wyzszy dolny limit skali (PDF_MIN_SCALE, patrz wyzej) trzyma tekst
+   bliziej pelnego rozmiaru, ale szerokosc strony (printWidthPx) sie NIE
+   skaluje razem z fontem -- przy wiekszym foncie w tej samej, waskiej
+   6-kolumnowej siatce Umiejetnosci nazwy Cech (Strength/Presence/
+   Knowledge...) zaczely sie obcinac wielokropkiem. Na wydruku lepiej, zeby
+   nazwa zawinela sie na 2. linie, niz zeby zniknal jej kawalek. */
+body.pdfExportMode .traitCard .tname{white-space:normal;overflow:visible;text-overflow:clip;}
+/* Dodatek (helm): jesli nie wybrano zadnego helmu (select stoi na placeholderze
+   "— brak dodatku —", value=""), na wydruku nie drukujemy w ogole ani etykiety
+   "Dodatek (helm)", ani samej listy, ani checkboxa "niesiony" pod nia -- puste
+   pola wyboru nie maja byc widoczne na karcie. :has()+:checked czyta biezacy
+   stan selecta na zywo (bez ruszania char.*), wiec helm wybrany normalnie
+   drukuje sie tak jak dotychczas. */
+body.pdfExportMode .pb:has(#helmetPick option[value=""]:checked) label.fl:has(+ #helmetPick),
+body.pdfExportMode .pb:has(#helmetPick option[value=""]:checked) #helmetPick,
+body.pdfExportMode .pb:has(#helmetPick option[value=""]:checked) #helmetCarriedWrap,
+body.pdfExportMode .pb:has(#helmetPick option[value=""]:checked) #h_feature{display:none !important;}
+/* domyslny font-size body (fallback dla elementow bez wlasnej reguly) --
+   MUSI isc przez normalne skalowanie (ten sam --s co reszta karty), inaczej
+   te elementy zostawaly przy stalym rozmiarze podczas gdy ich otoczenie
+   (padding/margin/gap) kurczylo sie. */
+body.pdfExportMode{font-size:${PDF_MIN_FONT_PX}px;}
+`;
+// NIE przepuszczone przez pdfScaleCss -- @page margin ma byc stalym
+// fizycznym marginesem strony, nie czyms co kurczy sie razem z --s.
+const PDF_EXTRA_CSS_UNSCALED = `
+body.pdfExportMode input[type=number]{-moz-appearance:textfield;}
+body.pdfExportMode input[type=number]::-webkit-outer-spin-button,
+body.pdfExportMode input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
+body.pdfExportMode select:disabled,body.pdfExportMode input:disabled,body.pdfExportMode textarea:disabled{opacity:1;-webkit-text-fill-color:currentColor;color:inherit;}
+@page{size:A4;margin:${PDF_MARGIN_MM}mm;}
+`;
+
+function pdfScaleCss(cssText){
+  // WAZNE: font-size NIE dostaje juz wlasnego "floor" (max(8px, ...)) --
+  // kazdy pojedynczy px/mm w calym arkuszu (fonty, paddingi, marginesy,
+  // gapy, szerokosci...) musi byc przemnozony przez DOKLADNIE ten sam --s,
+  // inaczej powstaje niespojnosc: przy mniejszej skali fonty "podpierane"
+  // przez floor przestawaly sie kurczyc razem z otaczajacymi je paddingami/
+  // odstepami/liniami, wiec tekst zaczynal wychodzic poza swoj kontener i
+  // nakladac sie / "rozjezdzac" wzgledem ukladu na zywej stronie. Globalny
+  // dolny limit samej zmiennej --s (patrz petla auto-fit w pdfExport(),
+  // Math.max(..., 0.12)) juz chroni przed calkiem zerowa/nieczytelna skala
+  // -- i robi to bez psucia spojnosci, bo dziala na WSZYSTKIE px na raz.
+  return cssText
+    .replace(/(?<![\w.])-?\d+(?:\.\d+)?(?:px|mm)(?![\w])/g, m=>`calc(${m} * var(--s))`)
+    .replace(':root{', ':root{--s:1;');
+}
+
+async function pdfExport(){
+  const btn = el('btnExportPdf');
+  const styleEl = document.querySelector('style');
+  const stageEl = el('stage');
+  if(!styleEl || !stageEl){ alert('Nie znaleziono karty do wydrukowania.'); return; }
+  if(btn) btn.disabled = true;
+
+  const originalCss = styleEl.textContent;
+  const originalStageMaxWidth = stageEl.style.maxWidth;
+  // Duzo elementow karty (naglowki paneli, linie cen w Ekwipunku, etykiety
+  // Cech...) ustawiaja font-size/margin wprost przez atrybut style="...",
+  // NIE przez arkusz stylow -- pdfScaleCss() nigdy ich nie widzi, wiec
+  // zostawaly w pelnym, nieprzeskalowanym rozmiarze podczas gdy reszta
+  // karty sie kurczyla. To byl prawdziwy powod, dla ktorego auto-fit
+  // potrzebowal drastycznie malej skali (~0.4) a i tak nie miescil sie na
+  // 1 stronie: te nieprzeskalowane elementy zajmowaly wciaz to samo,
+  // "pelnowymiarowe" miejsce niezaleznie od --s (Python-owy generator
+  // (Karta_PDF/generate_pdf.py, scale_inline_styles()) juz to robi
+  // poprawnie -- ten sam fix, tylko na zywym DOM zamiast na tekscie HTML).
+  const savedInlineStyles = [];
+  const savedCircleSizes = [];
+  let restored = false;
+  const restore = ()=>{
+    if(restored) return;
+    restored = true;
+    styleEl.textContent = originalCss;
+    document.documentElement.style.removeProperty('--s');
+    document.body.classList.remove('pdfExportMode');
+    stageEl.style.maxWidth = originalStageMaxWidth;
+    savedInlineStyles.forEach(([node, orig])=>{ node.setAttribute('style', orig); });
+    savedInlineStyles.length = 0;
+    savedCircleSizes.forEach(([node, w, h])=>{ node.style.width = w; node.style.height = h; });
+    savedCircleSizes.length = 0;
+    window.removeEventListener('afterprint', restore);
+    if(btn) btn.disabled = false;
+  };
+
+  try{
+    styleEl.textContent = pdfScaleCss(originalCss + PDF_CSS_PATCHES) + '\n' + PDF_EXTRA_CSS_UNSCALED;
+    document.body.classList.add('pdfExportMode');
+    stageEl.querySelectorAll('[style]').forEach(node=>{
+      const orig = node.getAttribute('style');
+      if(orig && /\d/.test(orig)){
+        savedInlineStyles.push([node, orig]);
+        node.setAttribute('style', pdfScaleCss(orig));
+      }
+    });
+    // zeby auto-fit mierzyl na TEJ SAMEJ szerokosci co fizyczna strona
+    // (A4 minus marginesy), a nie na pelnej szerokosci okna przegladarki.
+    const printWidthPx = Math.round((PDF_A4_W_MM - 2*PDF_MARGIN_MM) * PDF_PX_PER_MM);
+    stageEl.style.maxWidth = printWidthPx + 'px';
+    await new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r)));
+
+    const usableHpx = (PDF_A4_H_MM - 2*PDF_MARGIN_MM) * PDF_PX_PER_MM;
+    // Kolumny "Obrona/Cechy/..." i "Umiejetnosci/Bron/Ekwipunek/..." to
+    // .panel-e z break-inside:avoid -- gdy panel (np. cala sekcja
+    // Ekwipunek) nie miesci sie CALY w tym, co zostalo do konca strony,
+    // caly on (nie tylko nadmiar) przeskakuje na 2. strone, marnujac
+    // reszte miejsca. Dlatego samo dopasowanie calkowitej wysokosci do
+    // usableHpx nie wystarcza -- nawet kilka px "za duzo" potrafi
+    // przesunac caly, duzy panel dalej i wygenerowac niepotrzebna,
+    // prawie pusta 2. strone. Zapas bezpieczenstwa kompensuje to (a nie
+    // roznice pomiaru ekran/druk -- te sprawdzone osobno sa identyczne).
+    const usableHpxSafe = usableHpx - Math.max(100, usableHpx * 0.09);
+    let scale = 1.0;
+    let floor = PDF_MIN_SCALE; // najpierw probujemy miekkiego celu (~11px)
+    for(let i=0;i<30;i++){
+      document.documentElement.style.setProperty('--s', String(scale));
+      const front = document.querySelector('.face.front');
+      const h = front ? front.scrollHeight : 0;
+      if(h <= usableHpxSafe) break;
+      const next = scale * (usableHpxSafe/h) * 0.99;
+      // Miekki cel (PDF_MIN_SCALE) nie wystarcza zeby zmiescic tresc na 1
+      // stronie -- zmieszczenie sie ma priorytet nad czytelnoscia 11px, wiec
+      // od teraz pozwalamy schodzic ponizej niego, az do twardego minimum.
+      if(next < floor && floor > PDF_ABS_MIN_SCALE) floor = PDF_ABS_MIN_SCALE;
+      scale = Math.max(next, floor);
+    }
+
+    // Kolka Evasion/Armor Score (.circleStat .circ) maja swoj rozmiar z
+    // calc(46px * var(--s)) -- ulamkowy wynik (np. 20.59px). Na Windows
+    // przy skalowaniu ekranu >100% (potwierdzone: 150%) samo OKNO PODGLADU
+    // WYDRUKU Chrome/Edge potrafi wtedy zaokraglic szerokosc i wysokosc
+    // takiego elementu NIEZALEZNIE od siebie, co widac jako owal zamiast
+    // kola -- nie odtwarza sie to w zadnym headless renderze (Linux,
+    // Playwright, 100% skalowania), tylko realnie na Windows przy
+    // ulamkowym mnozniku DPI. Obejscie: dla TYCH konkretnych elementow
+    // (i tylko dla nich, po ustaleniu ostatecznej skali) podmieniamy
+    // wynik calc() na jawny, calkowitoliczbowy piksel -- bez ulamka nie ma
+    // czego zaokraglac niezaleznie w kazdym wymiarze.
+    document.querySelectorAll('.circleStat .circ').forEach(node=>{
+      savedCircleSizes.push([node, node.style.width, node.style.height]);
+      const px = Math.max(1, Math.round(46 * scale)) + 'px';
+      node.style.width = px;
+      node.style.height = px;
+    });
+
+    window.addEventListener('afterprint', restore, {once:true});
+    setTimeout(restore, 300000); // safety net if afterprint never fires
+    window.print();
+  } catch(err){
+    console.error(err);
+    alert('Nie udało się wygenerować PDF: '+(err && err.message ? err.message : err));
+    restore();
+    return;
+  }
+  // NOTE: restore() celowo NIE jest wywolywane tutaj w normalnym biegu --
+  // window.print() na wielu przegladarkach wraca natychmiast (dialog jest
+  // asynchroniczny), wiec posprzatanie czeka na zdarzenie "afterprint"
+  // (albo timeout powyzej), inaczej cofnelibysmy CSS/--s zanim uzytkownik
+  // w ogole zobaczy podglad wydruku.
+}
+el('btnExportPdf').addEventListener('click', pdfExport);
+
 el('btnImportChar').addEventListener('click', ()=> el('charFileInput').click());
 el('charFileInput').addEventListener('change', async e=>{
   const f = e.target.files[0]; if(!f) return;
@@ -2668,7 +3000,7 @@ async function init(){
   const storedRules = await Store.get('workbook-rules');
   const storedEquip = await Store.get('workbook-equip');
   const storedChar = await Store.get('character-state');
-  if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
+  if(storedRules){ wb = storedRules; wb.loaded = true; if(!wb.engines) wb.engines = {}; if(!wb.kits) wb.kits = {}; if(!wb.kitPocket) wb.kitPocket = {}; wb.tricks.forEach(t=>{ if(!t.specList) t.specList = normalizeSpecList(t.spec); }); }
   if(storedEquip){ eq = storedEquip; eq.loaded = true; }
   if(storedChar){ char = migrateCharSchema(Object.assign(freshChar(), storedChar)); }
   statusText(); initTooltips();
