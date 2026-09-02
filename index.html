@@ -2772,7 +2772,21 @@ const PDF_FONT_TARGET_PX = PDF_REF_FONT_PX + 2; // 14px: punkt startowy/sufit cz
 const PDF_DEFAULT_FALLBACK_FONT_PX = 11; // domyslny font-size dla elementow BEZ wlasnej reguly (mniejszy niz REF, jak dawniej -- niezalezne od progu czcionki powyzej)
 const PDF_MIN_SCALE = PDF_FONT_FLOOR_PX / PDF_REF_FONT_PX; // ~1.0833 -- prawdziwy floor --fs w trybie rozdzielonym
 const PDF_TARGET_SCALE = PDF_FONT_TARGET_PX / PDF_REF_FONT_PX; // ~1.1667 -- startowy/sufitowy --fs
-const PDF_SPACING_SAFE_MIN_SCALE = 0.5; // bezpieczny dolny limit --s w trybie rozdzielonym (patrz komentarz wyzej)
+// PODNIESIONE z 0.5 na 0.65 po tym, jak user zlapal realny 2-stronicowy
+// wydruk na WLASNYM Chrome/Windows mimo ze identyczna karta w sandboxie
+// (headless Chromium na Linuksie) drukowala sie na 1 strone. Przyczyna:
+// metryki fontow (szerokosc/wysokosc linii) ROZNIA SIE miedzy przegladarka
+// uzytkownika a headless Chromium w sandboxie o kilka-kilkanascie px --
+// przy trybie rozdzielonym z duzym fontem (--fs blisko 1.17) i odstepami
+// scisnietymi blisko starego minimum 0.5, ta roznica metryk potrafila
+// zdecydowac o wyniku dopasowania (u usera zmieszczenie "na styk", 961px
+// vs proget 963px -- praktycznie remis), A DODATKOWO taki duzy rozjazd
+// font/odstepy to WLASCIWIE dokladnie ta strefa ryzyka nachodzenia/zlego
+// binding page-break, ktora byla opisana wyzej przy .body2col. Podniesienie
+// dolnego limitu odstepow oznacza, ze gęste karty czesciej i szybciej
+// spadaja do bezpiecznego trybu fallback (font=odstepy, patrz nizej) -
+// zamiast ryzykowac ten pograniczny, wrazliwy na przegladarke stan.
+const PDF_SPACING_SAFE_MIN_SCALE = 0.65; // bezpieczny dolny limit --s w trybie rozdzielonym (patrz komentarz wyzej)
 const PDF_ABS_MIN_SCALE = 0.12; // awaryjny, wspolny floor dla trybu "font=odstepy" (fallback, patrz nizej) -- jak dawne 0.12
 const PDF_A4_W_MM = 210, PDF_A4_H_MM = 297, PDF_MARGIN_MM = 8, PDF_PX_PER_MM = 96/25.4;
 
@@ -3047,9 +3061,14 @@ async function pdfExport(){
     // reszte miejsca. Dlatego samo dopasowanie calkowitej wysokosci do
     // usableHpx nie wystarcza -- nawet kilka px "za duzo" potrafi
     // przesunac caly, duzy panel dalej i wygenerowac niepotrzebna,
-    // prawie pusta 2. strone. Zapas bezpieczenstwa kompensuje to (a nie
-    // roznice pomiaru ekran/druk -- te sprawdzone osobno sa identyczne).
-    const usableHpxSafe = usableHpx - Math.max(100, usableHpx * 0.09);
+    // prawie pusta 2. strone. Zapas bezpieczenstwa kompensuje to. Zapas
+    // podniesiony (9%/100px -> 14%/140px) po tym, jak realny wydruk na
+    // komputerze usera (Windows Chrome) zmierzyl te sama karte na 961px,
+    // podczas gdy identyczny test w sandboxie (headless Chromium/Linux)
+    // pokazal 891px -- ~70px roznicy z samych metryk fontow miedzy
+    // przegladarkami/systemami. Stary zapas (100px) byl wiec za cienki,
+    // zeby to wchlonac z bezpiecznym marginesem; nowy ma to pokryc.
+    const usableHpxSafe = usableHpx - Math.max(140, usableHpx * 0.14);
     const measureH = ()=>{ const f = document.querySelector('.face.front'); return f ? f.scrollHeight : 0; };
     // Probuje zmiescic tresc kurczac WYLACZNIE --s (odstepy/szerokosci),
     // przy foncie (--fs) juz ustawionym z zewnatrz i NIERUSZANYM tutaj --
