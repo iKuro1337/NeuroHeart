@@ -120,10 +120,15 @@ select.headSel{background-color:transparent;background-image:linear-gradient(45d
 select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 select.headSel option{color:#111;}
 
-/* body grid */
-.body2col{display:grid;grid-template-columns:1fr 1.05fr;gap:3px;padding:0;}
-.body2col > div{min-width:0;}
-@media screen and (max-width:980px){.body2col{grid-template-columns:1fr;}}
+/* body grid -- ZMIENIONE z display:grid na display:flex (patrz obszerny
+   komentarz przy PDF_SPACING_SAFE_MIN_SCALE nizej w kodzie JS): CSS Grid przy
+   druku w Chromium potrafil zepchnac caly ostatni panel lewej kolumny
+   (Choroby/Rany) na strone 2, mimo wolnego miejsca na stronie 1 -- flex z
+   normalnym block-flow content w kazdej kolumnie paginuje sie poprawnie. */
+.body2col{display:flex;gap:3px;padding:0;align-items:stretch;}
+.body2col > div{min-width:0;flex:1 1 0;}
+.body2col > div:last-child{flex:1.05 1 0;}
+@media screen and (max-width:980px){.body2col{flex-direction:column;}}
 
 /* Grid/flex items default to min-width:auto, which sizes to their content's
    min-content width — a wide <select>'s longest <option> or a plain <input>'s
@@ -2724,28 +2729,30 @@ el('btnExport').addEventListener('click', ()=>{
 // zmierzone jako bezpieczne per .scrollHeight) po tej naprawie -- ALE
 // rzeczywisty wydruk (Playwright page.pdf(), nie tylko pomiar na ekranie)
 // pokazal DRUGI, gtebszy problem: panel "Rany" (ostatni w lewej kolumnie
-// .body2col, ktora jest CSS Gridem) potrafil wyladowac calkowicie na 2.
-// stronie, mimo ze .face.front.scrollHeight mial jeszcze 100+px zapasu
-// ponizej usableHpxSafe -- nawet przy --s=0.10 (ekstremalne sciskanie).
-// To nie byl blad pomiaru wysokosci (leftColumn/rightColumn content-height
-// sprawdzone osobno przez getBoundingClientRect() zgadzalo sie z
-// scrollHeight) -- to jest znany, szerzej udokumentowany problem
-// przegladarek (w tym Chromium) z paginacja CSS Grid przy druku: siatka
-// (.body2col{display:grid}) nie zawsze respektuje faktyczna dostepna
-// wysokosc STRONY przy rozstrzyganiu, ktory element "zmiesci sie" jeszcze na
-// biezacej stronie -- w efekcie ostatni panel w kolumnie moze zostac
-// zepchniety na nowa strone NIEZALEZNIE od tego, ile miejsca zostalo w
-// jego wlasnej kolumnie wzgledem strony. Naprawa tego (np. zmiana .body2col
-// z grid na flex, o ktorym Chromium generalnie lepiej sobie radzi przy
-// druku) to osobna, wieksza zmiana ukladu (dotyka WSZYSTKICH kart, ekran i
-// druk) -- celowo NIE robie tego teraz przy okazji tej poprawki, zeby nie
-// ryzykowac zlamania czegos szerzej sprawdzonego bez czasu na pelna
-// weryfikacje. Dlatego PDF_SPACING_SAFE_MIN_SCALE zostaje na sprawdzonym,
-// bezpiecznym 0.5 -- obnizanie tej liczby NIE jest bezpiecznym sposobem na
-// wieksza czcionke dla gestych kart, dopoki layout .body2col nie zostanie
-// przebudowany. Zamiast tego wieksza czcionke dla gestych kart (SA/Hytrus)
-// szuka sie DALSZYM, bezpiecznym scisnieciem odstepow w trybie fallback
-// (jeden wspolny --s dla fontu i odstepow) -- patrz kolejne reguly w
+// .body2col) potrafil wyladowac calkowicie na 2. stronie, mimo ze
+// .face.front.scrollHeight mial jeszcze 100+px zapasu ponizej
+// usableHpxSafe -- nawet przy --s=0.10 (ekstremalne sciskanie). To nie byl
+// blad pomiaru wysokosci (leftColumn/rightColumn content-height sprawdzone
+// osobno przez getBoundingClientRect() zgadzalo sie ze scrollHeight) -- to
+// byl znany, szerzej udokumentowany problem przegladarek (w tym Chromium) z
+// paginacja CSS Grid przy druku: gdy .body2col bylo display:grid, siatka nie
+// zawsze respektowala faktyczna dostepna wysokosc STRONY przy
+// rozstrzyganiu, ktory element "zmiesci sie" jeszcze na biezacej stronie --
+// w efekcie ostatni panel w kolumnie potrafil zostac zepchniety na nowa
+// strone NIEZALEZNIE od tego, ile miejsca zostalo w jego wlasnej kolumnie
+// wzgledem strony. W PRAKTYCE user to zobaczyl na wlasnej, prawdziwej
+// karcie (Choroby+Rany calkowicie na stronie 2, mimo pustego miejsca na
+// stronie 1) -- dlatego .body2col zostalo PRZEBUDOWANE z display:grid na
+// display:flex (patrz regula .body2col wyzej w CSS) -- Chromium poprawnie
+// paginuje zwykly block-flow content w kazdej kolumnie flex, wiec ostatni
+// panel kolumny nie jest juz nienaturalnie zepchniety na kolejna strone.
+// PDF_SPACING_SAFE_MIN_SCALE zostaje mimo to na sprawdzonym, bezpiecznym
+// 0.5 -- ta stala nigdy nie byla bezposrednia przyczyna problemu (to byl
+// sam .body2col{display:grid}), ale obnizanie jej bez pelnej, osobnej
+// weryfikacji na gestych kartach (SA/Hytrus) po zmianie na flex nadal nie
+// jest z automatu bezpieczne. Wieksza czcionke dla gestych kart szuka sie
+// DALSZYM, bezpiecznym scisnieciem odstepow w trybie fallback (jeden
+// wspolny --s dla fontu i odstepow) -- patrz kolejne reguly w
 // PDF_CSS_PATCHES nizej (panel/ph/pb/vitalsBlock).
 //
 // Jesli karta nie miesci sie na 1 stronie NAWET przy foncie na jego wlasnym
