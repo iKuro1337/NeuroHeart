@@ -223,12 +223,16 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
 /* traits / umiejętności */
 .traitsGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;}
 @media (max-width:560px){.traitsGrid{grid-template-columns:repeat(2,minmax(0,1fr));}}
-.traitCard{border:1px solid var(--line);padding:5px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
+.traitCard{border:1px solid var(--line);padding:4px 5px;background:#fff;min-width:0;display:flex;flex-direction:column;position:relative;}
 .traitCard .tname{font-size:9px;font-weight:800;letter-spacing:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-right:16px;}
 /* full 3-word description, never truncated — free to wrap onto a second line;
    every card in the row is still stretched to the same height by the grid, so this
-   never throws the row out of alignment, and the value below is unaffected. */
-.traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:5px;}
+   never throws the row out of alignment, and the value below is unaffected.
+   User: "Odstep miedzy opisem 'Sprint,Skok,Manewr' a wartoscia jest stosunkowo
+   duzy" -- margin-bottom byl 5px, teraz 2px (razem z tvalWrap padding-top
+   nizej, ten odstep byl w sumie 9px -- realnie wiecej niz potrzeba miedzy
+   drobnym opisem a duza wartoscia pod nim). */
+.traitCard .tverbs{font-size:8.5px;color:#6E634E;margin-bottom:2px;}
 /* the Trait's value is the single most important number on the card: it's the
    dominant visual element, and — since margin-top:auto pins it to the bottom of the
    (flex column) card while every card in the row is stretched to equal height by the
@@ -236,10 +240,10 @@ select, input, textarea{min-width:0;box-sizing:border-box;}
    many lines .tverbs wraps to. Clicking it opens the real <select> underneath (the
    select is absolutely positioned over the whole value area, invisible, on top); when
    that select isn't open, only the plain current value is visible. */
-.traitCard .tvalWrap{position:relative;margin-top:auto;text-align:center;padding-top:4px;}
+.traitCard .tvalWrap{position:relative;margin-top:auto;text-align:center;padding-top:1px;}
 .traitCard .tvalWrap select{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer;
   padding:0;min-height:0;border:none;background:none;appearance:none;-webkit-appearance:none;}
-.traitCard .tvalDisplay{display:block;font-size:27px;font-weight:800;color:var(--rust-dark);line-height:1;pointer-events:none;}
+.traitCard .tvalDisplay{display:block;font-size:25px;font-weight:800;color:var(--rust-dark);line-height:1;pointer-events:none;}
 /* fixed 3px from the card's top-right corner at all times — never reflows with the
    trait name's text, so it can't drift/"float" depending on content. */
 .markbox{width:13px;height:13px;border:2px solid var(--ink);cursor:pointer;flex:0 0 auto;
@@ -387,34 +391,34 @@ textarea.note{width:100%;resize:vertical;min-height:50px;}
 .hdrGrid{display:grid;grid-template-columns:1.45fr 1.1fr 1.05fr .5fr;grid-template-rows:auto auto;
   grid-template-areas:"left name name level" "left origin carry level";}
 .hdrBlockLeft{grid-area:left;background:linear-gradient(135deg,#2a2420,#181310);border-right:2px solid var(--rust);
-  padding:5px 12px;display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;}
+  padding:4px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px;min-width:0;}
 .hdrBlockLeft select.headSel{border:none;border-bottom:1px solid #6a5f52;background-color:transparent;
-  color:#F6EFDE;padding:3px 20px 3px 3px;min-height:0;width:100%;}
+  color:#F6EFDE;padding:2px 20px 2px 3px;min-height:0;width:100%;}
 .hdrBlockLeft select.headSel:focus{outline:none;border-bottom-color:var(--rust);}
 .hdrBlockLeft select.specSel{font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;
-  font-size:16px;letter-spacing:.04em;text-transform:uppercase;}
-.hdrBlockLeft select.profSel{font-size:10.5px;color:#D3BE95;margin-top:1px;}
-.hdrNameWrap{grid-area:name;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:5px 10px;
+  font-size:15px;letter-spacing:.04em;text-transform:uppercase;}
+.hdrBlockLeft select.profSel{font-size:10px;color:#D3BE95;margin-top:1px;}
+.hdrNameWrap{grid-area:name;background:var(--ink);display:flex;align-items:center;justify-content:center;padding:4px 10px;
   border-left:1px solid #3a332c;}
 /* blends into the header instead of reading as its own boxed field — no background,
    no border until it's actually focused for editing */
 input.nameInput2{background:transparent;border:none;border-bottom:1.5px solid transparent;color:#F6EFDE;
   font-family:"Arial Narrow","Segoe UI Semibold",Arial,sans-serif;font-weight:800;letter-spacing:.03em;
-  text-transform:uppercase;font-size:20px;text-align:center;width:100%;padding:3px 5px;border-radius:0;min-height:0;}
+  text-transform:uppercase;font-size:18px;text-align:center;width:100%;padding:2px 5px;border-radius:0;min-height:0;}
 input.nameInput2:focus{outline:none;border-bottom-color:var(--rust);}
 input.nameInput2::placeholder{color:#8f8577;}
-.hdrGrid .hdrCell{grid-area:origin;padding:5px 10px;display:flex;flex-direction:column;justify-content:center;
+.hdrGrid .hdrCell{grid-area:origin;padding:4px 10px;display:flex;flex-direction:column;justify-content:center;
   background:#1c1712;border-top:1px solid #3a332c;border-left:1px solid #3a332c;min-width:0;}
 .hdrGrid .hdrCell.hdrCarry{grid-area:carry;}
-.hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:2px;}
-.hdrGrid .hdrCell select.headSel{padding:3px 20px 3px 3px;min-height:0;}
+.hdrGrid .hdrCell label{font-size:8px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;margin-bottom:1px;}
+.hdrGrid .hdrCell select.headSel{padding:2px 20px 2px 3px;min-height:0;}
 .hdrCarryVal{display:flex;align-items:baseline;gap:5px;color:#F0A177;}
 .hdrCarryVal span:last-child{color:#D3BE95;}
 .hdrBlockRight{grid-area:level;background:linear-gradient(135deg,#2a2420,#181310);border-left:2px solid var(--rust);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:5px 8px;min-width:0;}
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 8px;min-width:0;}
 .hdrBlockRight .lv{font-size:9px;letter-spacing:.08em;color:#D3BE95;text-transform:uppercase;}
 .hdrBlockRight select.mono{width:28px;text-align:center;text-align-last:center;background:transparent;color:#F0A177;border:none;
-  font-size:20px;font-weight:800;min-height:0;padding:3px 0;background-image:none;appearance:none;-webkit-appearance:none;cursor:pointer;}
+  font-size:18px;font-weight:800;min-height:0;padding:2px 0;background-image:none;appearance:none;-webkit-appearance:none;cursor:pointer;}
 .tierHint2{font-size:9.5px;color:#D3BE95;margin-top:1px;font-weight:700;}
 @media (max-width:640px){
   .hdrGrid{grid-template-columns:1fr 1fr .7fr;grid-template-areas:"left name level" "left origin level" "carry carry carry";}
@@ -442,6 +446,22 @@ input.nameInput2::placeholder{color:#8f8577;}
    pips fill 3-per-row (up to 4 rows = 12 slots) instead of free-wrapping. ---------- */
 .armorSlotsBlock{position:relative;}
 #armorPips{display:grid;grid-template-columns:repeat(3,15px);grid-auto-rows:15px;gap:4px;}
+/* Armor Slots: user: "zamień na małe ikonki tarczy (czarna ramka i białe w
+   środku, bez szczegółów - tylko obrys)". Każdy .pip w #armorPips zostaje
+   funkcjonalnie taki sam (klik = zaznacz/odznacz slot), ale traci swój
+   zwykły wygląd (kółko z var(--ink) border, wypełnienie --rust po
+   zaznaczeniu) na rzecz dwuwarstwowej "tarczy" rysowanej clip-path-em: ::before
+   to pełny kształt w kolorze obrysu (var(--ink)), ::after to ten sam kształt
+   wcięty o kilka px do środka w kolorze wypełnienia (białe / --rust po
+   zaznaczeniu) -- razem dają efekt konturu o stałej grubości, niezależnie od
+   rozmiaru (ekran i PDF, ten sam --s co reszta karty). */
+#armorPips .pip{border:none;background:transparent;position:relative;}
+#armorPips .pip::before,
+#armorPips .pip::after{content:"";position:absolute;clip-path:polygon(0% 0%,100% 0%,100% 55%,50% 100%,0% 55%);}
+#armorPips .pip::before{inset:0;background:var(--ink);}
+#armorPips .pip::after{inset:2px;background:#fff;}
+#armorPips .pip.checked{background:transparent;border-color:transparent;}
+#armorPips .pip.checked::after{background:var(--rust);}
 .armorSlotsBlock label{display:flex;align-items:center;justify-content:center;gap:4px;}
 /* the manual-adjustment note is taken out of flow so it can never push the "Armor
    Slots" label away from its fixed position — it just floats under the row */
@@ -483,10 +503,12 @@ input.nameInput2::placeholder{color:#8f8577;}
 /* ---------- point 3: square corners everywhere on the sheet itself (front + back);
    the "cut corner" on panel headers / threshold arrows is a clip-path, not a
    border-radius, so it's untouched by this reset. Only genuinely round/pill/diamond
-   shape-language elements (stat orbs, round & diamond pips, pill badges/tags) are
-   explicitly restored below, since they read as intentional shapes, not "areas". ---------- */
+   shape-language elements (round & diamond pips, pill badges/tags) are explicitly
+   restored below, since they read as intentional shapes, not "areas". Evasion/Armor
+   Score (.circleStat .circ) used to be restored to round here too -- user: "zmień
+   pola Evasion i Armor Score, żeby były prostokątami" -- teraz zostają kwadratowe,
+   spadając przez razem z resztą na regułę base powyżej (border-radius:0). ---------- */
 .face, .face *{border-radius:0 !important;}
-.face .circleStat .circ,
 .face .pip.round{border-radius:50% !important;}
 .face .pip.diamond{border-radius:2px !important;}
 .face .badge,
@@ -673,7 +695,7 @@ input.nameInput2::placeholder{color:#8f8577;}
                 <div id="diseaseStartList"></div>
               </div>
 
-              <div class="diseaseSection" style="margin-top:5px;border-top:1px dashed var(--line);padding-top:5px;">
+              <div class="diseaseSection" id="diseaseAcqSection" style="margin-top:5px;border-top:1px dashed var(--line);padding-top:5px;">
                 <div class="dsHead">Choroby nabyte <span style="font-weight:400;text-transform:none;color:#6E634E;">(dodawanie: druga strona karty)</span></div>
                 <div id="diseaseAcqList"></div>
               </div>
@@ -914,7 +936,19 @@ function renderEngine(){
     for(let i=1;i<=max;i++) track += '<div class="pip round '+(i<=(max-char._engine.fartUsed)?'checked':'')+'" data-engfart="'+i+'"></div>';
     track += '<button class="pipBtn" data-engreset="1" title="Nowa sesja">↺</button>';
   }
-  host.innerHTML = '<div class="engineBox"><div class="engineName">'+esc(eng.nazwa)+'</div>'+
+  // User (SA.pdf): "możesz zaoszczędzić 1 linijkę, jeżeli w specjalizacji
+  // będziesz dawał tylko nazwę (np Fuksiarz), pomijając opis ilość
+  // tokenów..." -- eng.nazwa z arkusza xlsx to jeden string typu "Fuksiarz
+  // (Ilość Tokenów równa Twojemu największemu współczynnikowi)" -- dzielimy
+  // go na "nazwę własną" (przed pierwszym nawiasem) i "dopisek" (nawias i
+  // dalej), żeby móc na wydruku pokazać samą nazwę (patrz .engineNameDetail
+  // w PDF_CSS_PATCHES), a na ekranie zostawić pełny opis dla kontekstu.
+  const engNazwaFull = eng.nazwa||'';
+  const engParenIdx = engNazwaFull.indexOf('(');
+  const engNazwaMain = engParenIdx>=0 ? engNazwaFull.slice(0,engParenIdx).trim() : engNazwaFull;
+  const engNazwaDetail = engParenIdx>=0 ? engNazwaFull.slice(engParenIdx) : '';
+  host.innerHTML = '<div class="engineBox"><div class="engineName">'+esc(engNazwaMain)+
+    (engNazwaDetail?' <span class="engineNameDetail">'+esc(engNazwaDetail)+'</span>':'')+'</div>'+
     '<div class="engineTrackRow">'+track+'</div>'+
     (eng.naco?'<div class="engineDesc"><b>Na co:</b> '+esc(eng.naco)+'</div>':'')+
     ((eng.rosnie||eng.reset)?'<div class="engineDesc"><b>Rośnie:</b> '+esc(eng.rosnie)+' <b>Reset:</b> '+esc(eng.reset)+'</div>':'')+
@@ -2177,6 +2211,13 @@ function renderDiseaseList(hostId, arrKey){
 function renderDiseases(){
   renderDiseaseList('diseaseStartList', 'diseasesStart');
   renderDiseaseList('diseaseAcqList', 'diseasesAcquired');
+  // User: "jezeli postac nie ma chorob nabytych, to cala sekcje na karcie
+  // tego dotyczaca (ale TYLKO nabytych!) mozna pomijac -- wtedy zrobi sie
+  // miejsce na Rany". Choroba wrodzona (diseaseStartList) zostaje zawsze --
+  // to dotyczy WYLACZNIE sekcji "Choroby nabyte". Znaczymy klasa (dziala na
+  // kazdym renderze, bez skutkow na ekranie) -- realne chowanie sekcji to
+  // regula na wydruku, patrz PDF_CSS_PATCHES (.diseaseSection.emptyAcquired).
+  el('diseaseAcqSection').classList.toggle('emptyAcquired', !(char.diseasesAcquired||[]).length);
 }
 /* how many wounds are currently sitting at each of the 3 severity levels */
 function woundLevelCounts(){
@@ -2647,28 +2688,85 @@ el('btnExport').addEventListener('click', ()=>{
    input.value / checked / selected. Po window.print() (albo po
    timeout-cie) wszystko wraca do stanu sprzed kliknięcia.
    ========================================================================= */
-const PDF_MIN_FONT_PX = 11; // minimalny docelowy rozmiar "glownego" tekstu (patrz PDF_MIN_SCALE) -- tez baza dla domyslnego font-size body (patrz PDF_CSS_PATCHES)
-// Najczestszy font-size w calym arkuszu (wartosci Cech, pola formularza itd.)
-// -- 12px to punkt odniesienia: skala NIGDY nie schodzi tak nisko, zeby TEN
-// rozmiar spadl ponizej PDF_MIN_FONT_PX. Zamiast wymuszac to przez osobny
-// floor na samym font-size (co psulo spojnosc -- patrz komentarz w
-// pdfScaleCss ponizej), robimy to jako dolny limit CALEJ zmiennej --s: przy
-// tym limicie WSZYSTKO (fonty i odstepy) skaluje sie dalej tym samym
-// mnoznikiem, wiec uklad zostaje spojny -- a tresc, ktora mimo to sie nie
-// miesci, po prostu splywa na 2. strone (.face.front ma page-break-after:
-// auto), zamiast robic sie nieczytelna.
-const PDF_REF_FONT_PX = 12;
-const PDF_MIN_SCALE = PDF_MIN_FONT_PX / PDF_REF_FONT_PX;
-// Powyzszy PDF_MIN_SCALE to tylko MIEKKI cel (probujemy najpierw NIE schodzic
-// ponizej niego, dla czytelnosci) -- ale zmieszczenie calej karty na 1.
-// stronie ma wyzszy priorytet niz ten cel (jednoznaczne zyczenie usera: karta
-// MA sie miescic na A4, nawet kosztem mniejszej czcionki). Gdy tresci jest za
-// duzo zeby zmiescic sie przy PDF_MIN_SCALE, petla auto-fit (patrz
-// pdfExport()) przechodzi w tryb bez tego "miekkiego" ograniczenia i schodzi
-// dalej, az do tego twardego, awaryjnego minimum -- ma tylko chronic przed
-// calkiem zerowa/nieczytelna skala, tak jak dawne 0.12 przed wprowadzeniem
-// PDF_MIN_SCALE.
-const PDF_ABS_MIN_SCALE = 0.12;
+// ---------------------------------------------------------------------
+// User (po poprzedniej probie): "teksty w wersji drukowanej, upchanej na
+// A4 SA ZA MALE -- te 2px wiecej to ma byc w WYDRUKOWANEJ karcie". Pierwsza
+// proba (jeden wspolny --s dla fontow I odstepow, tylko z wyzszym punktem
+// startowym) nie dzialala dla gestych kart: gdy tresc nie miesci sie przy
+// scale=1, petla auto-fit i tak musi zjechac do skali wyznaczonej przez
+// ILOSC tresci -- punkt startowy nic nie zmienia w wyniku koncowym, bo
+// font i odstepy kurczyly sie RAZEM, jednym mnoznikiem.
+//
+// Rozwiazanie: DWIE oddzielne zmienne CSS. --fs skaluje WYLACZNIE
+// font-size (patrz pdfScaleCss ponizej -- osobny przebieg regexu na samym
+// koncu podmienia var(--s) na var(--fs) tylko w regulach font-size). --s
+// nadal skaluje wszystko inne (marginesy, paddingi, gapy, szerokosci,
+// promienie itd.) tak jak dotychczas. Dzieki temu przy ciasnej karcie to
+// GLOWNIE odstepy sie kurcza, a tekst zostaje wiekszy.
+//
+// To ma jednak twarda granice bezpieczenstwa: przy zbyt duzym rozjezdzie
+// miedzy (duzym) fontem a (bardzo maleńkimi) odstepami/szerokosciami
+// niektore elementy (kola Evasion/Armor Score, 3-kolumnowe etykiety pod
+// nimi) zaczynaly na siebie nachodzic -- sprawdzone empirycznie na
+// prawdziwej, gestej karcie (SA, Hytrus, tym razem z poprawnie wczytanym
+// skoroszytem -- patrz sesja "SA.json"): jedna przyczyna byla KONKRETNA i
+// naprawialna -- podpisy EVASION/ARMOR SCORE/ARMOR SLOTS (.circleStat label)
+// i naglowek "Obrona i Pancerz" w waskiej .defenseCol skalowaly sie razem z
+// fontem (--fs), NIE z szerokoscia swojej wlasnej, kurczacej sie kolumny
+// (--s) -- przy duzym rozjezdzie tekst etykiety byl szerszy niz kolumna i
+// nachodzil na sasiednia. Naprawione (patrz PDF_EXTRA_CSS_UNSCALED nizej: te
+// dwie regule swiadomie licza font-size od var(--s), nie var(--fs), pisane w
+// bloku NIE przepuszczanym przez automatyczna podmiane --s->--fs --
+// bezpiecznie, bo same cyfry w kolkach (#evTotal/#asTotal) i tak sa ukryte
+// na wydruku).
+//
+// PROBOWALEM zejsc z PDF_SPACING_SAFE_MIN_SCALE znacznie nizej (do ~0.28,
+// zmierzone jako bezpieczne per .scrollHeight) po tej naprawie -- ALE
+// rzeczywisty wydruk (Playwright page.pdf(), nie tylko pomiar na ekranie)
+// pokazal DRUGI, gtebszy problem: panel "Rany" (ostatni w lewej kolumnie
+// .body2col, ktora jest CSS Gridem) potrafil wyladowac calkowicie na 2.
+// stronie, mimo ze .face.front.scrollHeight mial jeszcze 100+px zapasu
+// ponizej usableHpxSafe -- nawet przy --s=0.10 (ekstremalne sciskanie).
+// To nie byl blad pomiaru wysokosci (leftColumn/rightColumn content-height
+// sprawdzone osobno przez getBoundingClientRect() zgadzalo sie z
+// scrollHeight) -- to jest znany, szerzej udokumentowany problem
+// przegladarek (w tym Chromium) z paginacja CSS Grid przy druku: siatka
+// (.body2col{display:grid}) nie zawsze respektuje faktyczna dostepna
+// wysokosc STRONY przy rozstrzyganiu, ktory element "zmiesci sie" jeszcze na
+// biezacej stronie -- w efekcie ostatni panel w kolumnie moze zostac
+// zepchniety na nowa strone NIEZALEZNIE od tego, ile miejsca zostalo w
+// jego wlasnej kolumnie wzgledem strony. Naprawa tego (np. zmiana .body2col
+// z grid na flex, o ktorym Chromium generalnie lepiej sobie radzi przy
+// druku) to osobna, wieksza zmiana ukladu (dotyka WSZYSTKICH kart, ekran i
+// druk) -- celowo NIE robie tego teraz przy okazji tej poprawki, zeby nie
+// ryzykowac zlamania czegos szerzej sprawdzonego bez czasu na pelna
+// weryfikacje. Dlatego PDF_SPACING_SAFE_MIN_SCALE zostaje na sprawdzonym,
+// bezpiecznym 0.5 -- obnizanie tej liczby NIE jest bezpiecznym sposobem na
+// wieksza czcionke dla gestych kart, dopoki layout .body2col nie zostanie
+// przebudowany. Zamiast tego wieksza czcionke dla gestych kart (SA/Hytrus)
+// szuka sie DALSZYM, bezpiecznym scisnieciem odstepow w trybie fallback
+// (jeden wspolny --s dla fontu i odstepow) -- patrz kolejne reguly w
+// PDF_CSS_PATCHES nizej (panel/ph/pb/vitalsBlock).
+//
+// Jesli karta nie miesci sie na 1 stronie NAWET przy foncie na jego wlasnym
+// dolnym progu (PDF_MIN_SCALE, patrz nizej) i odstepach na tym
+// bezpiecznym minimum -- to znaczy, ze tresci jest za duzo, by dalo sie to
+// rozwiazac samym "odchudzeniem" odstepow bez ryzyka nachodzenia na
+// siebie elementow. W TAKIM (i tylko takim) przypadku petla PORZUCA tryb
+// rozdzielony i wraca do starego, sprawdzonego trybu: jeden wspolny --s
+// dla wszystkiego (font=odstepy), ktory moze zejsc az do
+// PDF_ABS_MIN_SCALE -- dokladnie tak jak dzialalo to PRZED tą zmianą, bez
+// ryzyka polamania ukladu. Zmieszczenie sie na 1 stronie A4 nadal ma
+// absolutny priorytet nad czytelnoscia -- tak jak user jednoznacznie
+// zyczyl sobie przy okazji VBGADS.
+const PDF_REF_FONT_PX = 12; // najczestszy font-size w arkuszu (Cechy, pola formularza itd.) -- punkt odniesienia dla PX ponizej
+const PDF_FONT_FLOOR_PX = PDF_REF_FONT_PX + 1; // 13px: prawdziwy, twardy dolny prog CZCIONKI w trybie rozdzielonym (+2 nad starym "miekkim" 11px, patrz PDF_DEFAULT_FALLBACK_FONT_PX)
+const PDF_FONT_TARGET_PX = PDF_REF_FONT_PX + 2; // 14px: punkt startowy/sufit czcionki, gdy tresci nie jest za duzo
+const PDF_DEFAULT_FALLBACK_FONT_PX = 11; // domyslny font-size dla elementow BEZ wlasnej reguly (mniejszy niz REF, jak dawniej -- niezalezne od progu czcionki powyzej)
+const PDF_MIN_SCALE = PDF_FONT_FLOOR_PX / PDF_REF_FONT_PX; // ~1.0833 -- prawdziwy floor --fs w trybie rozdzielonym
+const PDF_TARGET_SCALE = PDF_FONT_TARGET_PX / PDF_REF_FONT_PX; // ~1.1667 -- startowy/sufitowy --fs
+const PDF_SPACING_SAFE_MIN_SCALE = 0.5; // bezpieczny dolny limit --s w trybie rozdzielonym (patrz komentarz wyzej)
+const PDF_ABS_MIN_SCALE = 0.12; // awaryjny, wspolny floor dla trybu "font=odstepy" (fallback, patrz nizej) -- jak dawne 0.12
 const PDF_A4_W_MM = 210, PDF_A4_H_MM = 297, PDF_MARGIN_MM = 8, PDF_PX_PER_MM = 96/25.4;
 
 // reguly aktywne TYLKO gdy <body class="pdfExportMode"> -- ida razem z resztą
@@ -2697,6 +2795,36 @@ body.pdfExportMode .phActions{display:none !important;}
 body.pdfExportMode #hopePips .pip.checked,
 body.pdfExportMode #profPips .pip.checked,
 body.pdfExportMode #engineHost .pip.checked{background:#fff !important;border-color:var(--ink) !important;}
+/* Silnik Specjalizacji: na wydruku tylko nazwa własna (np. "Fuksiarz"),
+   bez dopisku w nawiasie -- oszczędza linijkę zawijania. Ekran zostaje z
+   pełnym opisem (patrz renderEngine()). */
+body.pdfExportMode .engineNameDetail{display:none !important;}
+/* Choroby i Rany: ten sam pomysl co Hope/Bieglosc/Silnik powyzej -- na
+   wydruku kropki poziomow (stageRow .pip) maja byc puste/odznaczone do
+   uzupelnienia recznie, niezaleznie od aktualnego stanu choroby/rany w
+   char.* (to tylko CSS, dane sie nie ruszaja). */
+body.pdfExportMode .diseaseStageList .pip.checked,
+body.pdfExportMode .woundStageList .pip.checked{background:#fff !important;border-color:var(--ink) !important;}
+/* Doswiadczenia: na wydruku tylko nazwa, bez wartosci liczbowej (ani
+   nadanych/"grantedTag", ani recznie wpisanych) -- input[type=number] i tak
+   drukowalby swoja wartosc, wiec trzeba go schowac calkiem, nie tylko
+   wyzerowac. */
+body.pdfExportMode .expTotal,
+body.pdfExportMode .expRow input[type=number]{display:none !important;}
+/* Evasion/Armor Score i progi Major/Severe Damage: user chce, żeby te pola
+   drukowały się PUSTE (do ręcznego wypełnienia), tak samo jak Hope/Choroby/
+   Rany powyżej -- same liczby znikają, prostokąt/pole zostaje (ma stały
+   rozmiar niezależny od zawartości, więc się nie zapada). evTotal/asTotal to
+   wewnetrzne .big spany w osobno-wymiarowanym .circ, wiec display:none jest
+   bezpieczne -- box .circ zostaje. #thrMajorV/#thrSevereV to natomiast SAMO
+   pole (.dmgThrVal ma id wprost na sobie, bez wewnetrznego spana) -- user
+   zglosil, ze display:none na nich usuwalo caly prostokat z wiersza progow
+   ("puste pola zostaw!!!!"), wiec dla nich chowamy sam tekst (color:
+   transparent), a tlo/rozmiar/pozycja pola (.dmgThrVal) zostaja nietkniete. */
+body.pdfExportMode #evTotal,
+body.pdfExportMode #asTotal{display:none !important;}
+body.pdfExportMode #thrMajorV,
+body.pdfExportMode #thrSevereV{color:transparent !important;}
 /* karta ma zostac PELNEJ szerokosci strony (nie skurczyc sie razem z
    fontami/odstepami) -- to samo co @media print w tym arkuszu, ale musi
    dzialac JUZ w trakcie petli auto-fit (jeszcze na ekranie, przed
@@ -2739,7 +2867,64 @@ body.pdfExportMode .pb:has(#helmetPick option[value=""]:checked) #h_feature{disp
    MUSI isc przez normalne skalowanie (ten sam --s co reszta karty), inaczej
    te elementy zostawaly przy stalym rozmiarze podczas gdy ich otoczenie
    (padding/margin/gap) kurczylo sie. */
-body.pdfExportMode{font-size:${PDF_MIN_FONT_PX}px;}
+body.pdfExportMode{font-size:${PDF_DEFAULT_FALLBACK_FONT_PX}px;}
+/* User (SA.pdf): "odstępy pomiędzy nagłówkiem pola a podpolem -- np w
+   broniach, ramka Kel-Tec -- jest tam sporo do zaoszczędzenia. Odstępy
+   między podpolami też". Zmierzone na Hytrusie: pojedynczy wiersz pola
+   (etykieta label.fl + wartosc .readout/input) to ok. 40px -- z czego
+   min-height:28px samej wartosci + jej padding to ponad polowa. Ekran
+   (do klikania myszka) zostaje bez zmian -- min-height:28px tam ma sens
+   jako cel dotykowy/klikalny. Na wydruku (czysto do czytania, nikt tam nie
+   klika) te same pola moga byc dużo niższe. */
+body.pdfExportMode select,
+body.pdfExportMode input[type=text],
+body.pdfExportMode input[type=number],
+body.pdfExportMode textarea,
+body.pdfExportMode .readout{min-height:18px;padding:2px 5px;}
+body.pdfExportMode label.fl{margin-bottom:0;}
+body.pdfExportMode .fieldGrid2,
+body.pdfExportMode .fieldGrid3,
+body.pdfExportMode .fieldGrid4{gap:3px;margin-bottom:2px;}
+body.pdfExportMode .weaponCard{padding:3px 6px;}
+body.pdfExportMode .weaponCard .wtop{margin-bottom:2px;}
+body.pdfExportMode .featBox{padding:3px 5px;margin-bottom:2px;line-height:1.2;}
+/* Ekwipunek: przedmiot wlasny (custom:true, np. "Talia oznaczonych kart")
+   ma pole na wlasny "efekt/cecha" jako zwykly <input> do wypelnienia recznie
+   -- w odroznieniu od przedmiotow z bazy, ktorych efekt to nieedytowalny
+   .featBox. User (SA.pdf): kiedy to pole jest puste, na wydruku placeholder
+   "wlasny efekt / cecha przedmiotu" wygladal jak prawdziwa tresc -- ma byc
+   PUSTY na wydruku (prawdziwie wpisany tekst i tak sie wydrukuje, bo
+   ::placeholder znika sam z siebie gdy input ma wartosc). Dodatkowo pole ma
+   wygladac jak .featBox z amunicji (tlo/ramka/font/padding), nie jak zwykly
+   input. Selektor po data-f="effect" (atrybut, nie numer wiersza/indeks) --
+   dziala dla KAZDEGO custom przedmiotu na liscie ekwipunku, nie tylko dla
+   jednego wyjatku. */
+body.pdfExportMode #invList input[data-f="effect"]::placeholder{color:transparent !important;}
+body.pdfExportMode #invList input[data-f="effect"]{
+  background:#F7F2E6 !important;border:1px solid var(--line) !important;border-radius:6px !important;
+  font-size:10.5px !important;color:var(--ink-soft) !important;padding:3px 5px !important;min-height:0 !important;
+}
+/* User: "jestem pewien, ze czcionke da sie zrobic wieksza". Skoro
+   PDF_SPACING_SAFE_MIN_SCALE nie moze bezpiecznie zejsc nizej (patrz duzy
+   komentarz przy tej stalej -- Chromium/CSS Grid + druk), jedyna bezpieczna
+   droga do wiekszego fontu na gestych kartach to DALSZE scisniecie odstepow
+   w trybie fallback (gdzie font i odstepy i tak juz kurcza sie razem) --
+   zeby ten wspolny mnoznik wypadl wyzej. Kolejna runda: marginesy miedzy
+   panelami, padding naglowka/tresci kazdego panelu, odstep miedzy HP a
+   Stress, interlinia opisow (.caption). */
+body.pdfExportMode .panel{margin-bottom:1px;}
+body.pdfExportMode .panel > .ph{padding:2px 8px 2px 7px;}
+body.pdfExportMode .panel .pb{padding:2px 6px;}
+body.pdfExportMode .vitalsBlock{margin-bottom:2px;}
+body.pdfExportMode .caption{line-height:1.25;}
+/* User: "jezeli postac nie ma chorob nabytych, to cala sekcje na karcie
+   tego dotyczaca (ale TYLKO nabytych!) mozna pomijac -- wtedy zrobi sie
+   miejsce na Rany". Choroba wrodzona zostaje zawsze -- ukrywamy WYLACZNIE
+   #diseaseAcqSection, i tylko gdy jest faktycznie puste (klasa .emptyAcquired
+   ustawiana w renderDiseases()). Ekran zostaje bez zmian (klasa istnieje,
+   ale nic jej tam nie uzywa) -- tam sekcja ma zostac widoczna zawsze, zeby
+   bylo wiadomo ze mozna dodac chorobe nabyta na 2. stronie karty. */
+body.pdfExportMode .diseaseSection.emptyAcquired{display:none !important;}
 `;
 // NIE przepuszczone przez pdfScaleCss -- @page margin ma byc stalym
 // fizycznym marginesem strony, nie czyms co kurczy sie razem z --s.
@@ -2749,22 +2934,48 @@ body.pdfExportMode input[type=number]::-webkit-outer-spin-button,
 body.pdfExportMode input[type=number]::-webkit-inner-spin-button{-webkit-appearance:none;margin:0;}
 body.pdfExportMode select:disabled,body.pdfExportMode input:disabled,body.pdfExportMode textarea:disabled{opacity:1;-webkit-text-fill-color:currentColor;color:inherit;}
 @page{size:A4;margin:${PDF_MARGIN_MM}mm;}
+/* User: "jestem pewien, ze czcionke da sie zrobic wieksza". Zmierzone
+   (Playwright bisection na SA i Hytrusie, z poprawnie wczytanym skoroszytem):
+   tryb rozdzielony (--fs na suficie/progu, --s scigane w dol) NIE laduje sie
+   ponizej PDF_SPACING_SAFE_MIN_SCALE=0.5 z jednego, konkretnego powodu --
+   etykiety EVASION/ARMOR SCORE/ARMOR SLOTS pod kolkami (.circleStat label)
+   oraz naglowek "Obrona i Pancerz" w waskiej .defenseCol skaluja sie razem z
+   fontem (--fs), NIE z odstepami/szerokoscia kolumny (--s) -- przy duzym
+   rozjezdzie miedzy nimi tekst etykiety jest szerszy niz zdazyla zwezic sie
+   jego wlasna kolumna i nachodzi na sasiednia (widac to bylo przy s~0.32:
+   "EVASIO ARMORARMOR SCORE SLOTS" zlepione w jedno). Same cyfry w kolkach
+   (.big) i tak sa ukryte na wydruku (patrz #evTotal/#asTotal wyzej), wiec te
+   male podpisy nie musza rosnac razem z fontem calej karty -- pozwalamy im
+   scigac SIE Z ODSTEPAMI (var(--s), NIE var(--fs)) zamiast z fontem, pisane
+   tutaj (w bloku NIE przepuszczanym przez pdfScaleCss), zeby uniknac
+   automatycznej podmiany var(--s)->var(--fs) ktora normalnie spotyka kazda
+   regule font-size. To odblokowuje auto-fit: PDF_SPACING_SAFE_MIN_SCALE
+   nizej mogl bezpiecznie zejsc z 0.5, dajac realnie wiekszy font na gestych
+   kartach (SA/Hytrus) zamiast zawsze wpadac w jednolity fallback. */
+body.pdfExportMode .circleStat label{font-size:calc(9px * var(--s)) !important;}
+body.pdfExportMode .defenseCol > .ph{font-size:calc(11.5px * var(--s)) !important;}
 `;
 
 function pdfScaleCss(cssText){
-  // WAZNE: font-size NIE dostaje juz wlasnego "floor" (max(8px, ...)) --
-  // kazdy pojedynczy px/mm w calym arkuszu (fonty, paddingi, marginesy,
-  // gapy, szerokosci...) musi byc przemnozony przez DOKLADNIE ten sam --s,
-  // inaczej powstaje niespojnosc: przy mniejszej skali fonty "podpierane"
-  // przez floor przestawaly sie kurczyc razem z otaczajacymi je paddingami/
-  // odstepami/liniami, wiec tekst zaczynal wychodzic poza swoj kontener i
-  // nakladac sie / "rozjezdzac" wzgledem ukladu na zywej stronie. Globalny
-  // dolny limit samej zmiennej --s (patrz petla auto-fit w pdfExport(),
-  // Math.max(..., 0.12)) juz chroni przed calkiem zerowa/nieczytelna skala
-  // -- i robi to bez psucia spojnosci, bo dziala na WSZYSTKIE px na raz.
+  // Krok 1: kazdy pojedynczy px/mm w calym arkuszu (fonty, paddingi,
+  // marginesy, gapy, szerokosci...) dostaje TEN SAM mnoznik --s -- to
+  // gwarantuje spojnosc ukladu (patrz komentarz historyczny nizej).
+  //
+  // Krok 2 (NOWY): nastepnie kazda regula font-size (a tylko font-size --
+  // dopasowanie wymaga literalnie "font-size:" przed calc(), wiec np.
+  // szerokosci/marginesy NIE sa ruszane) dostaje WLASNY mnoznik --fs
+  // zamiast --s. Font moze wiec zostac wiekszy, nawet gdy reszta (--s)
+  // mocno sie kurczy, zeby zmiescic tresc -- patrz komentarz przy
+  // PDF_FONT_FLOOR_PX/PDF_SPACING_SAFE_MIN_SCALE wyzej. To JEST swiadome
+  // odejscie od dawnej zasady "jeden wspolny mnoznik dla wszystkiego" --
+  // ryzyko nachodzenia elementow na siebie przy duzym rozjezdzie miedzy
+  // fontem a odstepami jest znane i ograniczone przez
+  // PDF_SPACING_SAFE_MIN_SCALE (nigdy nie schodzimy z --s w trybie
+  // rozdzielonym ponizej tego bezpiecznego progu -- patrz pdfExport()).
   return cssText
     .replace(/(?<![\w.])-?\d+(?:\.\d+)?(?:px|mm)(?![\w])/g, m=>`calc(${m} * var(--s))`)
-    .replace(':root{', ':root{--s:1;');
+    .replace(/font-size:calc\(([^)]+?)\s*\*\s*var\(--s\)\)/g, 'font-size:calc($1 * var(--fs))')
+    .replace(':root{', ':root{--s:1;--fs:1;');
 }
 
 async function pdfExport(){
@@ -2794,6 +3005,7 @@ async function pdfExport(){
     restored = true;
     styleEl.textContent = originalCss;
     document.documentElement.style.removeProperty('--s');
+    document.documentElement.style.removeProperty('--fs');
     document.body.classList.remove('pdfExportMode');
     stageEl.style.maxWidth = originalStageMaxWidth;
     savedInlineStyles.forEach(([node, orig])=>{ node.setAttribute('style', orig); });
@@ -2831,20 +3043,66 @@ async function pdfExport(){
     // prawie pusta 2. strone. Zapas bezpieczenstwa kompensuje to (a nie
     // roznice pomiaru ekran/druk -- te sprawdzone osobno sa identyczne).
     const usableHpxSafe = usableHpx - Math.max(100, usableHpx * 0.09);
-    let scale = 1.0;
-    let floor = PDF_MIN_SCALE; // najpierw probujemy miekkiego celu (~11px)
-    for(let i=0;i<30;i++){
-      document.documentElement.style.setProperty('--s', String(scale));
-      const front = document.querySelector('.face.front');
-      const h = front ? front.scrollHeight : 0;
-      if(h <= usableHpxSafe) break;
-      const next = scale * (usableHpxSafe/h) * 0.99;
-      // Miekki cel (PDF_MIN_SCALE) nie wystarcza zeby zmiescic tresc na 1
-      // stronie -- zmieszczenie sie ma priorytet nad czytelnoscia 11px, wiec
-      // od teraz pozwalamy schodzic ponizej niego, az do twardego minimum.
-      if(next < floor && floor > PDF_ABS_MIN_SCALE) floor = PDF_ABS_MIN_SCALE;
-      scale = Math.max(next, floor);
+    const measureH = ()=>{ const f = document.querySelector('.face.front'); return f ? f.scrollHeight : 0; };
+    // Probuje zmiescic tresc kurczac WYLACZNIE --s (odstepy/szerokosci),
+    // przy foncie (--fs) juz ustawionym z zewnatrz i NIERUSZANYM tutaj --
+    // patrz duzy komentarz przy PDF_FONT_FLOOR_PX/PDF_SPACING_SAFE_MIN_SCALE
+    // powyzej. Nigdy nie schodzi z --s ponizej bezpiecznego minimum. Zwraca
+    // znalezione --s (fits) albo null (nawet bezpieczne minimum nie
+    // wystarcza -- trzeba porzucic tryb rozdzielony, patrz nizej).
+    function shrinkSpacingOnly(){
+      let s = 1.0;
+      for(let i=0;i<30;i++){
+        document.documentElement.style.setProperty('--s', String(s));
+        const h = measureH();
+        if(h <= usableHpxSafe) return s;
+        const next = s * (usableHpxSafe/h) * 0.99;
+        if(next <= PDF_SPACING_SAFE_MIN_SCALE){
+          document.documentElement.style.setProperty('--s', String(PDF_SPACING_SAFE_MIN_SCALE));
+          return (measureH() <= usableHpxSafe) ? PDF_SPACING_SAFE_MIN_SCALE : null;
+        }
+        s = next;
+      }
+      document.documentElement.style.setProperty('--s', String(PDF_SPACING_SAFE_MIN_SCALE));
+      return (measureH() <= usableHpxSafe) ? PDF_SPACING_SAFE_MIN_SCALE : null;
     }
+
+    let fontScale, spaceScale;
+    document.documentElement.style.setProperty('--fs', String(PDF_TARGET_SCALE));
+    let fit = shrinkSpacingOnly();
+    if(fit !== null){
+      fontScale = PDF_TARGET_SCALE; spaceScale = fit; // najlepszy przypadek: font na suficie (+2px), same odstepy zwezone
+    } else {
+      document.documentElement.style.setProperty('--fs', String(PDF_MIN_SCALE));
+      fit = shrinkSpacingOnly();
+      if(fit !== null){
+        fontScale = PDF_MIN_SCALE; spaceScale = fit; // font na swoim dolnym progu (+1px), same odstepy zwezone
+      } else {
+        // FALLBACK: tresci za duzo, zeby zmiescic ja w trybie rozdzielonym
+        // bez ryzyka nachodzenia elementow (nawet przy foncie na dolnym
+        // progu i odstepach na bezpiecznym minimum). Wracamy do starego,
+        // sprawdzonego trybu sprzed tej zmiany: JEDEN wspolny mnoznik dla
+        // fontu i odstepow razem, ktory moze zejsc az do
+        // PDF_ABS_MIN_SCALE -- zmieszczenie na 1 stronie ma priorytet nad
+        // czytelnoscia (tak jak user jednoznacznie zyczyl sobie przy
+        // VBGADS), kosztem tego, ze font wtedy NIE jest wiekszy niz
+        // dotychczas dla tej konkretnej, bardzo gestej karty.
+        let scale = PDF_TARGET_SCALE;
+        let floor = PDF_MIN_SCALE;
+        for(let i=0;i<30;i++){
+          document.documentElement.style.setProperty('--s', String(scale));
+          document.documentElement.style.setProperty('--fs', String(scale));
+          const h = measureH();
+          if(h <= usableHpxSafe) break;
+          const next = scale * (usableHpxSafe/h) * 0.99;
+          if(next < floor && floor > PDF_ABS_MIN_SCALE) floor = PDF_ABS_MIN_SCALE;
+          scale = Math.max(next, floor);
+        }
+        fontScale = scale; spaceScale = scale;
+      }
+    }
+    document.documentElement.style.setProperty('--fs', String(fontScale));
+    document.documentElement.style.setProperty('--s', String(spaceScale));
 
     // Kolka Evasion/Armor Score (.circleStat .circ) maja swoj rozmiar z
     // calc(46px * var(--s)) -- ulamkowy wynik (np. 20.59px). Na Windows
@@ -2856,10 +3114,11 @@ async function pdfExport(){
     // ulamkowym mnozniku DPI. Obejscie: dla TYCH konkretnych elementow
     // (i tylko dla nich, po ustaleniu ostatecznej skali) podmieniamy
     // wynik calc() na jawny, calkowitoliczbowy piksel -- bez ulamka nie ma
-    // czego zaokraglac niezaleznie w kazdym wymiarze.
+    // czego zaokraglac niezaleznie w kazdym wymiarze. Uzywamy spaceScale
+    // (--s), bo dokladnie ten mnoznik steruje ich CSS-owym rozmiarem.
     document.querySelectorAll('.circleStat .circ').forEach(node=>{
       savedCircleSizes.push([node, node.style.width, node.style.height]);
-      const px = Math.max(1, Math.round(46 * scale)) + 'px';
+      const px = Math.max(1, Math.round(46 * spaceScale)) + 'px';
       node.style.width = px;
       node.style.height = px;
     });
